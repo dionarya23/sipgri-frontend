@@ -1,29 +1,67 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
+import Layout from "../views/Layout.vue";
 
-Vue.use(VueRouter)
+import store from "../store/index";
+
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Layout",
+    redirect: "/dashboard",
+    component: Layout,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.getters.isLoggedIn) {
+        next();
+        return;
+      }
+      next("/login");
+    },
+    children: [
+      {
+        path: "dashboard",
+        name: "Dasboard",
+        component: Home
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: "/login",
+    name: "Login",
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters.isLoggedIn) {
+        next();
+        return;
+      }
+      next("/");
+    }
   }
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes
-})
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
+});
+
+export default router;
