@@ -5,24 +5,25 @@
         <v-list-item link>
           <v-list-item-content>
             <v-list-item-title class="title">
-              Sandra Adams
+              {{ userData.nama }}
             </v-list-item-title>
-            <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ userData.email }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
 
       <v-divider></v-divider>
       <v-list>
-        <v-list-item v-for="item in items" :key="item.title" link>
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-list-item-group>
+          <v-list-item v-for="(item, i) in items" :key="i" :to="item.link">
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
 
       <template v-slot:append>
@@ -52,7 +53,12 @@
     </v-app-bar>
 
     <v-main>
-      <!--  -->
+      <div class="pa-4 pa-lg-8">
+        <p class="text-h4 text-center text-lg-left text--secondary mb-8">
+          Data {{ $route.name }}
+        </p>
+        <router-view />
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -61,10 +67,11 @@
 export default {
   data: () => ({
     drawer: null,
+    userData: {},
     items: [
-      { title: "Dashboard", icon: "mdi-view-dashboard" },
-      { title: "Account", icon: "mdi-account-box" },
-      { title: "Admin", icon: "mdi-gavel" }
+      { title: "Guru", icon: "mdi-account-tie", link: "/guru" },
+      { title: "Account", icon: "mdi-account-box", link: "/" },
+      { title: "Admin", icon: "mdi-gavel", link: "/" }
     ]
   }),
   methods: {
@@ -73,8 +80,13 @@ export default {
       localStorage.setItem("darkMode", this.$vuetify.theme.dark.toString());
     },
     logout() {
-      this.$store.dispatch("logout").then(() => this.$router.push("/login"));
+      this.$store
+        .dispatch("auth/logout")
+        .then(() => this.$router.push("/login"));
     }
+  },
+  mounted() {
+    this.userData = this.$store.state.auth.user;
   }
 };
 </script>

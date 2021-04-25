@@ -14,7 +14,19 @@
             <p class="display-1 text-center my-8">
               SI Akademik<br /> SMA PGRI 1 Bandung
             </p>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-alert
+              :value="alert.isShow"
+              :type="alert.type || 'error'"
+              transition="slide-y-transition"
+            >
+              {{ alert.message }}
+            </v-alert>
+            <v-form
+              @submit="validate"
+              ref="form"
+              v-model="valid"
+              lazy-validation
+            >
               <v-text-field
                 v-model="data.email"
                 :rules="emailRules"
@@ -34,7 +46,9 @@
               ></v-text-field>
 
               <v-btn
-                :disabled="!valid"
+                type="submit"
+                :loading="isLoading"
+                :disabled="!valid || isLoading"
                 color="primary"
                 depressed
                 large
@@ -52,6 +66,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data: () => ({
     valid: true,
@@ -66,12 +81,15 @@ export default {
       (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
     ]
   }),
-
+  computed: mapState({
+    isLoading: (state) => state.auth.isLoading,
+    alert: (state) => state.alert
+  }),
   methods: {
     validate() {
       if (this.$refs.form.validate()) {
         this.$store
-          .dispatch("login", this.data)
+          .dispatch("auth/login", this.data)
           .then(() => {
             this.$router.push("/");
           })
