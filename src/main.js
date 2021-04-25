@@ -15,6 +15,11 @@ if (token) {
   Vue.prototype.$http.defaults.headers.common["Authorization"] = token;
 }
 
+Vue.prototype.$http.defaults.headers.common = {
+  Accept: "application/json",
+  "Content-Type": "application/json"
+};
+
 new Vue({
   router,
   store,

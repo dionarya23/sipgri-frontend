@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Guru from "../views/Guru.vue";
 import Login from "../views/Login.vue";
 import Layout from "../views/Layout.vue";
 
@@ -12,23 +12,16 @@ const routes = [
   {
     path: "/",
     name: "Layout",
-    redirect: "/dashboard",
+    redirect: "/guru",
     component: Layout,
     meta: {
       requiresAuth: true
     },
-    beforeEnter: (to, from, next) => {
-      if (store.getters.isLoggedIn) {
-        next();
-        return;
-      }
-      next("/login");
-    },
     children: [
       {
-        path: "dashboard",
-        name: "Dasboard",
-        component: Home
+        path: "guru",
+        name: "Guru",
+        component: Guru
       }
     ]
   },
@@ -37,7 +30,7 @@ const routes = [
     name: "Login",
     component: Login,
     beforeEnter: (to, from, next) => {
-      if (!store.getters.isLoggedIn) {
+      if (!store.getters["auth/isLoggedIn"]) {
         next();
         return;
       }
@@ -54,7 +47,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
+    if (store.getters["auth/isLoggedIn"]) {
       next();
       return;
     }

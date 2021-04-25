@@ -11,10 +11,9 @@ export default {
       },
       (error) => {
         if (error.response.status === 401) {
-          this.$store.dispatch("logout");
+          this.$store.dispatch("auth/logout");
           this.$router.push("/login").catch(() => {});
         }
-        // return Error object with Promise
         return Promise.reject(error);
       }
     );
