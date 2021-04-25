@@ -12,7 +12,7 @@
         >
           <v-card-text>
             <p class="display-1 text-center my-8">
-              App Title
+              SI Akademik<br /> SMA PGRI 1 Bandung
             </p>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
