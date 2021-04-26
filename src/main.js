@@ -8,7 +8,12 @@ import Axios from "axios";
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Axios;
-Axios.defaults.baseURL = "https://sipgri-backend.herokuapp.com/api";
+Vue.prototype.$http.defaults.headers.common = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
+
+Axios.defaults.baseURL = "http://sipgri-backend.herokuapp.com/api";
 
 const token = localStorage.getItem("token");
 if (token) {
@@ -19,5 +24,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

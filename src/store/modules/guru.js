@@ -20,7 +20,7 @@ const guru = {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          url: "guru",
+          url: "guru/",
           method: "GET",
           headers: { Authorization: rootState.auth.token }
         })

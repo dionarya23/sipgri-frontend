@@ -20,7 +20,7 @@ const auth = {
     login({ commit, state }, user) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: "guru/login/", data: user, method: "POST" })
+        axios({ url: "guru/login", data: user, method: "POST" })
           .then((res) => {
             const user = res.data.data;
             localStorage.setItem("token", `Bearer ${user.token}`);
