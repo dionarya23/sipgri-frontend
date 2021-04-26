@@ -13,7 +13,7 @@ Vue.prototype.$http.defaults.headers.common = {
   "Content-Type": "application/json",
 };
 
-Axios.defaults.baseURL = "http://sipgri-backend.herokuapp.com/api";
+Axios.defaults.baseURL = "https://sipgri-backend.herokuapp.com/api";
 
 const token = localStorage.getItem("token");
 if (token) {
