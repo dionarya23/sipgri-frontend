@@ -1,9 +1,10 @@
 <template>
   <div class="guru">
     <v-data-table
+      :loading="isLoading"
       :headers="headers"
       :items="guru"
-      sort-by="name"
+      sort-by="nip"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -11,7 +12,15 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+              <v-btn
+                color="primary"
+                depressed
+                class="mb-2 text--white"
+                v-bind="attrs"
+                v-on="on"
+                :loading="isLoading"
+                :disabled="isLoading"
+              >
                 Tambah Data Guru
               </v-btn>
             </template>
@@ -22,62 +31,99 @@
 
               <v-card-text>
                 <v-container>
-                  <v-text-field
-                    v-model="editedItem.nip"
-                    label="NIP"
-                  ></v-text-field>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-text-field
+                      @blur="checkNip"
+                      :error-messages="isNipAvail"
+                      v-model="editedItem.nip"
+                      type="number"
+                      label="NIP"
+                      :rules="requiredRule"
+                    ></v-text-field>
 
-                  <v-text-field
-                    v-model="editedItem.nama"
-                    label="Nama"
-                  ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.nama"
+                      label="Nama"
+                      :rules="requiredRule"
+                    ></v-text-field>
 
-                  <v-text-field
-                    v-model="editedItem.nomor_telepon"
-                    label="No. Telepon"
-                  ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.nomor_telepon"
+                      type="number"
+                      label="No. Telepon"
+                      :rules="requiredRule"
+                    ></v-text-field>
 
-                  <v-text-field
-                    v-model="editedItem.email"
-                    label="Email"
-                  ></v-text-field>
+                    <v-text-field
+                      @blur="checkEmail"
+                      v-model="editedItem.email"
+                      :error-messages="isEmailAvail"
+                      :rules="emailRules"
+                      label="Email"
+                    ></v-text-field>
 
-                  <v-text-field
-                    v-model="editedItem.type"
-                    label="Type"
-                  ></v-text-field>
+                    <v-text-field
+                      v-if="editedIndex === -1"
+                      v-model="editedItem.password"
+                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :rules="requiredRule"
+                      :type="show1 ? 'text' : 'password'"
+                      label="Password"
+                      @click:append="show1 = !show1"
+                    ></v-text-field>
+
+                    <v-text-field
+                      v-model="editedItem.type"
+                      label="Type"
+                      :rules="requiredRule"
+                    ></v-text-field>
+                  </v-form>
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
+                <v-btn color="blue darken-1" outlined @click="close">
+                  Batal
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save">
-                  Save
+                <v-btn
+                  color="primary"
+                  class="text--white"
+                  depressed
+                  @click="save"
+                  :disabled="!valid || isLoading"
+                >
+                  Simpan
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="dialogDelete" max-width="480px">
             <v-card>
-              <v-card-title class="headline"
-                >Are you sure you want to delete this item?</v-card-title
+              <v-card-title class="headline">Peringatan</v-card-title>
+              <v-card-text
+                ><p class="text-h6">
+                  Apakah anda yakin ingin menghapus data ini?
+                </p></v-card-text
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete"
-                  >Cancel</v-btn
+                  >Batal</v-btn
                 >
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                  >OK</v-btn
-                >
+                <v-btn color="error" text @click="deleteItemConfirm">Ya!</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar>
+        <v-alert
+          :value="alert.isShow"
+          :type="alert.type || 'error'"
+          transition="slide-y-transition"
+        >
+          {{ alert.message }}
+        </v-alert>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">
@@ -88,19 +134,28 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">
-          Reset
-        </v-btn>
+        <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data: () => ({
+    show1: false,
+    valid: true,
     dialog: false,
     dialogDelete: false,
+    isNipAvail: "",
+    isEmailAvail: "",
+    requiredRule: [(v) => !!v || "Wajib diisi"],
+    emailRules: [
+      (v) => !!v || "E-mail wajib diisi",
+      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
+    ],
     headers: [
       {
         text: "NIP",
@@ -113,13 +168,14 @@ export default {
       { text: "Type", value: "type" },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    guru: [],
     editedIndex: -1,
+    oldNip: "",
     editedItem: {
       nip: "",
       nama: "",
       nomor_telepon: "",
       email: "",
+      password: "",
       type: ""
     },
     defaultItem: {
@@ -127,6 +183,7 @@ export default {
       nama: "",
       nomor_telepon: "",
       email: "",
+      password: "",
       type: ""
     }
   }),
@@ -134,7 +191,12 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Tambah Data Guru" : "Ubah Data Guru";
-    }
+    },
+    ...mapState({
+      guru: (state) => state.guru.guru,
+      isLoading: (state) => state.guru.isLoading,
+      alert: (state) => state.alert
+    })
   },
 
   watch: {
@@ -146,30 +208,51 @@ export default {
     }
   },
 
-  created() {
-    this.initialize();
-  },
-
   mounted() {
     this.$store.dispatch("guru/getAllGuru");
   },
 
   methods: {
-    initialize() {
-      this.guru = [
-        {
-          nip: "10291292837821",
-          nama: "Dion Arya Pamungkas",
-          nomor_telepon: "083283728312",
-          email: "dionarya.p@gmail.com",
-          type: "admin"
-        }
-      ];
+    checkNip() {
+      const data = {
+        nip: this.editedItem.nip
+      };
+      if (this.editedIndex === -1) {
+        this.$store
+          .dispatch("guru/checkNip", data)
+          .then((result) => {
+            this.isNipAvail = result.data.data.is_available
+              ? ""
+              : "NIP sudah pernah dipakai";
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    },
+
+    checkEmail() {
+      const data = {
+        email: this.editedItem.email
+      };
+      if (this.editedIndex === -1) {
+        this.$store
+          .dispatch("guru/checkEmail", data)
+          .then((result) => {
+            this.isEmailAvail = result.data.data.is_available
+              ? ""
+              : "Email sudah pernah dipakai";
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
 
     editItem(item) {
       this.editedIndex = this.guru.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.oldNip = item.nip;
       this.dialog = true;
     },
 
@@ -180,12 +263,15 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.guru.splice(this.editedIndex, 1);
+      const nip = this.editedItem.nip;
+      this.$store.dispatch("guru/deleteUser", nip);
       this.closeDelete();
     },
 
     close() {
       this.dialog = false;
+      this.isNipAvail = "";
+      this.isEmailAvail = "";
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -202,9 +288,28 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.guru[this.editedIndex], this.editedItem);
+        const data = {
+          oldNip: this.oldNip,
+          ...this.editedItem
+        };
+        const editedItem = this.guru[this.editedIndex];
+        this.$store
+          .dispatch("guru/updateUser", data)
+          .then((res) => {
+            Object.assign(editedItem, res.data.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
-        this.guru.push(this.editedItem);
+        this.$store
+          .dispatch("guru/createUser", this.editedItem)
+          .then((res) => {
+            this.guru.push(res.data.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
       this.close();
     }
