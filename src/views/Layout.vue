@@ -13,16 +13,44 @@
       </v-list>
 
       <v-divider></v-divider>
+
       <v-list>
         <v-list-item-group>
-          <v-list-item v-for="(item, i) in items" :key="i" :to="item.link">
+          <!-- Kalau mau bikin menu TANPA sub-menu, copas yang ini  -->
+          <v-list-item to="/contoh">
             <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
+              <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
+
+            <v-list-item-title>Contoh</v-list-item-title>
           </v-list-item>
+
+          <!-- --------------------------------- -->
+
+          <!-- Kalau mau bikin menu DENGAN sub-menu, copas yang ini  -->
+          <!-- Terus bikin array contohnya udah ada di bawah -->
+          <v-list-group :value="true" no-action prepend-icon="mdi-database">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Data Master</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item
+              v-for="([title, icon, link], i) in master"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+          <!-- --------------------------------- -->
         </v-list-item-group>
       </v-list>
 
@@ -46,7 +74,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app flat color="primary" dark clipped-left>
+    <v-app-bar app flat dark clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Application</v-toolbar-title>
@@ -68,10 +96,12 @@ export default {
   data: () => ({
     drawer: null,
     userData: {},
-    items: [
-      { title: "Guru", icon: "mdi-account-tie", link: "/guru" },
-      { title: "Account", icon: "mdi-account-box", link: "/" },
-      { title: "Admin", icon: "mdi-gavel", link: "/" }
+    // ** Di bawah ini array buat bikin sub menu
+    // ** Kode icon bisa di liat di https://materialdesignicons.com/
+    // ** Tinggal tambah mdi-kode-icon
+    master: [
+      ["Guru", "mdi-account-tie", "/guru"],
+      ["Murid", "mdi-school", "/murid"]
     ]
   }),
   methods: {

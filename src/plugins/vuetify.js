@@ -14,7 +14,8 @@ export default new Vuetify({
         // accent: colors.indigo.base // #3F51B5
       },
       dark: {
-        primary: colors.blueGrey.darken3 // #E53935
+        primary: colors.blueGrey.darken3, // #E53935
+        secondary: colors.teal.accent3
       }
     }
   }
