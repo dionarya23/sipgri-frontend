@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const guru = {
+const user = {
   namespaced: true,
   state: {
-    guru: [],
+    user: [],
     isLoading: false,
     alert: {
       type: "",
@@ -11,21 +11,21 @@ const guru = {
     }
   },
   mutations: {
-    SET_GURU(state, data) {
-      state.guru = data;
+    SET_USER(state, data) {
+      state.user = data;
     }
   },
   actions: {
-    getAllGuru({ commit, state, rootState }) {
+    getAllUser({ commit, state, rootState }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          url: "guru/",
+          url: "user/",
           method: "GET",
           headers: { Authorization: rootState.auth.token }
         })
           .then((res) => {
-            commit("SET_GURU", res.data.data);
+            commit("SET_USER", res.data.data);
             state.isLoading = false;
             resolve(res);
           })
@@ -39,10 +39,10 @@ const guru = {
     createUser({ commit, state }, data) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: "guru/register", method: "POST", data })
+        axios({ url: "user/", method: "POST", data })
           .then((res) => {
             state.alert.type = "success";
-            state.alert.message = "Berhasil menambah data guru";
+            state.alert.message = "Berhasil menambah data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             state.isLoading = false;
             resolve(res);
@@ -50,7 +50,7 @@ const guru = {
           .catch((err) => {
             console.error(err);
             state.alert.type = "error";
-            state.alert.message = "Gagal menambah data guru";
+            state.alert.message = "Gagal menambah data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             state.isLoading = false;
             reject(err);
@@ -60,10 +60,10 @@ const guru = {
     updateUser({ commit, state }, data) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: `guru/${data.oldNip}`, method: "PUT", data })
+        axios({ url: `user/${data.oldNip}`, method: "PUT", data })
           .then((res) => {
             state.alert.type = "success";
-            state.alert.message = "Berhasil mengubah data guru";
+            state.alert.message = "Berhasil mengubah data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             state.isLoading = false;
             resolve(res);
@@ -71,7 +71,7 @@ const guru = {
           .catch((err) => {
             console.error(err);
             state.alert.type = "error";
-            state.alert.message = "Gagal mengubah data guru";
+            state.alert.message = "Gagal mengubah data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             state.isLoading = false;
             reject(err);
@@ -81,13 +81,13 @@ const guru = {
     deleteUser({ commit, state }, nip) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: `guru/${nip}`, method: "DELETE" })
+        axios({ url: `user/${nip}`, method: "DELETE" })
           .then((res) => {
             state.isLoading = false;
             state.alert.type = "success";
-            state.alert.message = "Berhasil menghapus data guru";
+            state.alert.message = "Berhasil menghapus data user";
             commit("SHOW_ALERT", state.alert, { root: true });
-            state.guru = state.guru.filter((item) => {
+            state.user = state.user.filter((item) => {
               return item.nip != nip;
             });
             resolve(res);
@@ -95,35 +95,35 @@ const guru = {
           .catch((err) => {
             state.isLoading = false;
             state.alert.type = "error";
-            state.alert.message = "Gagal menghapus data guru";
+            state.alert.message = "Gagal menghapus data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             reject(err);
           });
       });
     },
-    checkNip(_, data) {
-      return new Promise((resolve, reject) => {
-        axios({ url: "guru/check-nip", method: "POST", data })
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
-    checkEmail(_, data) {
-      return new Promise((resolve, reject) => {
-        axios({ url: "guru/check-email", method: "POST", data })
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    }
+    // checkNip(_, data) {
+    //   return new Promise((resolve, reject) => {
+    //     axios({ url: "user/check-nip", method: "POST", data })
+    //       .then((res) => {
+    //         resolve(res);
+    //       })
+    //       .catch((err) => {
+    //         reject(err);
+    //       });
+    //   });
+    // },
+    // checkEmail(_, data) {
+    //   return new Promise((resolve, reject) => {
+    //     axios({ url: "user/check-email", method: "POST", data })
+    //       .then((res) => {
+    //         resolve(res);
+    //       })
+    //       .catch((err) => {
+    //         reject(err);
+    //       });
+    //   });
+    // }
   }
 };
 
-export default guru;
+export default user;

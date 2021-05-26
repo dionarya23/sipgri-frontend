@@ -77,7 +77,8 @@
     <v-app-bar app flat dark clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Halaman  {{ userData.type_user === "tata_usaha" ? "Tata Usaha" : userData.type_user === "kurikulum" ? "Kurikulum" : userData.type_user === "guru" ? "Guru" : "Wali Kelas" }}</v-toolbar-title>
+     
     </v-app-bar>
 
     <v-main>
@@ -100,7 +101,7 @@ export default {
     // ** Kode icon bisa di liat di https://materialdesignicons.com/
     // ** Tinggal tambah mdi-kode-icon
     master: [
-      ["Guru", "mdi-account-tie", "/guru"],
+      ["User", "mdi-account-tie", "/user"],
       ["Murid", "mdi-school", "/murid"]
     ]
   }),

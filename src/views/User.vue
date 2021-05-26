@@ -1,9 +1,9 @@
 <template>
-  <div class="guru">
+  <div class="user">
     <v-data-table
       :loading="isLoading"
       :headers="headers"
-      :items="guru"
+      :items="user"
       sort-by="nip"
       class="elevation-1"
     >
@@ -21,7 +21,7 @@
                 :loading="isLoading"
                 :disabled="isLoading"
               >
-                Tambah Data Guru
+                Tambah Data User
               </v-btn>
             </template>
             <v-card>
@@ -165,7 +165,7 @@ export default {
       { text: "Nama", value: "nama" },
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
-      { text: "Type", value: "type" },
+      { text: "Type User", value: "type_user" },
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -190,11 +190,11 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Tambah Data Guru" : "Ubah Data Guru";
+      return this.editedIndex === -1 ? "Tambah Data User" : "Ubah Data User";
     },
     ...mapState({
-      guru: (state) => state.guru.guru,
-      isLoading: (state) => state.guru.isLoading,
+      user: (state) => state.user.user,
+      isLoading: (state) => state.user.isLoading,
       alert: (state) => state.alert
     })
   },
@@ -209,62 +209,62 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch("guru/getAllGuru");
+    this.$store.dispatch("user/getAllUser");
   },
 
   methods: {
-    checkNip() {
-      const data = {
-        nip: this.editedItem.nip
-      };
-      if (this.editedIndex === -1) {
-        this.$store
-          .dispatch("guru/checkNip", data)
-          .then((result) => {
-            this.isNipAvail = result.data.data.is_available
-              ? ""
-              : "NIP sudah pernah dipakai";
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    },
+    // checkNip() {
+    //   const data = {
+    //     nip: this.editedItem.nip
+    //   };
+    //   if (this.editedIndex === -1) {
+    //     this.$store
+    //       .dispatch("user/checkNip", data)
+    //       .then((result) => {
+    //         this.isNipAvail = result.data.data.is_available
+    //           ? ""
+    //           : "NIP sudah pernah dipakai";
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //       });
+    //   }
+    // },
 
-    checkEmail() {
-      const data = {
-        email: this.editedItem.email
-      };
-      if (this.editedIndex === -1) {
-        this.$store
-          .dispatch("guru/checkEmail", data)
-          .then((result) => {
-            this.isEmailAvail = result.data.data.is_available
-              ? ""
-              : "Email sudah pernah dipakai";
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    },
+    // checkEmail() {
+    //   const data = {
+    //     email: this.editedItem.email
+    //   };
+    //   if (this.editedIndex === -1) {
+    //     this.$store
+    //       .dispatch("user/checkEmail", data)
+    //       .then((result) => {
+    //         this.isEmailAvail = result.data.data.is_available
+    //           ? ""
+    //           : "Email sudah pernah dipakai";
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //       });
+    //   }
+    // },
 
     editItem(item) {
-      this.editedIndex = this.guru.indexOf(item);
+      this.editedIndex = this.user.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.oldNip = item.nip;
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.guru.indexOf(item);
+      this.editedIndex = this.user.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
       const nip = this.editedItem.nip;
-      this.$store.dispatch("guru/deleteUser", nip);
+      this.$store.dispatch("user/deleteUser", nip);
       this.closeDelete();
     },
 
@@ -292,9 +292,9 @@ export default {
           oldNip: this.oldNip,
           ...this.editedItem
         };
-        const editedItem = this.guru[this.editedIndex];
+        const editedItem = this.user[this.editedIndex];
         this.$store
-          .dispatch("guru/updateUser", data)
+          .dispatch("user/updateUser", data)
           .then((res) => {
             Object.assign(editedItem, res.data.data);
           })
@@ -303,9 +303,9 @@ export default {
           });
       } else {
         this.$store
-          .dispatch("guru/createUser", this.editedItem)
+          .dispatch("user/createUser", this.editedItem)
           .then((res) => {
-            this.guru.push(res.data.data);
+            this.user.push(res.data.data);
           })
           .catch((err) => {
             console.log(err);

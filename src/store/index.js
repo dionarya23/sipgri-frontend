@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import auth from "./modules/auth";
-import guru from "./modules/guru";
+import user from "./modules/user";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -26,7 +26,7 @@ export default new Vuex.Store({
     }
   },
   actions: {},
-  modules: { auth, guru },
+  modules: { auth, user },
   getters: {},
   plugins: [
     createPersistedState({

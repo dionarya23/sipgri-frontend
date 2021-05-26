@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Guru from "../views/Guru.vue";
+import User from "../views/User.vue";
 import Login from "../views/Login.vue";
 import Layout from "../views/Layout.vue";
 
@@ -12,16 +12,16 @@ const routes = [
   {
     path: "/",
     name: "Layout",
-    redirect: "/guru",
+    redirect: "/user",
     component: Layout,
     meta: {
       requiresAuth: true
     },
     children: [
       {
-        path: "guru",
-        name: "Guru",
-        component: Guru
+        path: "user",
+        name: "User",
+        component: User
       }
     ]
   },
