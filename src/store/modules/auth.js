@@ -6,6 +6,7 @@ const auth = {
     token: localStorage.getItem("token") || "",
     user: JSON.parse(localStorage.getItem("user")) || {},
     isLoading: false
+
   },
   mutations: {
     AUTH_SUCCESS(state, user) {
@@ -53,7 +54,34 @@ const auth = {
         delete axios.defaults.headers.common["Authorization"];
         resolve();
       });
-    }
+    },
+    lostPassword({commit, state}, phoneOrEmail) {
+      state.isLoading = true;
+        return new Promise((resolve, reject) => {
+          axios({ url: "user/lost-password", data: phoneOrEmail, method: "POST" })
+            .then((res) => {
+              const payload = {
+                type: "success",
+                message: "Link berhasil dikirim, harap periksa whatsapp anda"
+              };
+              commit("SHOW_ALERT", payload, {root:true})
+              state.isLoading = false;
+              resolve(res);
+            })
+            .catch((err) => {
+              const payload = {
+                type: "error",
+                message:
+                  err.response.status === 404
+                    ? "Email atau nomor telepon tidak terdaftar"
+                    : "Email atau nomor telepon tidak valid"
+              };
+              commit("SHOW_ALERT", payload, { root: true });
+              state.isLoading = false;
+              reject(err);
+            });
+        });  
+    },
   },
   getters: {
     isLoggedIn: (state) => !!state.token

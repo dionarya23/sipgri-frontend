@@ -22,7 +22,10 @@ export default new Vuex.Store({
       state.alert.message = payload.message;
       setTimeout(() => {
         state.alert.isShow = false;
-      }, 5000);
+      }, 10000);
+    },
+    CLOSE_ALERT(state, payload = {}) {
+      state.alert.isShow = false
     }
   },
   actions: {},

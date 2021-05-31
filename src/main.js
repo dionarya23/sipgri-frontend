@@ -13,8 +13,8 @@ Vue.prototype.$http.defaults.headers.common = {
   "Content-Type": "application/json",
 };
 
+// Axios.defaults.withCredentials = true
 Axios.defaults.baseURL = "http://localhost:8000/api";
-
 const token = localStorage.getItem("token");
 if (token) {
   Vue.prototype.$http.defaults.headers.common["Authorization"] = token;

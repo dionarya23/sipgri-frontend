@@ -12,8 +12,7 @@
         >
           <v-card-text>
             <p class="display-1 text-center my-8">
-              SI Akademik<br />
-              SMA PGRI 1 Bandung
+              Lupa Password
             </p>
             <v-alert
               :value="alert.isShow"
@@ -23,33 +22,20 @@
               {{ alert.message }}
             </v-alert>
             <v-form
-              @submit="validate"
+              @submit.prevent="validate"
               ref="form"
               v-model="valid"
               lazy-validation
             >
               <v-text-field
-                v-model="data.email"
-                :rules="emailRules"
-                label="E-mail"
+                v-model="data.phoneOrEmail"
+                :rules="phoneOrEmailRules"
+                label="E-mail atau Nomor Telepon"
                 outlined
                 required
               ></v-text-field>
 
-              <v-text-field
-                v-model="data.password"
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="passwordRules"
-                :type="show1 ? 'text' : 'password'"
-                label="Password"
-                outlined
-                @click:append="show1 = !show1"
-              ></v-text-field>
-
-                <router-link style="fontSize:15px" to="/lost-password">Lupa Password ?</router-link>
-
               <v-btn
-                style="margin-top:4%"
                 type="submit"
                 :loading="isLoading"
                 :disabled="!valid || isLoading"
@@ -59,7 +45,7 @@
                 block
                 @click="validate"
               >
-                Masuk
+                Submit
               </v-btn>
             </v-form>
           </v-card-text>
@@ -76,15 +62,16 @@ export default {
     valid: true,
     show1: false,
     data: {
-      email: "",
-      password: "",
+      phoneOrEmail: ""
     },
-    passwordRules: [(v) => !!v || "Password wajib diisi"],
-    emailRules: [
-      (v) => !!v || "E-mail wajib diisi",
-      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid",
+    phoneOrEmailRules: [
+      (v) => !!v || "E-mail atau nomor telepon wajib diisi",
+      (v) => ((/.+@.+\..+/.test(v)) || (/^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(v)))  || "E-mail atau nomor telepon harus valid",
     ],
   }),
+  created() {
+      this.$store.commit("CLOSE_ALERT", {}, {root: true})
+  },
   computed: mapState({
     isLoading: (state) => state.auth.isLoading,
     alert: (state) => state.alert,
@@ -93,9 +80,9 @@ export default {
     validate() {
       if (this.$refs.form.validate()) {
         this.$store
-          .dispatch("auth/login", this.data)
+          .dispatch("auth/lostPassword", this.data)
           .then(() => {
-            this.$router.push("/");
+            this.data.phoneOrEmail = ""
           })
           .catch((err) => console.error(err));
       }
@@ -103,5 +90,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
