@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import User from "../views/User.vue";
 import Login from "../views/Login.vue";
 import LostPassword from "../views/LostPassword.vue";
+import ChangePassword from "../views/ChangePassword.vue";
 import Layout from "../views/Layout.vue";
 
 import store from "../store/index";
@@ -42,6 +43,18 @@ const routes = [
     path: "/lost-password",
     name: "LostPassword",
     component: LostPassword,
+    beforeEnter: (to, from, next) => {
+      if (!store.getters["auth/isLoggedIn"]) {
+        next();
+        return;
+      }
+      next("/");
+    }
+  },
+  {
+    path: "/change-password/:hash",
+    name: "ChangePassword",
+    component: ChangePassword,
     beforeEnter: (to, from, next) => {
       if (!store.getters["auth/isLoggedIn"]) {
         next();

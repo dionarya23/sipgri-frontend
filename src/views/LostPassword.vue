@@ -12,7 +12,7 @@
         >
           <v-card-text>
             <p class="display-1 text-center my-8">
-              Lupa Password
+             Lupa Password
             </p>
             <v-alert
               :value="alert.isShow"
@@ -35,7 +35,10 @@
                 required
               ></v-text-field>
 
+            <router-link style="fontSize:15px" to="/login">Kembali ke Login</router-link>
+
               <v-btn
+              style="margin-top:4%"
                 type="submit"
                 :loading="isLoading"
                 :disabled="!valid || isLoading"
@@ -45,7 +48,7 @@
                 block
                 @click="validate"
               >
-                Submit
+                Kirim
               </v-btn>
             </v-form>
           </v-card-text>
@@ -62,15 +65,18 @@ export default {
     valid: true,
     show1: false,
     data: {
-      phoneOrEmail: ""
+      phoneOrEmail: "",
     },
     phoneOrEmailRules: [
       (v) => !!v || "E-mail atau nomor telepon wajib diisi",
-      (v) => ((/.+@.+\..+/.test(v)) || (/^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(v)))  || "E-mail atau nomor telepon harus valid",
+      (v) =>
+        /.+@.+\..+/.test(v) ||
+        /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(v) ||
+        "E-mail atau nomor telepon harus valid",
     ],
   }),
   created() {
-      this.$store.commit("CLOSE_ALERT", {}, {root: true})
+    this.$store.commit("CLOSE_ALERT", {}, { root: true });
   },
   computed: mapState({
     isLoading: (state) => state.auth.isLoading,
@@ -82,7 +88,7 @@ export default {
         this.$store
           .dispatch("auth/lostPassword", this.data)
           .then(() => {
-            this.data.phoneOrEmail = ""
+            this.data.phoneOrEmail = "";
           })
           .catch((err) => console.error(err));
       }
