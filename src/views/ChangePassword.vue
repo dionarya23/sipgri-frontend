@@ -22,11 +22,11 @@
               {{ alert.message }}
             </v-alert>
             <v-form
-              :v-if="isHashVerif"
               @submit.prevent="validate"
               ref="form"
               v-model="valid"
               lazy-validation
+              :style="[isHashverif ? {'display' : 'block'} : {'display' : 'none'}]"
             >
               <v-text-field
                 v-model="data.password"
@@ -67,6 +67,7 @@
                 Kirim
               </v-btn>
             </v-form>
+
           </v-card-text>
         </v-card>
       </v-container>
@@ -90,7 +91,7 @@ export default {
   computed: {
     ...mapState({
       isLoading: (state) => state.auth.isLoading,
-      isHashVerif: (state) => state.auth.isHashverif,
+      isHashverif: (state) => state.auth.isHashverif,
       alert: (state) => state.alert,
     }),
     passwordRequired() {

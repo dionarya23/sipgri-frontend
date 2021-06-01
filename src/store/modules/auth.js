@@ -6,7 +6,7 @@ const auth = {
     token: localStorage.getItem("token") || "",
     user: JSON.parse(localStorage.getItem("user")) || {},
     isLoading: false,
-    isHashverif: false,
+    isHashverif: true,
   },
   mutations: {
     AUTH_SUCCESS(state, user) {
@@ -126,10 +126,10 @@ const auth = {
           .catch((err) => {
             const payload = {
               type: "error",
-              message: "link untuk mengubah password salah",
+              message: "Link untuk mengubah password salah",
             };
-            commit("SHOW_ALERT", payload, { root: true });
             state.isHashverif = false;
+            commit("SHOW_ALERT", payload, { root: true });
             state.isLoading = false;
             reject(err);
           });

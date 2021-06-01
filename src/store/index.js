@@ -12,21 +12,23 @@ export default new Vuex.Store({
     alert: {
       isShow: false,
       type: "",
-      message: ""
-    }
+      message: "",
+    },
   },
   mutations: {
     SHOW_ALERT(state, payload) {
       state.alert.isShow = true;
       state.alert.type = payload.type;
       state.alert.message = payload.message;
-      setTimeout(() => {
-        state.alert.isShow = false;
-      }, 10000);
+      if (state.alert.message !== "Link untuk mengubah password salah") {
+        setTimeout(() => {
+          state.alert.isShow = false;
+        }, 10000);
+      }
     },
     CLOSE_ALERT(state, payload = {}) {
-      state.alert.isShow = false
-    }
+      state.alert.isShow = false;
+    },
   },
   actions: {},
   modules: { auth, user },
@@ -34,7 +36,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: ["auth.user"],
-      key: ["user"]
-    })
-  ]
+      key: ["user"],
+    }),
+  ],
 });
