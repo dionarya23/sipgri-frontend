@@ -33,7 +33,6 @@
                 <v-container>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
-                      @blur="checkNip"
                       :error-messages="isNipAvail"
                       v-model="editedItem.nip"
                       type="number"
@@ -55,7 +54,6 @@
                     ></v-text-field>
 
                     <v-text-field
-                      @blur="checkEmail"
                       v-model="editedItem.email"
                       :error-messages="isEmailAvail"
                       :rules="emailRules"
@@ -72,11 +70,32 @@
                       @click:append="show1 = !show1"
                     ></v-text-field>
 
-                    <v-text-field
-                      v-model="editedItem.type"
-                      label="Type"
+                    <v-select
+                      item-text="type_user_text"
+                      item-value="type_user_value"
+                      v-model="selectedValue"
+                      :items="typeUserItems"
                       :rules="requiredRule"
-                    ></v-text-field>
+                      label="Type User"
+                    ></v-select>
+
+                  <div v-show="typeUserIsGuru">
+                    <div class="text-left">
+                      <v-btn class="mx-2" fab dark small color="primary" @click="addMengajar">
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+
+                      <v-btn class="mx-2" fab dark small color="danger" v-show="mataPelajaranOne" @click="removeMengajar">
+                        <v-icon dark>
+                          mdi-minus
+                        </v-icon>
+                      </v-btn>
+                    </div>
+                    <MataPelajaranCard v-for="(m, index) in mengajar" :key="index" :rules="requiredRule" :mengajar="m" :index="index"></MataPelajaranCard>
+                  </div>
+
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -142,8 +161,12 @@
 
 <script>
 import { mapState } from "vuex";
+import MataPelajaranCard from "../components/MataPelajaranCard";
 
 export default {
+  components: {
+    MataPelajaranCard,
+  },
   data: () => ({
     show1: false,
     valid: true,
@@ -154,19 +177,19 @@ export default {
     requiredRule: [(v) => !!v || "Wajib diisi"],
     emailRules: [
       (v) => !!v || "E-mail wajib diisi",
-      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
+      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid",
     ],
     headers: [
       {
         text: "NIP",
         align: "start",
-        value: "nip"
+        value: "nip",
       },
       { text: "Nama", value: "nama" },
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
       { text: "Type User", value: "type_user" },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "Actions", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     oldNip: "",
@@ -176,7 +199,7 @@ export default {
       nomor_telepon: "",
       email: "",
       password: "",
-      type: ""
+      type_user: "",
     },
     defaultItem: {
       nip: "",
@@ -184,35 +207,72 @@ export default {
       nomor_telepon: "",
       email: "",
       password: "",
-      type: ""
-    }
+      type_user: "",
+    },
+    selectedValue: {
+      type_user_value: "",
+      type_user_text: "",
+    },
+    typeUserItems: [
+      {
+        type_user_value: "tata_usaha",
+        type_user_text: "Tata Usaha",
+      },
+      {
+        type_user_value: "kurikulum",
+        type_user_text: "Kurikulum",
+      },
+      {
+        type_user_value: "guru",
+        type_user_text: "Guru",
+      },
+    ],
   }),
-
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Tambah Data User" : "Ubah Data User";
     },
+    mataPelajaranOne() {
+      return this.mengajar.length > 1;
+    },
+    typeUserIsGuru() {
+       return this.selectedValue === "guru";
+    },
     ...mapState({
+      mengajar: (state) => state.user.mengajar,
       user: (state) => state.user.user,
       isLoading: (state) => state.user.isLoading,
-      alert: (state) => state.alert
-    })
+      alert: (state) => state.alert,
+    }),
   },
-
   watch: {
     dialog(val) {
       val || this.close();
     },
     dialogDelete(val) {
       val || this.closeDelete();
-    }
+    },
   },
-
   mounted() {
     this.$store.dispatch("user/getAllUser");
   },
-
   methods: {
+    addMengajar() {
+     this.$store.dispatch("user/addMengajar");
+    },
+    removeMengajar() {
+      this.$store.dispatch("user/removeMengajar");
+    },
+    capitalizeFirstLetter(string) {
+      let string_array = string.split("_");
+      if (string_array.length > 1) {
+        return `${string_array[0].charAt(0).toUpperCase() +
+          string.slice(1)} ${string_array[1].charAt(0).toUpperCase() +
+          string.slice(1)}`;
+      } else {
+        return `${string.charAt(0).toUpperCase() + string.slice(1)}`;
+      }
+    },
     // checkNip() {
     //   const data = {
     //     nip: this.editedItem.nip
@@ -287,32 +347,33 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        const data = {
-          oldNip: this.oldNip,
-          ...this.editedItem
-        };
-        const editedItem = this.user[this.editedIndex];
-        this.$store
-          .dispatch("user/updateUser", data)
-          .then((res) => {
-            Object.assign(editedItem, res.data.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        this.$store
-          .dispatch("user/createUser", this.editedItem)
-          .then((res) => {
-            this.user.push(res.data.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-      this.close();
-    }
-  }
+      console.log("mengajar : ", this.mengajar)
+      // if (this.editedIndex > -1) {
+      //   const data = {
+      //     oldNip: this.oldNip,
+      //     ...this.editedItem,
+      //   };
+      //   const editedItem = this.user[this.editedIndex];
+      //   this.$store
+      //     .dispatch("user/updateUser", data)
+      //     .then((res) => {
+      //       Object.assign(editedItem, res.data.data);
+      //     })
+      //     .catch((err) => {
+      //       console.log(err);
+      //     });
+      // } else {
+      //   this.$store
+      //     .dispatch("user/createUser", this.editedItem)
+      //     .then((res) => {
+      //       this.user.push(res.data.data);
+      //     })
+      //     .catch((err) => {
+      //       console.log(err);
+      //     });
+      // }
+      // this.close();
+    },
+  },
 };
 </script>
