@@ -10,10 +10,9 @@ Vue.config.productionTip = false;
 Vue.prototype.$http = Axios;
 Vue.prototype.$http.defaults.headers.common = {
   Accept: "application/json",
-  "Content-Type": "application/json",
+  "Content-Type": "application/json"
 };
-
-Axios.defaults.baseURL = "http://localhost:9000/api";
+Axios.defaults.baseURL = "http://192.168.11.93:9000/api";
 const token = localStorage.getItem("token");
 if (token) {
   Vue.prototype.$http.defaults.headers.common["Authorization"] = token;
@@ -23,5 +22,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: (h) => h(App),
+  render: (h) => h(App)
 }).$mount("#app");

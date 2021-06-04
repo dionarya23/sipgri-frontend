@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import auth from "./modules/auth";
 import user from "./modules/user";
+import matapelajaran from "./modules/matapelajaran";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -12,8 +13,8 @@ export default new Vuex.Store({
     alert: {
       isShow: false,
       type: "",
-      message: "",
-    },
+      message: ""
+    }
   },
   mutations: {
     SHOW_ALERT(state, payload) {
@@ -28,15 +29,15 @@ export default new Vuex.Store({
     },
     CLOSE_ALERT(state, payload = {}) {
       state.alert.isShow = false;
-    },
+    }
   },
   actions: {},
-  modules: { auth, user },
+  modules: { auth, user, matapelajaran },
   getters: {},
   plugins: [
     createPersistedState({
       paths: ["auth.user"],
-      key: ["user"],
-    }),
-  ],
+      key: ["user"]
+    })
+  ]
 });
