@@ -71,31 +71,51 @@
                     ></v-text-field>
 
                     <v-select
-                      item-text="type_user_text"
-                      item-value="type_user_value"
-                      v-model="selectedValue"
+                      v-model="editedItem.type_user"
                       :items="typeUserItems"
                       :rules="requiredRule"
+                      item-text="type_user_text"
+                      item-value="type_user_value"
                       label="Type User"
                     ></v-select>
 
-                  <div v-show="typeUserIsGuru">
-                    <div class="text-left">
-                      <v-btn class="mx-2" fab dark small color="primary" @click="addMengajar">
-                        <v-icon dark>
-                          mdi-plus
-                        </v-icon>
-                      </v-btn>
+                    <div v-show="typeUserIsGuru">
+                      <div class="text-left">
+                        <v-btn
+                          class="mx-2"
+                          fab
+                          dark
+                          small
+                          color="primary"
+                          @click="addMengajar"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
 
-                      <v-btn class="mx-2" fab dark small color="danger" v-show="mataPelajaranOne" @click="removeMengajar">
-                        <v-icon dark>
-                          mdi-minus
-                        </v-icon>
-                      </v-btn>
+                        <v-btn
+                          class="mx-2"
+                          fab
+                          dark
+                          small
+                          color="danger"
+                          v-show="mataPelajaranOne"
+                          @click="removeMengajar"
+                        >
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+                      <MataPelajaranCard
+                        v-for="(m, index) in mengajar"
+                        :key="index"
+                        :rules="requiredRule"
+                        :mengajar="m"
+                        :index="index"
+                      ></MataPelajaranCard>
                     </div>
-                    <MataPelajaranCard v-for="(m, index) in mengajar" :key="index" :rules="requiredRule" :mengajar="m" :index="index"></MataPelajaranCard>
-                  </div>
-
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -165,7 +185,7 @@ import MataPelajaranCard from "../components/MataPelajaranCard";
 
 export default {
   components: {
-    MataPelajaranCard,
+    MataPelajaranCard
   },
   data: () => ({
     show1: false,
@@ -177,19 +197,19 @@ export default {
     requiredRule: [(v) => !!v || "Wajib diisi"],
     emailRules: [
       (v) => !!v || "E-mail wajib diisi",
-      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid",
+      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
     ],
     headers: [
       {
         text: "NIP",
         align: "start",
-        value: "nip",
+        value: "nip"
       },
       { text: "Nama", value: "nama" },
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
       { text: "Type User", value: "type_user" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     oldNip: "",
@@ -199,7 +219,7 @@ export default {
       nomor_telepon: "",
       email: "",
       password: "",
-      type_user: "",
+      type_user: ""
     },
     defaultItem: {
       nip: "",
@@ -207,26 +227,9 @@ export default {
       nomor_telepon: "",
       email: "",
       password: "",
-      type_user: "",
+      type_user: ""
     },
-    selectedValue: {
-      type_user_value: "",
-      type_user_text: "",
-    },
-    typeUserItems: [
-      {
-        type_user_value: "tata_usaha",
-        type_user_text: "Tata Usaha",
-      },
-      {
-        type_user_value: "kurikulum",
-        type_user_text: "Kurikulum",
-      },
-      {
-        type_user_value: "guru",
-        type_user_text: "Guru",
-      },
-    ],
+    typeUserItems: ["Tata Usaha", "Kurikulum", "Guru"]
   }),
   computed: {
     formTitle() {
@@ -236,14 +239,14 @@ export default {
       return this.mengajar.length > 1;
     },
     typeUserIsGuru() {
-       return this.selectedValue === "guru";
+      return this.editedItem.type_user === "Guru";
     },
     ...mapState({
       mengajar: (state) => state.user.mengajar,
       user: (state) => state.user.user,
       isLoading: (state) => state.user.isLoading,
-      alert: (state) => state.alert,
-    }),
+      alert: (state) => state.alert
+    })
   },
   watch: {
     dialog(val) {
@@ -251,14 +254,14 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
-    },
+    }
   },
   mounted() {
     this.$store.dispatch("user/getAllUser");
   },
   methods: {
     addMengajar() {
-     this.$store.dispatch("user/addMengajar");
+      this.$store.dispatch("user/addMengajar");
     },
     removeMengajar() {
       this.$store.dispatch("user/removeMengajar");
@@ -336,6 +339,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.$refs.form.resetValidation();
     },
 
     closeDelete() {
@@ -347,7 +351,13 @@ export default {
     },
 
     save() {
-      console.log("mengajar : ", this.mengajar)
+      let data = { ...this.editedItem };
+      data.type_user = data.type_user
+        .toLowerCase()
+        .split(" ")
+        .join("_");
+
+      console.log(this.mengajar);
       // if (this.editedIndex > -1) {
       //   const data = {
       //     oldNip: this.oldNip,
@@ -373,7 +383,7 @@ export default {
       //     });
       // }
       // this.close();
-    },
-  },
+    }
+  }
 };
 </script>
