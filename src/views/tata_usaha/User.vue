@@ -266,16 +266,16 @@ export default {
     removeMengajar() {
       this.$store.dispatch("user/removeMengajar");
     },
-    capitalizeFirstLetter(string) {
-      let string_array = string.split("_");
-      if (string_array.length > 1) {
-        return `${string_array[0].charAt(0).toUpperCase() +
-          string.slice(1)} ${string_array[1].charAt(0).toUpperCase() +
-          string.slice(1)}`;
-      } else {
-        return `${string.charAt(0).toUpperCase() + string.slice(1)}`;
-      }
-    },
+    // capitalizeFirstLetter(string) {
+    //   let string_array = string.split("_");
+    //   if (string_array.length > 1) {
+    //     return `${string_array[0].charAt(0).toUpperCase() +
+    //       string.slice(1)} ${string_array[1].charAt(0).toUpperCase() +
+    //       string.slice(1)}`;
+    //   } else {
+    //     return `${string.charAt(0).toUpperCase() + string.slice(1)}`;
+    //   }
+    // },
     // checkNip() {
     //   const data = {
     //     nip: this.editedItem.nip

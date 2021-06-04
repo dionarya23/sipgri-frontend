@@ -102,7 +102,8 @@ export default {
     // ** Tinggal tambah mdi-kode-icon
     master: [
       ["User", "mdi-account-tie", "/user"],
-      ["Murid", "mdi-school", "/murid"]
+      ["Murid", "mdi-school", "/murid"],
+      ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"]
     ]
   }),
   methods: {

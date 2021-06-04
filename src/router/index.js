@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 import User from "../views/tata_usaha/User.vue";
+import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
+
 import Login from "../views/auth/Login.vue";
 import LostPassword from "../views/auth/LostPassword.vue";
 import ChangePassword from "../views/auth/ChangePassword.vue";
@@ -24,6 +27,11 @@ const routes = [
         path: "user",
         name: "User",
         component: User
+      },
+      {
+        path: "tahun-ajaran",
+        name: "Tahun Ajaran",
+        component: TahunAjaran
       }
     ]
   },
