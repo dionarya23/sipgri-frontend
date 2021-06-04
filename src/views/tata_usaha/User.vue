@@ -181,7 +181,7 @@
 
 <script>
 import { mapState } from "vuex";
-import MataPelajaranCard from "../components/MataPelajaranCard";
+import MataPelajaranCard from "../../components/MataPelajaranCard";
 
 export default {
   components: {

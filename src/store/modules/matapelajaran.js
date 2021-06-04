@@ -1,20 +1,6 @@
 import axios from "axios";
 
 const matapelajaran = {
-<<<<<<< HEAD
-    namespace: true,
-    state : {
-        mataPelajaran : []
-        // isLoading
-    },
-    mutations: {
-        SET_MATAPELAJARAN(state, mata_pelajaran) {
-            state.mataPelajaran = mata_pelajaran
-        }
-    },
-    actions: {
-        getAllMataPelajaran({commint, state}, )
-=======
   namespace: true,
   state: {
     mataPelajaran: [],
@@ -23,7 +9,6 @@ const matapelajaran = {
   mutations: {
     SET_MAPEL(state, mata_pelajaran) {
       state.mataPelajaran = mata_pelajaran;
->>>>>>> development/benno
     }
   },
   actions: {
