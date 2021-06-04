@@ -4,6 +4,7 @@ const matapelajaran = {
     namespace: true,
     state : {
         mataPelajaran : []
+        // isLoading
     },
     mutations: {
         SET_MATAPELAJARAN(state, mata_pelajaran) {
@@ -11,6 +12,6 @@ const matapelajaran = {
         }
     },
     actions: {
-        
+        getAllMataPelajaran({commint, state}, )
     }
 }
