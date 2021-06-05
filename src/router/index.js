@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import User from "../views/tata_usaha/User.vue";
 import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
+import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 
 import Login from "../views/auth/Login.vue";
 import LostPassword from "../views/auth/LostPassword.vue";
@@ -32,7 +33,12 @@ const routes = [
         path: "tahun-ajaran",
         name: "Tahun Ajaran",
         component: TahunAjaran
-      }
+      },
+      {
+        path: "peserta-didik",
+        name: "Peserta Didik",
+        component: PesertaDidik
+      },
     ]
   },
   {

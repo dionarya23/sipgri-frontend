@@ -89,6 +89,7 @@ export default {
           .dispatch("auth/lostPassword", this.data)
           .then(() => {
             this.data.phoneOrEmail = "";
+            this.$refs.form.resetValidation();
           })
           .catch((err) => console.error(err));
       }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const matapelajaran = {
-  namespace: true,
+  namespaced: true,
   state: {
     mataPelajaran: [],
     isLoading: false

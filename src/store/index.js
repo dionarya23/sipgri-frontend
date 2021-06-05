@@ -5,6 +5,7 @@ import auth from "./modules/auth";
 import user from "./modules/user";
 import matapelajaran from "./modules/matapelajaran";
 import tahunAjaran from "./modules/tahunAjaran";
+import pesertaDidik from "./modules/pesertaDidik";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -26,15 +27,15 @@ export default new Vuex.Store({
       if (state.alert.message !== "Link untuk mengubah password salah") {
         setTimeout(() => {
           state.alert.isShow = false;
-        }, 10000);
+        }, 6000);
       }
     },
-    CLOSE_ALERT(state, payload = {}) {
+    CLOSE_ALERT(state) {
       state.alert.isShow = false;
     },
   },
   actions: {},
-  modules: { auth, user, matapelajaran, tahunAjaran },
+  modules: { auth, user, matapelajaran, tahunAjaran, pesertaDidik },
   getters: {},
   plugins: [
     createPersistedState({

@@ -118,6 +118,13 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
+        <v-alert
+                    :value="alert.isShow"
+                    :type="alert.type || 'error'"
+                    transition="slide-y-transition"
+                  >
+                    {{ alert.message }}
+                  </v-alert>
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
@@ -151,7 +158,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     dialogMakeActive: false,
-    requiredRule: [(v) => !!v || "Wajib diisi"],
+    requiredRule: [(v) => v !== 0 || "Wajib diisi"],
     headers: [
       {
         text: "Tahun Ajaran",
@@ -197,6 +204,7 @@ export default {
   },
   methods: {
     save() {
+      if (this.$refs.form.validate()) {
       this.$store
         .dispatch("tahunAjaran/createTahunAjaran", this.editedItem)
         .then((_) => {
@@ -206,6 +214,7 @@ export default {
         .catch((err) => {
           console.log("error : ", err);
         });
+      }
     },
     changeTahunAkhir() {
       this.editedItem.tahun_akhir = this.editedItem.tahun_awal + 1;

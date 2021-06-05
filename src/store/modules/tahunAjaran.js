@@ -41,6 +41,11 @@ const tahunAjaran = {
             data.tahun_ajaran = `${data.tahun_awal}/${data.tahun_akhir}`;
             data.status_aktif = "Tidak Aktif";
             commit("ADD_TAHUN_AJARAN", data);
+            const payload = {
+              type: "success",
+              message: "Tahun Ajaran berhasil ditambahkan",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
             state.isLoading = false;
             resolve(res);
           })
