@@ -12,6 +12,7 @@ const pesertaDidik = {
     },
   },
   actions: {
+    
     getAllPesertaDidik({ commit, state, rootState }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
@@ -32,6 +33,7 @@ const pesertaDidik = {
           });
       });
     },
+
     uploadExcelFile({ commit, state, rootState }, formData) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
@@ -59,6 +61,39 @@ const pesertaDidik = {
             const payload = {
               type: "error",
               message: "Terjadi Kesalahan saat mengupload",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            reject(err);
+          });
+      });
+    },
+
+    createNewPesertaDidik({ commit, state, rootState }, newData) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url: "peserta-didik/",
+          data: newData,
+          headers: {
+            Authorization: rootState.auth.token,
+          },
+        })
+          .then((res) => {
+            const payload = {
+              type: "success",
+              message: "Berhasil menambah data peserta didik",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error(err);
+            const payload = {
+              type: "error",
+              message: "Terjadi Kesalahan saat menambah data baru",
             };
             commit("SHOW_ALERT", payload, { root: true });
             state.isLoading = false;

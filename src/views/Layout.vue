@@ -158,7 +158,7 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title
-        >Halaman
+        >Sistem Informasi Akademik ( Halaman
         {{
           userData.type_user === "tata_usaha"
             ? "Tata Usaha"
@@ -167,7 +167,7 @@
             : userData.type_user === "guru"
             ? "Guru"
             : "Wali Kelas"
-        }}</v-toolbar-title
+        }} )</v-toolbar-title
       >
     </v-app-bar>
 

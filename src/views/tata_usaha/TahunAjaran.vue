@@ -168,7 +168,7 @@ export default {
         text: "Status",
         value: "status_aktif",
       },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {
@@ -210,6 +210,7 @@ export default {
         .then((_) => {
           this.editedItem = this.defaultItem;
           this.dialog = false;
+          this.$refs.form.resetValidation();
         })
         .catch((err) => {
           console.log("error : ", err);

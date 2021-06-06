@@ -7,11 +7,13 @@ const auth = {
     user: JSON.parse(localStorage.getItem("user")) || {},
     isLoading: false,
     isHashverif: true,
+    role : localStorage.getItem("role") || "",
   },
   mutations: {
     AUTH_SUCCESS(state, user) {
       state.token = "Bearer " + user.token;
       state.user = user;
+      state.role = user.type_user;
     },
     LOGOUT(state) {
       state.token = "";
@@ -25,6 +27,7 @@ const auth = {
           .then((res) => {
             const user = res.data.data;
             localStorage.setItem("token", `Bearer ${user.token}`);
+            localStorage.setItem("role", `${user.type_user}`);
             axios.defaults.headers.common["Authorization"] =
               "Bearer " + user.token;
             commit("AUTH_SUCCESS", user);
@@ -51,6 +54,7 @@ const auth = {
         commit("LOGOUT");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
         delete axios.defaults.headers.common["Authorization"];
         resolve();
       });
@@ -138,6 +142,7 @@ const auth = {
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
+    role : (state) => state.role
   },
 };
 

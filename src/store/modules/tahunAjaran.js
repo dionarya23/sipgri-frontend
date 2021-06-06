@@ -111,6 +111,11 @@ const tahunAjaran = {
         }).then(res => {
           commit("UPDATE_TAHUN_AJARAN", id_tahun_ajaran)
           state.isLoading = false
+          const payload = {
+            type: "success",
+            message: "Tahun Ajaran aktif berhasil diubah",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
           resolve(res)
         }).catch(err => {
           console.error(err);
@@ -128,11 +133,21 @@ const tahunAjaran = {
           headers: { Authorization: rootState.auth.token },
         }).then(res => {
           commit("DELETE_TAHUN_AJARAN", id_tahun_ajaran)
+          const payload = {
+            type: "success",
+            message: "Tahun Ajaran Berhasil dihapus",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
           state.isLoading = false
           resolve(res)
         }).catch(err => {
           console.error(err);
           state.isLoading = false;
+          const payload = {
+            type: "error",
+            message: "Tahun Ajaran tidak dapat dihapus dikarenakan sudah memiliki banyak raport dan kelas",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
           reject(err);
         })
       })

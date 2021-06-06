@@ -164,6 +164,7 @@
           {{ alert.message }}
         </v-alert>
       </template>
+     
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">
           mdi-pencil
@@ -172,6 +173,7 @@
           mdi-delete
         </v-icon>
       </template>
+
       <template v-slot:no-data>
         <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
       </template>
@@ -209,7 +211,7 @@ export default {
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
       { text: "Type User", value: "type_user" },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "Aksi", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     oldNip: "",
