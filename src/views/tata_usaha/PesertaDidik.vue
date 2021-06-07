@@ -178,7 +178,7 @@
                     <v-text-field
                       v-model="editedItem.nomor_telepon"
                       label="Nomor Telepon"
-                      type="number"
+                      type="text"
                       :rules="phoneNumberRules"
                     >
                     </v-text-field>
@@ -190,7 +190,7 @@
                     >
                     </v-text-field>
 
-                     <v-text-field
+                    <v-text-field
                       v-model="editedItem.tanggal_diterima"
                       label="Tanggal Diterima"
                       type="date"
@@ -219,7 +219,7 @@
                     <v-text-field
                       v-model="editedItem.nomor_telepon_rumah"
                       label="Nomor Telepon Perwakilan Rumah"
-                      type="number"
+                      type="text"
                       :rules="phoneNumberRules"
                     >
                     </v-text-field>
@@ -436,13 +436,13 @@ export default {
       status_dalam_keluarga: "",
       anak_ke: "",
       alamat: "",
-      nomor_telepon: "",
+      nomor_telepon: 0,
       sekolah_asal: "",
       tanggal_diterima: "",
       nama_ayah: "",
       nama_ibu: "",
       nama_wali: "",
-      nomor_telepon_rumah: "",
+      nomor_telepon_rumah: 0,
       nem: "",
       minat_jurusan: "",
       tingkat: "",
@@ -468,19 +468,19 @@ export default {
       message: "",
     },
     bulan: {
-      "01" : "Januari",
-      "02" : "Februari",
-      "03" : "Maret",
-      "04" : "April",
-      "05" : "Mei",
-      "06" : "Juni",
-      "07" : "Juli",
-      "08" : "Agustus",
-      "09" : "September",
-      "10" : "Oktober",
-      "11" : "November",
-      "12" : "Desember"
-    }
+      "01": "Januari",
+      "02": "Februari",
+      "03": "Maret",
+      "04": "April",
+      "05": "Mei",
+      "06": "Juni",
+      "07": "Juli",
+      "08": "Agustus",
+      "09": "September",
+      "10": "Oktober",
+      "11": "November",
+      "12": "Desember",
+    },
   }),
   computed: {
     formTitle() {
@@ -507,6 +507,7 @@ export default {
     forceUpper() {
       this.editedItem.nama = this.editedItem.nama.toUpperCase();
     },
+
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -526,25 +527,40 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
-        this.editedItem.tanggal_lahir = this.convertInputDateToString(this.editedItem.tanggal_lahir)
-        this.editedItem.tanggal_diterima = this.convertInputDateToString(this.editedItem.tanggal_diterima)
-        this.$store.dispatch("pesertaDidik/createNewPesertaDidik",this.editedItem )
-        .then(res => {
-            const { data } = res.data
+          this.editedItem.tanggal_lahir = this.convertInputDateToString(
+            this.editedItem.tanggal_lahir
+          );
+          this.editedItem.tanggal_diterima = this.convertInputDateToString(
+            this.editedItem.tanggal_diterima
+          );
+        if (this.editedIndex > -1) {
+          const editedItem = this.pesertaDidik[this.editedIndex];
+          this.$store.dispatch("pesertaDidik/updatePesertaDidik", {updatedData: this.editedItem})
+          .then((_) => {
+            this.editedItem.no = this.editedIndex+1;
+            Object.assign(editedItem, this.editedItem);
+            this.close();
+          }).catch((err) => console.log(err))
+        } else {
+          this.$store
+            .dispatch("pesertaDidik/createNewPesertaDidik", this.editedItem)
+            .then((res) => {
+              const { data } = res.data;
               this.pesertaDidik.unshift(data);
               this.pesertaDidik.map((v, index) => {
                 v.no = index + 1;
               });
-              this.close()
-        }).catch(err => console.log(err))
+              this.close();
+            })
+            .catch((err) => console.log(err));
+        }
       }
-
     },
 
     convertInputDateToString(date) {
-      let dateArray = date.split("-");
+      let [tahun, bulan, tanggal] = date.split("-");
 
-      return `${dateArray[2]} ${this.bulan[dateArray[1]]} ${dateArray[0]}`;
+      return `${tanggal} ${this.bulan[bulan]} ${tahun}`;
     },
 
     uploadFile() {
@@ -589,6 +605,30 @@ export default {
       this.$refs.formUpload.resetValidation();
     },
 
+    editItem(item) {
+      this.editedIndex = this.pesertaDidik.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      let [
+        tanggal_lahir,
+        bulan_lahir,
+        tahun_lahir,
+      ] = this.editedItem.tanggal_lahir.split(" ");
+      let [
+        tanggal_diterima,
+        bulan_diterima,
+        tahun_diterima,
+      ] = this.editedItem.tanggal_diterima.split(" ");
+      this.editedItem.tanggal_lahir = `${tahun_lahir}-${this.getKeyByValue(
+        this.bulan,
+        bulan_lahir
+      )}-${tanggal_lahir}`;
+      this.editedItem.tanggal_diterima = `${tahun_diterima}-${this.getKeyByValue(
+        this.bulan,
+        bulan_diterima
+      )}-${tanggal_diterima}`;
+      this.dialog = true;
+    },
+
     // deleteItemConfirm() {
     //   const id_peserta_didik = this.editedItem.id_peserta_didik;
     //   this.$store.dispatch("pesertaDidik/deletePesertaDidik", id_peserta_didik);
@@ -600,6 +640,10 @@ export default {
     //   this.editedItem = Object.assign({}, item);
     //   this.dialogDelete = true;
     // },
+
+    getKeyByValue(object, value) {
+      return Object.keys(object).find((key) => object[key] === value);
+    },
   },
 };
 </script>

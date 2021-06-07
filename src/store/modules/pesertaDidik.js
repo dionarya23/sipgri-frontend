@@ -101,6 +101,40 @@ const pesertaDidik = {
           });
       });
     },
+
+    updatePesertaDidik({ commit, state, rootState }, {updatedData}) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        delete updatedData.no;
+        axios({
+          method: "PUT",
+          url: `peserta-didik/${updatedData.id_peserta_didik}/`,
+          data: updatedData,
+          headers : {
+            Authorization : rootState.auth.token
+          },
+        }).then((res) => {
+          const payload = {
+            type: "success",
+            message: "Berhasil mengubah data peserta didik",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+
+          state.isLoading = false;
+          resolve(res);
+        }).catch((err) => {
+          console.error(err);
+          const payload = {
+            type: "error",
+            message: "Terjadi Kesalahan saat mengubah data",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          state.isLoading = false;
+          reject(err);
+        });
+      });
+    }
+
   },
 };
 
