@@ -11,7 +11,13 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-           <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari tahun contoh 2021/2022" single-line hide-details></v-text-field>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Cari tahun contoh 2021/2022"
+            single-line
+            hide-details
+          ></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -121,12 +127,12 @@
           </v-dialog>
         </v-toolbar>
         <v-alert
-                    :value="alert.isShow"
-                    :type="alert.type || 'error'"
-                    transition="slide-y-transition"
-                  >
-                    {{ alert.message }}
-                  </v-alert>
+          :value="alert.isShow"
+          :type="alert.type || 'error'"
+          transition="slide-y-transition"
+        >
+          {{ alert.message }}
+        </v-alert>
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
@@ -208,16 +214,16 @@ export default {
   methods: {
     save() {
       if (this.$refs.form.validate()) {
-      this.$store
-        .dispatch("tahunAjaran/createTahunAjaran", this.editedItem)
-        .then((_) => {
-          this.editedItem = this.defaultItem;
-          this.dialog = false;
-          this.$refs.form.resetValidation();
-        })
-        .catch((err) => {
-          console.log("error : ", err);
-        });
+        this.$store
+          .dispatch("tahunAjaran/createTahunAjaran", this.editedItem)
+          .then((_) => {
+            this.editedItem = this.defaultItem;
+            this.dialog = false;
+            this.$refs.form.resetValidation();
+          })
+          .catch((err) => {
+            console.log("error : ", err);
+          });
       }
     },
     changeTahunAkhir() {

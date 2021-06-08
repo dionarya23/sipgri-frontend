@@ -4,7 +4,7 @@ import VueRouter from "vue-router";
 import User from "../views/tata_usaha/User.vue";
 import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
 import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
-
+import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
@@ -51,6 +51,14 @@ const routes = [
         meta: {
           roles: ["tata_usaha"],
         },
+      },
+      {
+        path: "tanggal-lhbs",
+        name: `Data Tanggal LHBS Tahun Ajaran`,
+        component: TanggalLhbs,
+        meta: {
+          roles: ["tata_usaha"]
+        }
       },
       {
         path: "ubah-profile",

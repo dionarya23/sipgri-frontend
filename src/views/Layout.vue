@@ -173,9 +173,13 @@
 
     <v-main>
       <div class="pa-4 pa-lg-8">
-        <p class="text-h4 text-center text-lg-left text--secondary mb-8">
+        <p v-if="$route.name === 'Data Tanggal LHBS Tahun Ajaran'" class="text-h4 text-center text-lg-left text--secondary mb-8">
+          {{ $route.name }} {{ tahun_ajaran_aktif.tahun_awal }}/{{ tahun_ajaran_aktif.tahun_akhir }}
+        </p>
+        <p v-else class="text-h4 text-center text-lg-left text--secondary mb-8">
           {{ $route.name }}
         </p>
+
         <router-view />
       </div>
     </v-main>
@@ -183,6 +187,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   data: () => ({
     drawer: null,
@@ -205,7 +210,7 @@ export default {
       ],
     ],
     raport: [
-      ["Tanggal Pembagian", "mdi-calendar-month", "/tanggal-pembagian"],
+      ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],
       ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"],
     ],
     profile: [
@@ -224,7 +229,16 @@ export default {
         .then(() => this.$router.push("/login"));
     },
   },
+  computed: {
+    ...mapState({
+      tahun_ajaran_aktif: (state) => state.raport.tahun_ajaran_aktif
+    })
+  },
   mounted() {
+    if (this.$route.name === "Data Tanggal LHBS Tahun Ajaran") {
+      this.$store.dispatch("raport/getTanggalLHBSByStatusAktif")
+    }
+
     this.userData = this.$store.state.auth.user;
   },
 };
