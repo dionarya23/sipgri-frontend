@@ -5,6 +5,10 @@ import User from "../views/tata_usaha/User.vue";
 import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
 import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 
+
+import Profile from "../views/auth/Profile.vue"
+import Password from "../views/auth/Password.vue"
+
 import Login from "../views/auth/Login.vue";
 import LostPassword from "../views/auth/LostPassword.vue";
 import ChangePassword from "../views/auth/ChangePassword.vue";
@@ -26,7 +30,7 @@ const routes = [
     children: [
       {
         path: "user",
-        name: "User",
+        name: "Data User",
         component: User,
         meta: {
           roles: ["tata_usaha"],
@@ -34,7 +38,7 @@ const routes = [
       },
       {
         path: "tahun-ajaran",
-        name: "Tahun Ajaran",
+        name: "Data Tahun Ajaran",
         component: TahunAjaran,
         meta: {
           roles: ["tata_usaha"],
@@ -42,12 +46,28 @@ const routes = [
       },
       {
         path: "peserta-didik",
-        name: "Peserta Didik",
+        name: "Data Peserta Didik",
         component: PesertaDidik,
         meta: {
           roles: ["tata_usaha"],
         },
       },
+      {
+        path: "ubah-profile",
+        name: "Ubah Profile",
+        component: Profile,
+        meta: {
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
+        } 
+      },
+      {
+        path: "ubah-password",
+        name: "Ubah Password",
+        component: Password,
+        meta: {
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
+        } 
+      }
     ],
   },
   {

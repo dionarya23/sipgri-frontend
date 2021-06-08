@@ -174,7 +174,7 @@
     <v-main>
       <div class="pa-4 pa-lg-8">
         <p class="text-h4 text-center text-lg-left text--secondary mb-8">
-          Data {{ $route.name }}
+          {{ $route.name }}
         </p>
         <router-view />
       </div>

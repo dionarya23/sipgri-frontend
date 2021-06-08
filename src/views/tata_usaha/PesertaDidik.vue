@@ -23,7 +23,7 @@
                 :loading="isLoading"
                 :disabled="isLoading"
               >
-                Upload Excel
+                Import dari Excel
               </v-btn>
             </template>
 

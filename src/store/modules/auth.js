@@ -139,6 +139,36 @@ const auth = {
           });
       });
     },
+    sendRequestChangePassword({ commit, state, rootState }, data) {
+      state.isLoading = true
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "PUT",
+          url: "user/change-password/login/",
+          data,
+        }).then(res => {
+          const { token } = res.data.data
+          const payload = {
+            type: "success",
+            message: "Berhasil mengganti password"
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          localStorage.setItem("token", `Bearer ${token}`);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+          state.isLoading = false
+          resolve(res);
+        }).catch(err => {
+          console.error(err)
+          const payload = {
+            type: "error",
+            message: err.response.data.message
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          reject(err);
+        })
+      })
+    }
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
