@@ -4,11 +4,13 @@
       :loading="isLoading"
       :headers="headers"
       :items="pesertaDidik"
+      :search="search"
       sort-by="no"
       class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar flat>
+           <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari Berdasarkan Nama, Minat Jurusan, Nis, Nisn" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialogUpload" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -21,7 +23,7 @@
                 :loading="isLoading"
                 :disabled="isLoading"
               >
-                Upload Excel Peserta Didik
+                Upload Excel
               </v-btn>
             </template>
 
@@ -87,7 +89,7 @@
                 :loading="isLoading"
                 :disabled="isLoading"
               >
-                Tambah Data Peserta Didik
+                Tambah Data
               </v-btn>
             </template>
 
@@ -375,6 +377,7 @@ export default {
     jumlah_duplicate: 0,
     fail_insert: [],
     jumlah_sukses: 0,
+    search: "",
     listAgama: ["Islam", "Kristen", "Hindu", "Buddha", "Konghucu"],
     listTingkatKelas: ["X", "XI", "XII"],
     listJurusan: ["IPA", "IPS"],

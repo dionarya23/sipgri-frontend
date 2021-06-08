@@ -7,9 +7,11 @@
       sort-by="tahun_ajaran"
       sort-desc="true"
       class="elevation-1"
+      :search="search"
     >
       <template v-slot:top>
         <v-toolbar flat>
+           <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari tahun contoh 2021/2022" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -22,7 +24,7 @@
                 :loading="isLoading"
                 :disabled="isLoading"
               >
-                Tambah Data Tahun Ajaran
+                Tambah Data
               </v-btn>
             </template>
             <v-card>
@@ -158,6 +160,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     dialogMakeActive: false,
+    search: "",
     requiredRule: [(v) => v !== 0 || "Wajib diisi"],
     headers: [
       {

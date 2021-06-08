@@ -6,9 +6,11 @@
       :items="user"
       sort-by="nip"
       class="elevation-1"
+      :search="search"
     >
       <template v-slot:top>
         <v-toolbar flat>
+           <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari Berdasarkan NUPTK, Nama, nomor telepon, Email, type user" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -190,6 +192,7 @@ export default {
     MataPelajaranCard
   },
   data: () => ({
+    search: '',
     show1: false,
     valid: true,
     dialog: false,
