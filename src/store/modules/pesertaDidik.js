@@ -13,13 +13,12 @@ const pesertaDidik = {
   },
   actions: {
     
-    getAllPesertaDidik({ commit, state, rootState }) {
+    getAllPesertaDidik({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: "peserta-didik/",
           method: "GET",
-          headers: { Authorization: rootState.auth.token },
         })
           .then((res) => {
             commit("SET_PESERTA_DIDIK", res.data.data);
@@ -34,7 +33,7 @@ const pesertaDidik = {
       });
     },
 
-    uploadExcelFile({ commit, state, rootState }, formData) {
+    uploadExcelFile({ commit, state }, formData) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
@@ -42,7 +41,6 @@ const pesertaDidik = {
           url: "peserta-didik/export/",
           data: formData,
           headers: {
-            Authorization: rootState.auth.token,
             "Content-Type": "multipart/form-data",
           },
         })
@@ -69,16 +67,13 @@ const pesertaDidik = {
       });
     },
 
-    createNewPesertaDidik({ commit, state, rootState }, newData) {
+    createNewPesertaDidik({ commit, state }, newData) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           method: "POST",
           url: "peserta-didik/",
           data: newData,
-          headers: {
-            Authorization: rootState.auth.token,
-          },
         })
           .then((res) => {
             const payload = {
@@ -102,7 +97,7 @@ const pesertaDidik = {
       });
     },
 
-    updatePesertaDidik({ commit, state, rootState }, {updatedData}) {
+    updatePesertaDidik({ commit, state }, {updatedData}) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         delete updatedData.no;
@@ -110,9 +105,6 @@ const pesertaDidik = {
           method: "PUT",
           url: `peserta-didik/${updatedData.id_peserta_didik}/`,
           data: updatedData,
-          headers : {
-            Authorization : rootState.auth.token
-          },
         }).then((res) => {
           const payload = {
             type: "success",

@@ -139,7 +139,7 @@ const auth = {
           });
       });
     },
-    sendRequestChangePassword({ commit, state, rootState }, data) {
+    sendRequestChangePassword({ commit, state }, data) {
       state.isLoading = true
       return new Promise((resolve, reject) => {
         axios({
@@ -162,6 +162,34 @@ const auth = {
           const payload = {
             type: "error",
             message: err.response.data.message
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          reject(err);
+        })
+      })
+    },
+
+    changeProfile({ commit, state }, data) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url : `user/${state.user.id_user}`,
+          method: "PUT",
+          data,
+        }).then(res => {
+          const payload = {
+            type: "success",
+            message: "Berhasil memperbarui profile"
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          resolve(res);
+        }).catch(err => {
+          console.error(err)
+          const payload = {
+            type: "error",
+            message: "Gagal meperbarui profile"
           }
           commit("SHOW_ALERT", payload, {root: true});
           state.isLoading = false

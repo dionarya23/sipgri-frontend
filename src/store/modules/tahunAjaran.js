@@ -27,14 +27,13 @@ const tahunAjaran = {
     },
   },
   actions: {
-    createTahunAjaran({ commit, state, rootState }, newData) {
+    createTahunAjaran({ commit, state }, newData) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: "tahun-ajaran/",
           method: "POST",
           data: newData,
-          headers: { Authorization: rootState.auth.token },
         })
           .then((res) => {
             const { data } = res.data;
@@ -61,13 +60,12 @@ const tahunAjaran = {
           });
       });
     },
-    getAllTahunAjaran({ commit, state, rootState }) {
+    getAllTahunAjaran({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: "tahun-ajaran/",
           method: "GET",
-          headers: { Authorization: rootState.auth.token },
         })
           .then((res) => {
             const { data } = res.data;
@@ -98,7 +96,7 @@ const tahunAjaran = {
           });
       });
     },
-    updateTahunAjaran({commit, state, rootState}, id_tahun_ajaran) {
+    updateTahunAjaran({commit, state}, id_tahun_ajaran) {
       state.isLoading = true
       return new Promise((resolve, reject) => {
         axios({
@@ -107,7 +105,6 @@ const tahunAjaran = {
           data: {
             status_aktif: "aktif"
           },
-          headers: { Authorization: rootState.auth.token },
         }).then(res => {
           commit("UPDATE_TAHUN_AJARAN", id_tahun_ajaran)
           state.isLoading = false
@@ -124,13 +121,12 @@ const tahunAjaran = {
         })
       })
     },
-    deleteTahunAjaran({commit, state, rootState}, id_tahun_ajaran) {
+    deleteTahunAjaran({commit, state}, id_tahun_ajaran) {
       state.isLoading = true
       return new Promise((resolve, reject) => {
         axios({
           url: `tahun-ajaran/${id_tahun_ajaran}`,
           method: "DELETE",
-          headers: { Authorization: rootState.auth.token },
         }).then(res => {
           commit("DELETE_TAHUN_AJARAN", id_tahun_ajaran)
           const payload = {
