@@ -196,6 +196,21 @@ const auth = {
           reject(err);
         })
       })
+    },
+
+    checkDataExist(_, data) {
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url : "user/check/available/",
+          data: data
+        }).then(res => {
+          resolve(res)
+        }).catch(err => {
+          console.error(err);
+          reject(err)
+        })
+      })
     }
   },
   getters: {

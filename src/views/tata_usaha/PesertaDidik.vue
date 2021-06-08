@@ -10,7 +10,13 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-           <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari Berdasarkan Nama, Minat Jurusan, Nis, Nisn" single-line hide-details></v-text-field>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Cari Berdasarkan Nama, Minat Jurusan, Nis, Nisn"
+            single-line
+            hide-details
+          ></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialogUpload" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -47,7 +53,7 @@
                     lazy-validation
                   >
                     <v-file-input
-                      :rules="rulesUploadExel"
+                      :rules="[rulesValidation.required, rulesValidation.size]"
                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                       placeholder="Choose File"
                       prepend-icon="mdi-upload"
@@ -106,45 +112,49 @@
                       label="Nama"
                       type="text"
                       @keyup="forceUpper"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     ></v-text-field>
 
                     <v-text-field
                       v-model="editedItem.nisn"
+                      :error-messages="is_nisn_avail"
+                      @keyup="checkAvailable('nisn')"
                       label="NISN"
                       type="number"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
                     <v-text-field
                       v-model="editedItem.nis"
+                      :error-messages="is_nis_avail"
+                      @keyup="checkAvailable('nis')"
                       label="NIS"
                       type="number"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
                     <v-radio-group
                       v-model="editedItem.jenis_kelamin"
                       column
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
-                      <v-radio label="Perempuan" value="perempuan"></v-radio>
-                      <v-radio label="Laki-Laki" value="laki-laki"></v-radio>
+                      <v-radio label="Perempuan" value="Perempuan"></v-radio>
+                      <v-radio label="Laki-Laki" value="Laki-Laki"></v-radio>
                     </v-radio-group>
 
                     <v-autocomplete
                       label="Agama"
                       :items="listAgama"
                       v-model="editedItem.agama"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     ></v-autocomplete>
 
                     <v-text-field
                       v-model="editedItem.tempat_lahir"
                       label="Tempat Lahir"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
@@ -152,14 +162,14 @@
                       v-model="editedItem.tanggal_lahir"
                       label="Tanggal Lahir"
                       type="date"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
                     <v-text-field
                       v-model="editedItem.status_dalam_keluarga"
                       label="Status Dalam Keluarga"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
@@ -167,28 +177,33 @@
                       v-model="editedItem.anak_ke"
                       label="Anak Ke"
                       type="number"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
                     <v-textarea
                       label="Alamat"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                       v-model="editedItem.alamat"
                     ></v-textarea>
 
                     <v-text-field
                       v-model="editedItem.nomor_telepon"
                       label="Nomor Telepon"
+                      :error-messages="is_nomor_telepon_avail"
+                      @keyup="checkAvailable('nomor_telepon')"
                       type="text"
-                      :rules="phoneNumberRules"
+                      :rules="[
+                        rulesValidation.required,
+                        rulesValidation.phoneNumberFormat,
+                      ]"
                     >
                     </v-text-field>
 
                     <v-text-field
                       v-model="editedItem.sekolah_asal"
                       label="Sekolah Asal"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
@@ -196,7 +211,7 @@
                       v-model="editedItem.tanggal_diterima"
                       label="Tanggal Diterima"
                       type="date"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
@@ -221,8 +236,13 @@
                     <v-text-field
                       v-model="editedItem.nomor_telepon_rumah"
                       label="Nomor Telepon Perwakilan Rumah"
+                      :error-messages="is_nomor_telepon_rumah_avail"
+                      @keyup="checkAvailable('nomor_telepon_rumah')"
                       type="text"
-                      :rules="phoneNumberRules"
+                      :rules="[
+                        rulesValidation.required,
+                        rulesValidation.phoneNumberFormat,
+                      ]"
                     >
                     </v-text-field>
 
@@ -230,7 +250,7 @@
                       v-model="editedItem.nem"
                       label="NEM"
                       type="number"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     >
                     </v-text-field>
 
@@ -238,14 +258,14 @@
                       label="Jurusan"
                       :items="listJurusan"
                       v-model="editedItem.minat_jurusan"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     ></v-autocomplete>
 
                     <v-autocomplete
                       label="Tingkat Kelas"
                       :items="listTingkatKelas"
                       v-model="editedItem.tingkat"
-                      :rules="requiredRule"
+                      :rules="[rulesValidation.required]"
                     ></v-autocomplete>
                   </v-form>
                 </v-container>
@@ -374,13 +394,17 @@ export default {
     dialogUpload: false,
     dialogDelete: false,
     dialogDuplicate: false,
+    is_nis_avail: "",
+    is_nisn_avail: "",
+    is_nomor_telepon_avail: "",
+    is_nomor_telepon_rumah_avail: "",
     jumlah_duplicate: 0,
     fail_insert: [],
     jumlah_sukses: 0,
     search: "",
     listAgama: ["Islam", "Kristen", "Hindu", "Buddha", "Konghucu"],
     listTingkatKelas: ["X", "XI", "XII"],
-    listJurusan: ["IPA", "IPS"],
+    listJurusan: ["MIPA", "IPS"],
     headers: [
       {
         text: "No",
@@ -390,6 +414,7 @@ export default {
       { text: "NISN", value: "nisn", sortable: false },
       { text: "NIS", value: "nis", sortable: false },
       { text: "Nama", value: "nama", sortable: false },
+      { text: "Jenis Kelamin", value: "jenis_kelamin", sortable: false },
       { text: "Minat Jurusan", value: "minat_jurusan", sortable: false },
       { text: "Tingkat", value: "tingkat" },
       { text: "Aksi", value: "actions", sortable: false },
@@ -403,6 +428,7 @@ export default {
       { text: "NISN", value: "nisn", sortable: false },
       { text: "NIS", value: "nis", sortable: false },
       { text: "Nama", value: "nama", sortable: false },
+      { text: "Jenis Kelamin", value: "jenis_kelamin", sortable: false },
       { text: "Minat Jurusan", value: "minat_jurusan", sortable: false },
       { text: "Tingkat", value: "tingkat" },
     ],
@@ -450,21 +476,18 @@ export default {
       minat_jurusan: "",
       tingkat: "",
     },
+    oldPesertaDidik: {},
     editedIndex: -1,
-    rulesUploadExel: [
-      (v) => !!v || "Wajib diisi",
-      (v) =>
+    rulesValidation: {
+      required: (v) => !!v || "Wajib diisi",
+      phoneNumberFormat: (v) =>
+        /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(v) ||
+        "Nomor telepon tidak valid",
+      size: (v) =>
         !v ||
         v.size < 2000000 ||
         "Ukuran file excell tidak boleh melebihi 5 MB!",
-    ],
-    phoneNumberRules: [
-      (v) => !!v || "Wajib diisi",
-      (v) =>
-        /^(^\+62|62|^08)(\d{3,4}-?){2}\d{3,4}$/g.test(v) ||
-        "Nomor telepon tidak valid",
-    ],
-    requiredRule: [(v) => !!v || "Wajib diisi"],
+    },
     uploadExcel: {
       isShow: false,
       type: "error",
@@ -491,6 +514,7 @@ export default {
         ? "Tambah Data Peserta Didik"
         : "Ubah Data Peserta Didik";
     },
+
     ...mapState({
       isLoading: (state) => state.pesertaDidik.isLoading,
       alert: (state) => state.alert,
@@ -517,6 +541,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.oldPesertaDidik = {};
       this.$refs.form.resetValidation();
     },
 
@@ -530,20 +555,24 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
-          this.editedItem.tanggal_lahir = this.convertInputDateToString(
-            this.editedItem.tanggal_lahir
-          );
-          this.editedItem.tanggal_diterima = this.convertInputDateToString(
-            this.editedItem.tanggal_diterima
-          );
+        this.editedItem.tanggal_lahir = this.convertInputDateToString(
+          this.editedItem.tanggal_lahir
+        );
+        this.editedItem.tanggal_diterima = this.convertInputDateToString(
+          this.editedItem.tanggal_diterima
+        );
         if (this.editedIndex > -1) {
           const editedItem = this.pesertaDidik[this.editedIndex];
-          this.$store.dispatch("pesertaDidik/updatePesertaDidik", {updatedData: this.editedItem})
-          .then((_) => {
-            this.editedItem.no = this.editedIndex+1;
-            Object.assign(editedItem, this.editedItem);
-            this.close();
-          }).catch((err) => console.log(err))
+          this.$store
+            .dispatch("pesertaDidik/updatePesertaDidik", {
+              updatedData: this.editedItem,
+            })
+            .then((_) => {
+              this.editedItem.no = this.editedIndex + 1;
+              Object.assign(editedItem, this.editedItem);
+              this.close();
+            })
+            .catch((err) => console.log(err));
         } else {
           this.$store
             .dispatch("pesertaDidik/createNewPesertaDidik", this.editedItem)
@@ -611,6 +640,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.pesertaDidik.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.oldPesertaDidik = { ...item };
       let [
         tanggal_lahir,
         bulan_lahir,
@@ -646,6 +676,24 @@ export default {
 
     getKeyByValue(object, value) {
       return Object.keys(object).find((key) => object[key] === value);
+    },
+
+    checkAvailable(typeAttribute) {
+      let isPesertaDidikExist = this.pesertaDidik.filter(
+        (siswa) => siswa[typeAttribute] === this.editedItem[typeAttribute]
+      );
+      if (this.editedIndex === -1) {
+        this[`is_${typeAttribute}_avail`] =
+          isPesertaDidikExist.length !== 0
+            ? `${typeAttribute} sudah digunakan oleh peserta didik yang lain`
+            : "";
+      } else {
+        this[`is_${typeAttribute}_avail`] =
+          this.oldPesertaDidik[typeAttribute] !==
+            this.editedItem[typeAttribute] && isPesertaDidikExist.length !== 0
+            ? `${typeAttribute} sudah digunakan oleh peserta didik yang lain`
+            : "";
+      }
     },
   },
 };
