@@ -6,6 +6,8 @@ import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
 import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 
+import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
+
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
 
@@ -58,6 +60,14 @@ const routes = [
         component: TanggalLhbs,
         meta: {
           roles: ["tata_usaha"]
+        }
+      },
+      {
+        path: "mata-pelajaran",
+        name: "Data Mata Pelajaran",
+        component: MataPelajaran,
+        meta : {
+          roles: ["kurikulum"]
         }
       },
       {
@@ -131,14 +141,14 @@ router.beforeEach((to, from, next) => {
         switch (store.getters["auth/role"]) {
           case "tata_usaha":
             next({
-              name: "User",
+              name: "Data User",
             });
             break;
 
           case "kurikulum":
-            // next({
-            //   name: "Peserta Didik",
-            // });
+            next({
+              name: "Data Mata Pelajaran",
+            });
             break;
 
           case "guru":

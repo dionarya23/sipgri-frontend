@@ -561,6 +561,7 @@ export default {
         this.editedItem.tanggal_diterima = this.convertInputDateToString(
           this.editedItem.tanggal_diterima
         );
+        
         if (this.editedIndex > -1) {
           const editedItem = this.pesertaDidik[this.editedIndex];
           this.$store

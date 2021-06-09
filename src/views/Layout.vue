@@ -15,7 +15,7 @@
       <v-divider></v-divider>
 
       <v-list>
-        <v-list-item-group>
+        <v-list-item-group v-if="userData.type_user === 'tata_usaha'">
           <!-- Kalau mau bikin menu TANPA sub-menu, copas yang ini 
           <v-list-item to="/contoh">
             <v-list-item-icon>
@@ -37,7 +37,7 @@
             </template>
 
             <v-list-item
-              v-for="([title, icon, link], i) in master"
+              v-for="([title, icon, link], i) in tata_usaha_menu.master"
               :key="i"
               link
               color="secondary"
@@ -63,7 +63,7 @@
             </template>
 
             <v-list-item
-              v-for="([title, icon, link], i) in kenaikanKelas"
+              v-for="([title, icon, link], i) in tata_usaha_menu.kenaikanKelas"
               :key="i"
               link
               color="secondary"
@@ -90,7 +90,7 @@
             </template>
 
             <v-list-item
-              v-for="([title, icon, link], i) in raport"
+              v-for="([title, icon, link], i) in tata_usaha_menu.raport"
               :key="i"
               link
               color="secondary"
@@ -104,8 +104,74 @@
             </v-list-item>
           </v-list-group>
           <!-- --------------------------------- -->
+        </v-list-item-group>
 
-            <v-list-group
+        <v-list-item-group v-else-if="userData.type_user === 'kurikulum'">
+          
+          <v-list-group :value="true" no-action prepend-icon="mdi-database">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Data Master</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="([title, icon, link], i) in kurikulum_menu.master"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group :value="true" no-action prepend-icon="mdi-school">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Kelas</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="([title, icon, link], i) in kurikulum_menu.kelas"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group :value="true" no-action prepend-icon="mdi-calendar-blank-outline">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Jadwal</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="([title, icon, link], i) in kurikulum_menu.jadwal"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+        </v-list-item-group>
+        
+        <v-list-item-group>
+          <v-list-group
             :value="true"
             no-action
             prepend-icon="mdi-account-circle"
@@ -130,22 +196,10 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
-          <!-- --------------------------------- -->
-        </v-list-item-group>
+          </v-list-item-group>
       </v-list>
 
       <template v-slot:append>
-        <!-- <div class="pa-2">
-          <v-btn block @click="toggleDarkMode" depressed>
-            <v-icon left v-if="$vuetify.theme.dark">
-              mdi-white-balance-sunny
-            </v-icon>
-            <v-icon left v-else>
-              mdi-weather-night
-            </v-icon>
-            Tema
-          </v-btn>
-        </div> -->
         <div class="pa-2">
           <v-btn block color="red" dark @click="logout" depressed>
             Keluar
@@ -167,14 +221,20 @@
             : userData.type_user === "guru"
             ? "Guru"
             : "Wali Kelas"
-        }} )</v-toolbar-title
+        }}
+        )</v-toolbar-title
       >
     </v-app-bar>
 
     <v-main>
       <div class="pa-4 pa-lg-8">
-        <p v-if="$route.name === 'Data Tanggal LHBS Tahun Ajaran'" class="text-h4 text-center text-lg-left text--secondary mb-8">
-          {{ $route.name }} {{ tahun_ajaran_aktif.tahun_awal }}/{{ tahun_ajaran_aktif.tahun_akhir }}
+        <p
+          v-if="$route.name === 'Data Tanggal LHBS Tahun Ajaran'"
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          {{ $route.name }} {{ tahun_ajaran_aktif.tahun_awal }}/{{
+            tahun_ajaran_aktif.tahun_akhir
+          }}
         </p>
         <p v-else class="text-h4 text-center text-lg-left text--secondary mb-8">
           {{ $route.name }}
@@ -187,7 +247,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
   data: () => ({
     drawer: null,
@@ -195,24 +255,46 @@ export default {
     // ** Di bawah ini array buat bikin sub menu
     // ** Kode icon bisa di liat di https://materialdesignicons.com/
     // ** Tinggal tambah mdi-kode-icon
-    master: [
-      ["User", "mdi-account-tie", "/user"],
-      ["Peserta Didik", "mdi-school", "/peserta-didik"],
-      ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"],
-    ],
-
-    kenaikanKelas: [
-      ["Laporan", "mdi-alert-octagon", "/laporan-tidak-naik-kelas"],
-      [
-        "Ubah Tingkat Siswa",
-        "mdi-format-font-size-increase",
-        "/ubah-tingkat-siswa",
+    tata_usaha_menu: {
+      master: [
+        ["User", "mdi-account-tie", "/user"],
+        ["Peserta Didik", "mdi-school", "/peserta-didik"],
+        ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"],
       ],
-    ],
-    raport: [
-      ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],
-      ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"],
-    ],
+      kenaikanKelas: [
+        ["Laporan", "mdi-alert-octagon", "/laporan-tidak-naik-kelas"],
+        [
+          "Ubah Tingkat Siswa",
+          "mdi-format-font-size-increase",
+          "/ubah-tingkat-siswa",
+        ],
+      ],
+      raport: [
+        ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],
+        ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"],
+      ],
+    },
+
+    kurikulum_menu: {
+      master: [
+        ["Mata Pelajaran", "mdi-book-outline", "/mata-pelajaran"],
+        ["Esktrakulikuler", "mdi-basketball", "/eskul"],
+      ],
+      kelas: [
+        ["Data Kelas", "mdi-google-classroom", "/data-kelas"],
+        ["Pembagian Kelas", "mdi-slash-forward-box", "/pembagian-kelas"],
+        [
+          "Pembagian Wali",
+          "mdi-account-child",
+          "/pembagian-wali-kelas",
+        ],
+      ],
+
+      jadwal: [
+        ["Data Jadwal", "mdi-clock-outline", "/data-jadwal"],
+        ["Cetak Jadwal Kelas", "mdi-cloud-print-outline", "/jadwal-kelas"],
+      ]
+    },
     profile: [
       ["Ubah Profile", "mdi-account-settings", "/ubah-profile"],
       ["Ubah Password", "mdi-form-textbox-password", "/ubah-password"],
@@ -231,12 +313,12 @@ export default {
   },
   computed: {
     ...mapState({
-      tahun_ajaran_aktif: (state) => state.raport.tahun_ajaran_aktif
-    })
+      tahun_ajaran_aktif: (state) => state.raport.tahun_ajaran_aktif,
+    }),
   },
   mounted() {
     if (this.$route.name === "Data Tanggal LHBS Tahun Ajaran") {
-      this.$store.dispatch("raport/getTanggalLHBSByStatusAktif")
+      this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
     this.userData = this.$store.state.auth.user;
