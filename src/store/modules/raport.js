@@ -73,6 +73,34 @@ const raport = {
           });
       });
     },
+
+    updateTanggalLHBS({commit, state}, {id_raport, data}) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method:"PUT",
+          url: `raport/${id_raport}/`,
+          data
+        }).then(res => {
+          state.isLoading = false;
+          const payload = {
+            type: "success",
+            message: "Berhasil memperbarui tanggal lhbs",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          resolve(res);
+        }).catch(err => {
+          console.error(err);
+          const payload = {
+            type: "error",
+            message: "Gagal menambahkan tanggal lhbs",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          state.isLoading = false;
+          reject(err);
+        });
+      });
+    }
   },
   getters: {
     tahun_ajaran_aktif: (state) =>
