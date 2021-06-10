@@ -7,6 +7,7 @@ import matapelajaran from "./modules/matapelajaran";
 import tahunAjaran from "./modules/tahunAjaran";
 import pesertaDidik from "./modules/pesertaDidik";
 import raport from "./modules/raport";
+import eskul from "./modules/eskul";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -36,7 +37,15 @@ export default new Vuex.Store({
     },
   },
   actions: {},
-  modules: { auth, user, matapelajaran, tahunAjaran, pesertaDidik, raport },
+  modules: {
+    auth,
+    user,
+    matapelajaran,
+    tahunAjaran,
+    pesertaDidik,
+    raport,
+    eskul,
+  },
   getters: {},
   plugins: [
     createPersistedState({

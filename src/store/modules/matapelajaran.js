@@ -99,13 +99,19 @@ const matapelajaran = {
           method: "DELETE",
           url: `mata-pelajaran/${id_mata_pelajaran}/`
         }).then(res => {
-
+          state.isLoading = false;
+          const payload = {
+            type: "success",
+            message: "berhasil menghapus mata pelajaran"
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          resolve(res);
         }).catch(err => {
           console.error(err);
           state.isLoading = false;
           const payload = {
-            type: "error",
-            message: "Gagal menghapus mata pelajaran"
+            type: "warning",
+            message: "Gagal menghapus mata pelajaran dikarenakan sudah terhubung dengan raport"
           };
           commit("SHOW_ALERT", payload, { root: true });
           reject(err);

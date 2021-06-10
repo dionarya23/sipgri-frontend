@@ -3,7 +3,7 @@
     <v-data-table
       :loading="isLoading"
       :headers="headers"
-      :items="mataPelajaran"
+      :items="eskul"
       class="elevation-1"
       sort-by="no"
       :search="search"
@@ -13,7 +13,7 @@
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Cari Berdasarkan nama mata pelajaran"
+            label="Cari Berdasarkan nama Esktrakulikuler"
             single-line
             hide-details
           ></v-text-field>
@@ -55,19 +55,12 @@
                       {{ alertLocal.message }}
                     </v-alert>
                     <v-text-field
-                      v-model="editedItem.mata_pelajaran"
-                      label="Nama Mata Pelajaran"
+                      v-model="editedItem.jenis"
+                      label="Nama Esktrakulikuler"
                       :rules="[rulesInputForm.requiredRule]"
-                      @keyup="capitalizeFirstLetter"
+                      @keyup="forceUpper"
                       required
                     ></v-text-field>
-
-                    <v-autocomplete
-                      v-model="editedItem.kelompok"
-                      :items="kelompokMataPelajaran"
-                      :rules="[rulesInputForm.requiredRule]"
-                      label="Kelompok"
-                    ></v-autocomplete>
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -90,7 +83,7 @@
             </v-card>
           </v-dialog>
 
-           <v-dialog v-model="dialogDelete" max-width="480px">
+          <v-dialog v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text
@@ -144,7 +137,7 @@ export default {
       message: "",
     },
     search: "",
-    dialogDelete : false,
+    dialogDelete: false,
     valid: true,
     dialog: false,
     headers: [
@@ -153,33 +146,19 @@ export default {
         alignItems: "start",
         value: "no",
       },
-      { text: "Nama Mata Pelajaran", value: "mata_pelajaran" },
-      { text: "Kelompok", value: "kelompok", sortable: false },
+      { text: "Nama Eskul", value: "jenis" },
       { text: "Action", value: "actions", sortable: false },
     ],
     editedIndex: -1,
-    id_mata_pelajaran: -1,
     editedItem: {
-      mata_pelajaran: "",
-      kkm_kelas_1: 0,
-      kkm_kelas_2: 0,
-      kkm_kelas_3: 0,
-      kelompok: "",
+      id_esktrakulikuler: 0,
+      jenis: "",
     },
     defaultItem: {
-      mata_pelajaran: "",
-      kkm_kelas_1: 0,
-      kkm_kelas_2: 0,
-      kkm_kelas_3: 0,
-      kelompok: "",
+      id_esktrakulikuler: 0,
+      jenis: "",
     },
-    oldMataPelajaran: {},
-    kelompokMataPelajaran: [
-      "Kelompok A (Umum)",
-      "Kelompok B (Umum)",
-      "Peminatan",
-      "Lintas Minat",
-    ],
+    oldEskul: {},
     rulesInputForm: {
       requiredRule: (v) => !!v || "Wajib diisi",
     },
@@ -188,33 +167,27 @@ export default {
     ...mapState({
       formTitle() {
         return this.editedIndex === -1
-          ? "Tambah Data Mata Pelajaran"
-          : "Ubah Data Mata Pelajaran";
+          ? "Tambah Data Esktrakulikuler"
+          : "Ubah Data Esktrakulikuler";
       },
-      isLoading: (state) => state.matapelajaran.isLoading,
+      isLoading: (state) => state.eskul.isLoading,
       alert: (state) => state.alert,
-      mataPelajaran: (state) => {
-        const { mataPelajaran } = state.matapelajaran;
-        mataPelajaran.map((pelajaran, index) => {
-          pelajaran.no = index + 1;
+      eskul: (state) => {
+        const { eskul } = state.eskul;
+        eskul.map((item, index) => {
+          item.no = index + 1;
         });
-        return mataPelajaran;
+        return eskul;
       },
     }),
   },
   mounted() {
-    this.$store.dispatch("matapelajaran/getAllMataPelajaran");
+    this.$store.dispatch("eskul/getAllEskul");
   },
 
   methods: {
-    capitalizeFirstLetter() {
-      this.editedItem.mata_pelajaran = this.editedItem.mata_pelajaran.toString();
-      this.editedItem.mata_pelajaran = this.editedItem.mata_pelajaran.replace(
-        /(?:^|\s)\S/g,
-        function(a) {
-          return a.toUpperCase();
-        }
-      );
+    forceUpper() {
+      this.editedItem.jenis = this.editedItem.jenis.toUpperCase();
     },
 
     close() {
@@ -222,102 +195,98 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-        this.id_mata_pelajaran = -1;
       });
       this.$refs.form.resetValidation();
     },
 
     editItem(item) {
-      this.id_mata_pelajaran = item.id_mata_pelajaran;
-      this.editedIndex = this.mataPelajaran.indexOf(item);
+      this.editedIndex = this.eskul.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.oldMataPelajaran = { ...item };
+      this.oldEskul = { ...item };
       this.dialog = true;
     },
 
-     closeDelete() {
+    closeDelete() {
       this.$nextTick(() => {
-        this.id_mata_pelajaran = 0;
+        this.editedItem = this.defaultItem;
         this.editedIndex = -1;
       });
       this.dialogDelete = false;
     },
 
-     deleteItem(item) {
-      this.editedIndex = this.mataPelajaran.indexOf(item);
-      this.id_mata_pelajaran = this.mataPelajaran[this.editedIndex].id_mata_pelajaran;
+    deleteItem(item) {
+      this.editedIndex = this.eskul.indexOf(item);
+      this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      const id_mata_pelajaran = this.id_mata_pelajaran;
-      this.$store.dispatch("matapelajaran/deleteMataPelajaran", id_mata_pelajaran).then(res => {
-        this.mataPelajaran.splice(this.editedIndex, 1);
-        this.closeDelete();
-      }).catch(err => {
-        this.closeDelete();        
-        console.log(err)
-      });
+      const id_eskul = this.editedItem.id_esktrakulikuler;
+      this.$store
+        .dispatch("eskul/deleteEskul", id_eskul)
+        .then((_) => {
+          this.eskul.splice(this.editedIndex, 1);
+          this.closeDelete();
+        })
+        .catch((err) => {
+          this.closeDelete();
+          console.log(err);
+        });
     },
 
     save() {
       if (this.$refs.form.validate()) {
         if (this.editedIndex === -1) {
-          const isMataPelajaranExist =
-            this.mataPelajaran.filter(
-              (pelajaran) =>
-                pelajaran.mata_pelajaran.toLowerCase() === this.editedItem.mata_pelajaran.toLowerCase() &&
-                pelajaran.kelompok.toLowerCase() === this.editedItem.kelompok.toLowerCase()
+          const isEskulExist =
+            this.eskul.filter(
+              (item) =>
+                item.jenis.toLowerCase() === this.editedItem.jenis.toLowerCase()
             ).length > 0;
 
-          if (isMataPelajaranExist) {
+          if (isEskulExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data mata pelajaran ${this.editedItem.mata_pelajaran} kelompok ${this.editedItem.kelompok} sudah dimasukan sebelumnya!!`,
+              message: `Data nama eskul ${this.editedItem.jenis} sudah dimasukan sebelumnya!!`,
             };
-            setTimeout(() => {
+        setTimeout(() => {
               this.alertLocal.isShow = false;
         }, 6000);
           } else {
-            this.$store.dispatch(
-              "matapelajaran/createNewMataPelajaran",
-              this.editedItem
-            );
+            this.$store.dispatch("eskul/createEskul", this.editedItem);
             this.close();
           }
         } else {
-          const isMataPelajaranExist =
-            this.mataPelajaran.filter(
-              (pelajaran) =>
-                (pelajaran.mata_pelajaran.toLowerCase() === this.editedItem.mata_pelajaran.toLowerCase() &&
-                this.oldMataPelajaran.mata_pelajaran.toLowerCase() !== pelajaran.mata_pelajaran.toLowerCase()
-                  ) &&
-                (pelajaran.kelompok.toLowerCase() === this.editedItem.kelompok.toLowerCase() &&
-                  this.oldMataPelajaran.kelompok.toLowerCase() !== pelajaran.kelompok.toLowerCase())
+          const isEskulExist =
+            this.eskul.filter(
+              (item) =>
+                item.jenis.toLowerCase() ===
+                  this.editedItem.jenis.toLowerCase() &&
+                item.jenis.toLowerCase() !== this.oldEskul.jenis.toLowerCase()
             ).length > 0;
 
-          if (isMataPelajaranExist) {
+          if (isEskulExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data mata pelajaran ${this.editedItem.mata_pelajaran} kelompok ${this.editedItem.kelompok} sudah dimasukan sebelumnya!!`,
+              message: `Data nama eskul ${this.editedItem.jenis} sudah dimasukan sebelumnya!!`,
             };
             setTimeout(() => {
               this.alertLocal.isShow = false;
         }, 6000);
           } else {
-            this.$store.dispatch("matapelajaran/updateMataPelajaran", {
-              id_mata_pelajaran: this.id_mata_pelajaran,
-              data: this.editedItem,
+            const upadatedData = { ...this.editedItem };
+            this.$store.dispatch("eskul/updateEskul", {
+              id_esktrakulikuler: upadatedData.id_esktrakulikuler,
+              data: upadatedData,
+            }).then(_ => {
+                this.eskul[this.editedIndex].jenis = upadatedData.jenis;
+                this.close();
+            }).catch(err => {
+                console.log(err);
+                this.close();
+
             });
-            this.mataPelajaran[
-              this.editedIndex
-            ].mata_pelajaran = this.editedItem.mata_pelajaran;
-            this.mataPelajaran[
-              this.editedIndex
-            ].kelompok = this.editedItem.kelompok;
-            this.close();
           }
         }
       }

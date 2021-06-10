@@ -7,6 +7,7 @@ import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 
 import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
+import Eskul from "../views/kurikulum/Eskul.vue";
 
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
@@ -67,6 +68,14 @@ const routes = [
         name: "Data Mata Pelajaran",
         component: MataPelajaran,
         meta : {
+          roles: ["kurikulum"]
+        }
+      },
+      {
+        path: "eskul",
+        name: "Data Esktrakulikuler",
+        component: Eskul,
+        meta: {
           roles: ["kurikulum"]
         }
       },

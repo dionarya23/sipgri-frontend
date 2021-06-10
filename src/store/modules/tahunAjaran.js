@@ -140,7 +140,7 @@ const tahunAjaran = {
           console.error(err);
           state.isLoading = false;
           const payload = {
-            type: "error",
+            type: "warning",
             message: "Tahun Ajaran tidak dapat dihapus dikarenakan sudah memiliki banyak raport dan kelas",
           };
           commit("SHOW_ALERT", payload, { root: true });
