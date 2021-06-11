@@ -8,6 +8,7 @@ import tahunAjaran from "./modules/tahunAjaran";
 import pesertaDidik from "./modules/pesertaDidik";
 import raport from "./modules/raport";
 import eskul from "./modules/eskul";
+import kelas from "./modules/kelas";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -45,6 +46,7 @@ export default new Vuex.Store({
     pesertaDidik,
     raport,
     eskul,
+    kelas,
   },
   getters: {},
   plugins: [

@@ -3,7 +3,7 @@
     <v-data-table
       :loading="isLoading"
       :headers="headers"
-      :items="eskul"
+      :items="kelas"
       class="elevation-1"
       sort-by="no"
       :search="search"
@@ -13,7 +13,7 @@
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Cari Berdasarkan nama Esktrakulikuler"
+            label="Cari Berdasarkan nama kelas atau ruangan"
             single-line
             hide-details
           ></v-text-field>
@@ -47,6 +47,8 @@
                     {{ alert.message }}
                   </v-alert>
                   <v-form ref="form" v-model="valid" lazy-validation>
+                    
+
                     <v-alert
                       :value="alertLocal.isShow"
                       :type="alertLocal.type || 'error'"
@@ -54,13 +56,45 @@
                     >
                       {{ alertLocal.message }}
                     </v-alert>
+
+                    <v-autocomplete
+                        v-model="editedItem.tingkat"
+                        :items="['X', 'XI', 'XII']"
+                        label="Tingkat Kelas"
+                       :rules="[rulesInputForm.requiredRule]"
+
+                    >
+                    </v-autocomplete>
+                    
+
+                    <v-autocomplete
+                        v-model="editedItem.jurusan"
+                        :items="['MIPA', 'IPS']"
+                        label="Jurusan"
+                       :rules="[rulesInputForm.requiredRule]"
+
+                    >
+                    </v-autocomplete>
+
                     <v-text-field
-                      v-model="editedItem.jenis"
-                      label="Nama Esktrakulikuler"
+                      v-model="editedItem.ruangan"
+                      label="Ruangan Kelas"
                       :rules="[rulesInputForm.requiredRule]"
-                      @keyup="forceUpper"
+                      @keyup="forceRuanganUpper"
                       required
                     ></v-text-field>
+
+                    <v-text-field
+                      v-model="no_kelas"
+                      label="Nama Kelas"
+                      type="number"
+                      :prefix="`${editedItem.tingkat}.${editedItem.jurusan}.`"
+                      :rules="[rulesInputForm.requiredRule, rulesInputForm.maxCharacter]"
+                      @keyup="storeToEditedNamaKelas"
+                      :disabled="isTingkatAndJurusanNotNull"
+                      required
+                    ></v-text-field>
+
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -146,48 +180,66 @@ export default {
         alignItems: "start",
         value: "no",
       },
-      { text: "Nama Eskul", value: "jenis" },
+      { text: "Nama Kelas", value: "nama_kelas" },
+      { text: "Ruangan Kelas", value: "ruangan" },
+      { text: "Jurusan", value: "jurusan" },
+      { text: "Tingkat", value: "tingkat" },
       { text: "Action", value: "actions", sortable: false },
     ],
     editedIndex: -1,
+    no_kelas: "",
     editedItem: {
-      id_esktrakulikuler: 0,
-      jenis: "",
+      id_kelas: 0,
+      nama_kelas: "",
+      ruangan : "",
+      jurusan: "",
+      tingkat: ""
     },
     defaultItem: {
-      id_esktrakulikuler: 0,
-      jenis: "",
+      id_kelas: 0,
+      nama_kelas: "",
+      ruangan : "",
+      jurusan: "",
+      tingkat: ""
     },
-    oldEskul: {},
+    oldKelas: {},
     rulesInputForm: {
       requiredRule: (v) => !!v || "Wajib diisi",
+      maxCharacter: (v) => v.length === 1 || 'Maksimal 1 karakter'
     },
   }),
   computed: {
     ...mapState({
-      isLoading: (state) => state.eskul.isLoading,
+      isLoading: (state) => state.kelas.isLoading,
       alert: (state) => state.alert,
-      eskul: (state) => {
-        const { eskul } = state.eskul;
-        eskul.map((item, index) => {
+      kelas: (state) => {
+        const { kelas } = state.kelas;
+        kelas.map((item, index) => {
           item.no = index + 1;
         });
-        return eskul;
+        return kelas;
       },
     }),
     formTitle() {
-      return this.editedIndex === -1
-        ? "Tambah Data Esktrakulikuler"
-        : "Ubah Data Esktrakulikuler";
-    },
+        return this.editedIndex === -1
+          ? "Tambah Kelas"
+          : "Ubah Kelas";
+      },
+      isTingkatAndJurusanNotNull() {
+          return this.editedItem.tingkat === '' || this.editedItem.jurusan === ''
+      }
   },
   mounted() {
-    this.$store.dispatch("eskul/getAllEskul");
+    this.$store.dispatch("kelas/getAllKelas");
   },
 
   methods: {
-    forceUpper() {
-      this.editedItem.jenis = this.editedItem.jenis.toUpperCase();
+    storeToEditedNamaKelas() {
+      this.editedItem.nama_kelas = `${this.editedItem.tingkat}.${this.editedItem.jurusan}.${this.no_kelas}`;
+    },
+
+    forceRuanganUpper() {
+      this.editedItem.ruangan = this.editedItem.ruangan.toUpperCase();
     },
 
     close() {
@@ -195,14 +247,17 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.no_kelas = "";
       });
       this.$refs.form.resetValidation();
     },
 
     editItem(item) {
-      this.editedIndex = this.eskul.indexOf(item);
+      this.editedIndex = this.kelas.indexOf(item);
+      const [ _, __, no_urut ] = item.nama_kelas.split(".");
       this.editedItem = Object.assign({}, item);
-      this.oldEskul = { ...item };
+      this.no_kelas = no_urut;
+      this.oldKelas = { ...item };
       this.dialog = true;
     },
 
@@ -215,17 +270,17 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.eskul.indexOf(item);
+      this.editedIndex = this.kelas.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      const id_eskul = this.editedItem.id_esktrakulikuler;
+      const id_kelas = this.editedItem.id_kelas;
       this.$store
-        .dispatch("eskul/deleteEskul", id_eskul)
+        .dispatch("kelas/deleteKelas", id_kelas)
         .then((_) => {
-          this.eskul.splice(this.editedIndex, 1);
+          this.kelas.splice(this.editedIndex, 1);
           this.closeDelete();
         })
         .catch((err) => {
@@ -237,58 +292,60 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.editedIndex === -1) {
-          const isEskulExist =
-            this.eskul.filter(
+          const isKelasExist =
+            this.kelas.filter(
               (item) =>
-                item.jenis.toLowerCase() === this.editedItem.jenis.toLowerCase()
+                item.nama_kelas === this.editedItem.nama_kelas 
+                || item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase()
             ).length > 0;
 
-          if (isEskulExist) {
+          if (isKelasExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data nama eskul ${this.editedItem.jenis} sudah dimasukan sebelumnya!!`,
+              message: `Data nama kelas ${this.editedItem.nama_kelas} dan rungan ${this.editedItem.ruangan} sudah dimasukan sebelumnya!!`,
             };
-            setTimeout(() => {
+        setTimeout(() => {
               this.alertLocal.isShow = false;
-            }, 6000);
+        }, 6000);
           } else {
-            this.$store.dispatch("eskul/createEskul", this.editedItem);
+            this.$store.dispatch("kelas/createKelas", this.editedItem);
             this.close();
           }
         } else {
-          const isEskulExist =
-            this.eskul.filter(
+          const iskelasExist =
+            this.kelas.filter(
               (item) =>
-                item.jenis.toLowerCase() ===
-                  this.editedItem.jenis.toLowerCase() &&
-                item.jenis.toLowerCase() !== this.oldEskul.jenis.toLowerCase()
+                (item.nama_kelas.toLowerCase() ===
+                  this.editedItem.nama_kelas.toLowerCase() &&
+                item.nama_kelas.toLowerCase() !== this.oldKelas.nama_kelas.toLowerCase()) ||
+                (item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase() && item.ruangan.toLowerCase() !== this.oldKelas.ruangan.toLowerCase())
             ).length > 0;
 
-          if (isEskulExist) {
+          if (iskelasExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data nama eskul ${this.editedItem.jenis} sudah dimasukan sebelumnya!!`,
+              message: `Data nama kelas ${this.editedItem.nama_kelas} dan rungan ${this.editedItem.ruangan} sudah dimasukan sebelumnya!!`,
             };
             setTimeout(() => {
               this.alertLocal.isShow = false;
-            }, 6000);
+        }, 6000);
           } else {
             const upadatedData = { ...this.editedItem };
-            this.$store
-              .dispatch("eskul/updateEskul", {
-                id_esktrakulikuler: upadatedData.id_esktrakulikuler,
-                data: upadatedData,
-              })
-              .then((_) => {
-                this.eskul[this.editedIndex].jenis = upadatedData.jenis;
+            this.$store.dispatch("kelas/updateKelas", {
+              id_kelas: upadatedData.id_kelas,
+              data: upadatedData,
+            }).then(_ => {
+                this.kelas[this.editedIndex].nama_kelas = upadatedData.nama_kelas;
+                this.kelas[this.editedIndex].ruangan = upadatedData.ruangan;
+
                 this.close();
-              })
-              .catch((err) => {
+            }).catch(err => {
                 console.log(err);
                 this.close();
-              });
+
+            });
           }
         }
       }

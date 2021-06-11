@@ -13,6 +13,7 @@
       :error-messages="isNuptkAvail"
       type="number"
       label="NUPTK"
+      counter="16"
       :rules="[requiredRule, maxRule]"
       required
     ></v-text-field>

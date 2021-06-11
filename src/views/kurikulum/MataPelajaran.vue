@@ -185,12 +185,12 @@ export default {
     },
   }),
   computed: {
-    ...mapState({
-      formTitle() {
+    formTitle() {
         return this.editedIndex === -1
           ? "Tambah Data Mata Pelajaran"
           : "Ubah Data Mata Pelajaran";
       },
+    ...mapState({
       isLoading: (state) => state.matapelajaran.isLoading,
       alert: (state) => state.alert,
       mataPelajaran: (state) => {
