@@ -9,6 +9,7 @@ import pesertaDidik from "./modules/pesertaDidik";
 import raport from "./modules/raport";
 import eskul from "./modules/eskul";
 import kelas from "./modules/kelas";
+import jadwal from "./modules/jadwal";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -47,6 +48,7 @@ export default new Vuex.Store({
     raport,
     eskul,
     kelas,
+    jadwal,
   },
   getters: {},
   plugins: [

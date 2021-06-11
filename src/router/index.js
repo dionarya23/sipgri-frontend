@@ -9,6 +9,7 @@ import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
 import Eskul from "../views/kurikulum/Eskul.vue";
 import Kelas from "../views/kurikulum/Kelas.vue";
+import Jadwal from "../views/kurikulum/Jadwal.vue";
 
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
@@ -84,6 +85,14 @@ const routes = [
         path: "data-kelas",
         name: "Data Kelas",
         component: Kelas,
+        meta: {
+          roles: ["kurikulum"]
+        }
+      },
+      {
+        path: "data-jadwal",
+        name: "Data Jadwal",
+        component: Jadwal,
         meta: {
           roles: ["kurikulum"]
         }

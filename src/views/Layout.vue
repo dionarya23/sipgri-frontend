@@ -107,7 +107,6 @@
         </v-list-item-group>
 
         <v-list-item-group v-else-if="userData.type_user === 'kurikulum'">
-          
           <v-list-group :value="true" no-action prepend-icon="mdi-database">
             <template v-slot:activator>
               <v-list-item-content>
@@ -148,7 +147,11 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-group :value="true" no-action prepend-icon="mdi-calendar-blank-outline">
+          <v-list-group
+            :value="true"
+            no-action
+            prepend-icon="mdi-calendar-blank-outline"
+          >
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>Jadwal</v-list-item-title>
@@ -167,9 +170,8 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
-
         </v-list-item-group>
-        
+
         <v-list-item-group>
           <v-list-group
             :value="true"
@@ -196,7 +198,7 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
-          </v-list-item-group>
+        </v-list-item-group>
       </v-list>
 
       <template v-slot:append>
@@ -232,9 +234,15 @@
           v-if="$route.name === 'Data Tanggal LHBS Tahun Ajaran'"
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
-          {{ $route.name }} {{ tahun_ajaran_aktif.tahun_awal }}/{{
-            tahun_ajaran_aktif.tahun_akhir
+          {{ $route.name }} {{ tahunAjaranAktifLHBS.tahun_awal }}/{{
+            tahunAjaranAktifLHBS.tahun_akhir
           }}
+        </p>
+        <p
+          v-else-if="$route.name === 'Data Jadwal'"
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{ tahunAjaranAktif.tahun_akhir }}
         </p>
         <p v-else class="text-h4 text-center text-lg-left text--secondary mb-8">
           {{ $route.name }}
@@ -283,17 +291,13 @@ export default {
       kelas: [
         ["Data Kelas", "mdi-google-classroom", "/data-kelas"],
         ["Pembagian Kelas", "mdi-slash-forward-box", "/pembagian-kelas"],
-        [
-          "Pembagian Wali",
-          "mdi-account-child",
-          "/pembagian-wali-kelas",
-        ],
+        ["Pembagian Wali", "mdi-account-child", "/pembagian-wali-kelas"],
       ],
 
       jadwal: [
         ["Data Jadwal", "mdi-clock-outline", "/data-jadwal"],
         ["Cetak Jadwal Kelas", "mdi-cloud-print-outline", "/jadwal-kelas"],
-      ]
+      ],
     },
     profile: [
       ["Ubah Profile", "mdi-account-settings", "/ubah-profile"],
@@ -313,12 +317,20 @@ export default {
   },
   computed: {
     ...mapState({
-      tahun_ajaran_aktif: (state) => state.raport.tahun_ajaran_aktif,
+      tahunAjaranAktifLHBS: (state) => state.raport.tahun_ajaran_aktif,
+      tahunAjaranAktif: (state) => state.tahunAjaran.tahunAjaranAktif,
     }),
   },
   mounted() {
     if (this.$route.name === "Data Tanggal LHBS Tahun Ajaran") {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
+    }
+
+    if (this.$route.name === "Data Jadwal") {
+      this.$store
+        .dispatch("tahunAjaran/getTahunAjaranAktif")
+        .then((_) => {})
+        .catch((err) => console.log(err));
     }
 
     this.userData = this.$store.state.auth.user;

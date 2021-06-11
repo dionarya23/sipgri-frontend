@@ -5,6 +5,7 @@ const tahunAjaran = {
   state: {
     isLoading: false,
     tahunAjaran: [],
+    tahunAjaranAktif: {},
   },
   mutations: {
     SET_TAHUN_AJARAN(state, tahunAjaran) {
@@ -13,17 +14,22 @@ const tahunAjaran = {
     ADD_TAHUN_AJARAN(state, newTahunAjaran) {
       state.tahunAjaran.push(newTahunAjaran);
     },
-    UPDATE_TAHUN_AJARAN(state, id_tahun_ajaran){
-      state.tahunAjaran.map(tahun => {
+    UPDATE_TAHUN_AJARAN(state, id_tahun_ajaran) {
+      state.tahunAjaran.map((tahun) => {
         if (tahun.id_tahun_ajaran === id_tahun_ajaran) {
-          tahun.status_aktif = "Aktif"
-        }else{
-          tahun.status_aktif = "Tidak Aktif"
+          tahun.status_aktif = "Aktif";
+        } else {
+          tahun.status_aktif = "Tidak Aktif";
         }
-      })
+      });
     },
     DELETE_TAHUN_AJARAN(state, id_tahun_ajaran) {
-      state.tahunAjaran = state.tahunAjaran.filter(tahun_ajaran => tahun_ajaran.id_tahun_ajaran !== id_tahun_ajaran)
+      state.tahunAjaran = state.tahunAjaran.filter(
+        (tahun_ajaran) => tahun_ajaran.id_tahun_ajaran !== id_tahun_ajaran
+      );
+    },
+    SET_TAHUN_AJARAN_AKTIF(state, payload) {
+      state.tahunAjaranAktif = payload;
     },
   },
   actions: {
@@ -60,6 +66,23 @@ const tahunAjaran = {
           });
       });
     },
+    getTahunAjaranAktif({ commit }) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "/tahun-ajaran/status/aktif/",
+          method: "GET",
+        })
+          .then((res) => {
+            const { data } = res.data;
+            commit("SET_TAHUN_AJARAN_AKTIF", data);
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error("erorr tahun ajaran aktif : ", err);
+            reject(err);
+          });
+      });
+    },
     getAllTahunAjaran({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
@@ -69,22 +92,25 @@ const tahunAjaran = {
         })
           .then((res) => {
             const { data } = res.data;
-            data.slice(0).reverse().map((tahun_ajaran, _) => {
-              tahun_ajaran.tahun_ajaran = `${tahun_ajaran.tahun_awal}/${tahun_ajaran.tahun_akhir}`;
-              let string_array = tahun_ajaran.status_aktif.split("_");
-              if (string_array.length > 1) {
-                tahun_ajaran.status_aktif = `${string_array[0]
-                  .charAt(0)
-                  .toUpperCase() +
-                  string_array[0].slice(1)} ${string_array[1]
-                  .charAt(0)
-                  .toUpperCase() + string_array[1].slice(1)}`;
-              } else {
-                tahun_ajaran.status_aktif = `${tahun_ajaran.status_aktif
-                  .charAt(0)
-                  .toUpperCase() + tahun_ajaran.status_aktif.slice(1)}`;
-              }
-            });
+            data
+              .slice(0)
+              .reverse()
+              .map((tahun_ajaran, _) => {
+                tahun_ajaran.tahun_ajaran = `${tahun_ajaran.tahun_awal}/${tahun_ajaran.tahun_akhir}`;
+                let string_array = tahun_ajaran.status_aktif.split("_");
+                if (string_array.length > 1) {
+                  tahun_ajaran.status_aktif = `${string_array[0]
+                    .charAt(0)
+                    .toUpperCase() +
+                    string_array[0].slice(1)} ${string_array[1]
+                    .charAt(0)
+                    .toUpperCase() + string_array[1].slice(1)}`;
+                } else {
+                  tahun_ajaran.status_aktif = `${tahun_ajaran.status_aktif
+                    .charAt(0)
+                    .toUpperCase() + tahun_ajaran.status_aktif.slice(1)}`;
+                }
+              });
             commit("SET_TAHUN_AJARAN", data);
             state.isLoading = false;
             resolve(res);
@@ -96,57 +122,62 @@ const tahunAjaran = {
           });
       });
     },
-    updateTahunAjaran({commit, state}, id_tahun_ajaran) {
-      state.isLoading = true
+    updateTahunAjaran({ commit, state }, id_tahun_ajaran) {
+      state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: `tahun-ajaran/${id_tahun_ajaran}`,
           method: "PUT",
           data: {
-            status_aktif: "aktif"
+            status_aktif: "aktif",
           },
-        }).then(res => {
-          commit("UPDATE_TAHUN_AJARAN", id_tahun_ajaran)
-          state.isLoading = false
-          const payload = {
-            type: "success",
-            message: "Tahun Ajaran aktif berhasil diubah",
-          };
-          commit("SHOW_ALERT", payload, { root: true });
-          resolve(res)
-        }).catch(err => {
-          console.error(err);
-          state.isLoading = false;
-          reject(err);
         })
-      })
+          .then((res) => {
+            commit("UPDATE_TAHUN_AJARAN", id_tahun_ajaran);
+            state.isLoading = false;
+            const payload = {
+              type: "success",
+              message: "Tahun Ajaran aktif berhasil diubah",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error(err);
+            state.isLoading = false;
+            reject(err);
+          });
+      });
     },
-    deleteTahunAjaran({commit, state}, id_tahun_ajaran) {
-      state.isLoading = true
+    deleteTahunAjaran({ commit, state }, id_tahun_ajaran) {
+      state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: `tahun-ajaran/${id_tahun_ajaran}`,
           method: "DELETE",
-        }).then(res => {
-          commit("DELETE_TAHUN_AJARAN", id_tahun_ajaran)
-          const payload = {
-            type: "success",
-            message: "Tahun Ajaran Berhasil dihapus",
-          };
-          commit("SHOW_ALERT", payload, { root: true });
-          state.isLoading = false
-          resolve(res)
-        }).catch(err => {
-          console.error(err);
-          state.isLoading = false;
-          const payload = {
-            type: "warning",
-            message: "Tahun Ajaran tidak dapat dihapus dikarenakan sudah memiliki banyak raport dan kelas",
-          };
-          commit("SHOW_ALERT", payload, { root: true });
-          reject(err);
         })
-      })
+          .then((res) => {
+            commit("DELETE_TAHUN_AJARAN", id_tahun_ajaran);
+            const payload = {
+              type: "success",
+              message: "Tahun Ajaran Berhasil dihapus",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error(err);
+            state.isLoading = false;
+            const payload = {
+              type: "warning",
+              message:
+                "Tahun Ajaran tidak dapat dihapus dikarenakan sudah memiliki banyak raport dan kelas",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+          });
+      });
     },
   },
 };
