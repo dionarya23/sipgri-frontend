@@ -322,11 +322,12 @@ export default {
     }),
   },
   mounted() {
-    if (this.$route.name === "Data Tanggal LHBS Tahun Ajaran") {
+    this.userData = this.$store.state.auth.user;
+
+    if (this.userData.type_user === "tata_usaha") {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
-    this.userData = this.$store.state.auth.user;
     if ( this.userData.type_user === "kurikulum") {
       this.$store
         .dispatch("tahunAjaran/getTahunAjaranAktif")
