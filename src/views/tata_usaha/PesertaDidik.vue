@@ -18,7 +18,7 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialogUpload" max-width="500px">
+          <v-dialog persistent v-model="dialogUpload" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="secondary"
@@ -84,7 +84,7 @@
           </v-dialog>
 
           <!-- dialog add new data peserta didik -->
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog persistent v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
@@ -291,7 +291,7 @@
           <!-- end of dialog add new data peserta didik -->
 
           <!-- dialog duplicate peserta didik -->
-          <v-dialog v-model="dialogDuplicate" max-width="900px">
+          <v-dialog persistent v-model="dialogDuplicate" max-width="900px">
             <v-card>
               <v-card-title>
                 <span class="headline">Perhatian!!</span>
@@ -338,7 +338,7 @@
           </v-dialog>
           <!-- end of duplicate data peserta didik -->
 
-          <!-- <v-dialog v-model="dialogDelete" max-width="480px">
+          <!-- <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text

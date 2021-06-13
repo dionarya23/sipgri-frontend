@@ -326,14 +326,13 @@ export default {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
-    if (this.$route.name === "Data Jadwal") {
+    this.userData = this.$store.state.auth.user;
+    if ( this.userData.type_user === "kurikulum") {
       this.$store
         .dispatch("tahunAjaran/getTahunAjaranAktif")
         .then((_) => {})
         .catch((err) => console.log(err));
     }
-
-    this.userData = this.$store.state.auth.user;
   },
 };
 </script>

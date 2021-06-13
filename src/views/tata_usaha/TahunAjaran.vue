@@ -19,7 +19,7 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog persistent v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
@@ -85,7 +85,7 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogDelete" max-width="480px">
+          <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text
@@ -104,7 +104,7 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogMakeActive" max-width="480px">
+          <v-dialog persistent v-model="dialogMakeActive" max-width="480px">
             <v-card>
               <v-card-title class="headline">Perhatian!</v-card-title>
               <v-card-text

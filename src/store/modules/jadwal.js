@@ -19,20 +19,21 @@ const jadwal = {
     },
   },
   actions: {
-
     getGuruMengajar({ commit }) {
       return new Promise((resolve, reject) => {
         axios({
           method: "GET",
-          url : "user/guru/mata-pelajaran/"
-        }).then(res => {
-          const { data } = res.data;
-          commit("SET_GURU_MENGAJAR", data);
-          resolve(data);
-        }).catch(err => {
-          console.err(err);
-          reject(err)
-        });
+          url: "user/guru/mata-pelajaran/",
+        })
+          .then((res) => {
+            const { data } = res.data;
+            commit("SET_GURU_MENGAJAR", data);
+            resolve(data);
+          })
+          .catch((err) => {
+            console.err(err);
+            reject(err);
+          });
       });
     },
 
@@ -60,7 +61,104 @@ const jadwal = {
           });
       });
     },
-    
+
+    updateJadwal({ commit, state }, payload) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `jadwal/${payload.id_jadwal}/`,
+          method: "PUT",
+          data: payload.data,
+        })
+          .then((res) => {
+            const payload = {
+              type: true,
+              type: "success",
+              message: "Berhasil meperbarui data jadwal yang",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            resolve(res);
+          })
+          .catch((err) => {
+            console.log(err);
+            state.isLoading = false;
+            const payload = {
+              type: true,
+              type: "error",
+              message: "Gagal meperbarui data jadwal yang, silahkan coba lagi",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+          });
+      });
+    },
+
+    createJadwal({ commit, state }, data) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "jadwal/",
+          method: "POST",
+          data,
+        })
+          .then((res) => {
+            const { data } = res.data;
+            commit("ADD_JADWAL", data);
+            const payload = {
+              type: true,
+              type: "success",
+              message: "Sukses membuat jadwal baru",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            console.log("jadwal store : ", data);
+            state.isLoading = false;
+            resolve(res);
+          })
+          .catch((err) => {
+            console.log(err);
+            state.isLoading = false;
+            const payload = {
+              type: true,
+              type: "error",
+              message:
+                "Gagal memasukan data jadwal yang baru, silahkan coba lagi",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+          });
+      });
+    },
+
+    deleteJadwal({commit, state}, id_jadwal) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `jadwal/${id_jadwal}`,
+          method: "DELETE"
+        }).then(res => {
+          const payload = {
+            type: true,
+            type: "success",
+            message: "Sukses menghapus jadwal",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          state.isLoading = false;
+          resolve(res);
+        }).catch(err => {
+          console.log(err);
+          state.isLoading = false;
+          const payload = {
+            type: true,
+            type: "error",
+            message:
+              "Gagal mengahapus data jadwal yang baru, silahkan coba lagi",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          reject(err);
+        })
+      });
+    }
   },
 };
 

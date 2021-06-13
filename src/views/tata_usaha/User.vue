@@ -12,7 +12,7 @@
         <v-toolbar flat>
            <v-text-field v-model="search" append-icon="mdi-magnify"  label="Cari Berdasarkan NUPTK, Nama, nomor telepon, Email, type user" single-line hide-details></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog persistent v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
@@ -139,7 +139,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="480px">
+          <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text
