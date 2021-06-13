@@ -239,7 +239,7 @@
           }}
         </p>
         <p
-          v-else-if="$route.name === 'Data Jadwal'"
+          v-else-if="$route.name === 'Data Jadwal' || $route.name === 'Cetak Jadwal Kelas'"
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
           {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{ tahunAjaranAktif.tahun_akhir }}

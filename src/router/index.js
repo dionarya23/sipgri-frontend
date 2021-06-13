@@ -10,6 +10,7 @@ import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
 import Eskul from "../views/kurikulum/Eskul.vue";
 import Kelas from "../views/kurikulum/Kelas.vue";
 import Jadwal from "../views/kurikulum/Jadwal.vue";
+import CetakJadwal from "../views/kurikulum/CetakJadwal.vue";
 
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
@@ -93,6 +94,14 @@ const routes = [
         path: "data-jadwal",
         name: "Data Jadwal",
         component: Jadwal,
+        meta: {
+          roles: ["kurikulum"]
+        }
+      },
+      {
+        path: "jadwal-kelas",
+        name: "Cetak Jadwal Kelas",
+        component: CetakJadwal,
         meta: {
           roles: ["kurikulum"]
         }
