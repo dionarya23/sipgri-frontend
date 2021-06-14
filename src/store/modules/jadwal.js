@@ -6,10 +6,14 @@ const jadwal = {
     jadwal: [],
     isLoading: false,
     guru_mengajar: [],
+    jadwal_guru: []
   },
   mutations: {
     SET_JADWAL(state, jadwal) {
       state.jadwal = jadwal;
+    },
+    SET_JADWAL_GURU(state, jadwal_guru) {
+      state.jadwal_guru = jadwal_guru;
     },
     SET_GURU_MENGAJAR(state, guru_mengajar) {
       state.guru_mengajar = guru_mengajar;
@@ -19,6 +23,22 @@ const jadwal = {
     },
   },
   actions: {
+    getJadwalGuru({commit}) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `jadwal/guru/mengajar/`,
+          method: "GET"
+        }).then(res => {
+          const { data } = res.data
+          commit("SET_JADWAL_GURU", data)
+          resolve(res);
+        }).catch(err => {
+          console.log("error : ", err);
+          reject(err);
+        }); 
+      });
+    },
+
     getGuruMengajar({ commit }) {
       return new Promise((resolve, reject) => {
         axios({

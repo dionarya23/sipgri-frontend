@@ -1,17 +1,23 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+// tata usaha
 import User from "../views/tata_usaha/User.vue";
 import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
 import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 
+// kurikulum
 import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
 import Eskul from "../views/kurikulum/Eskul.vue";
 import Kelas from "../views/kurikulum/Kelas.vue";
 import Jadwal from "../views/kurikulum/Jadwal.vue";
 import CetakJadwal from "../views/kurikulum/CetakJadwal.vue";
 
+// guru and user can access
+import Dashboard from "../views/pengajar/Dashboard.vue";
+
+// all role user can access
 import Profile from "../views/auth/Profile.vue"
 import Password from "../views/auth/Password.vue"
 
@@ -107,6 +113,14 @@ const routes = [
         }
       },
       {
+        path: "dashboard",
+        name: "Dashboard",
+        component: Dashboard,
+        meta: {
+          roles: ["guru", "wali_kelas"]
+        }
+      },
+      {
         path: "ubah-profile",
         name: "Ubah Profile",
         component: Profile,
@@ -188,15 +202,15 @@ router.beforeEach((to, from, next) => {
             break;
 
           case "guru":
-            // next({
-            //   name: "Peserta Didik",
-            // });
+            next({
+              name: "Dashboard",
+            });
             break;
 
           case "wali_kelas":
-            // next({
-            //   name: "Peserta Didik",
-            // });
+            next({
+              name: "Dashboard",
+            });
             break;
 
           default:

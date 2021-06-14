@@ -172,6 +172,15 @@
           </v-list-group>
         </v-list-item-group>
 
+        <v-list-item-group v-else-if="userData.type_user === 'guru' || userData.type_user === 'wali_kelas'">
+           <v-list-item to="/dashboard">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+
         <v-list-item-group>
           <v-list-group
             :value="true"
