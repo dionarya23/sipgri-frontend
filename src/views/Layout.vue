@@ -179,6 +179,30 @@
             </v-list-item-icon>
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item>
+
+          <v-list-group
+            :value="true"
+            no-action
+            prepend-icon="mdi-book-open-outline"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Nilai</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="([title, icon, link], i) in guru_menu"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
         </v-list-item-group>
 
         <v-list-item-group>
@@ -308,6 +332,13 @@ export default {
         ["Cetak Jadwal Kelas", "mdi-cloud-print-outline", "/jadwal-kelas"],
       ],
     },
+
+    guru_menu: [
+      ["Nilai KKM", "mdi-note-multiple", "/nilai-kkm"],
+      ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
+      ["Penilaian", "mdi-lead-pencil", "/penilaian"]
+    ],
+
     profile: [
       ["Ubah Profile", "mdi-account-settings", "/ubah-profile"],
       ["Ubah Password", "mdi-form-textbox-password", "/ubah-password"],

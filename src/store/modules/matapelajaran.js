@@ -4,11 +4,15 @@ const matapelajaran = {
   namespaced: true,
   state: {
     mataPelajaran: [],
-    isLoading: false
+    isLoading: false,
+    mataPelajaranGuru: []
   },
   mutations: {
     SET_MAPEL(state, mata_pelajaran) {
       state.mataPelajaran = mata_pelajaran;
+    },
+    SET_MATA_PELAJARAN_GURU(state, mata_pelajaran) {
+      state.mataPelajaranGuru = mata_pelajaran;
     },
     ADD_MAPEL(state, mata_pelajaran) {
       state.mataPelajaran.unshift(mata_pelajaran);
@@ -34,6 +38,24 @@ const matapelajaran = {
           });
       });
     },
+
+    getMataPelajaranGuru({ commit, state}) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "mata-pelajaran/pengajar/guru/"
+        }).then(res => {
+          state.isLoading = false;
+          const { data } = res.data;
+          commit("SET_MATA_PELAJARAN_GURU", data);
+          resolve(res);
+        }).catch(err => {
+          state.isLoading = false
+          reject(err);
+        });
+      });
+    },
+
     createNewMataPelajaran({ commit, state}, data) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {

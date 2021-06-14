@@ -14,8 +14,9 @@ import Kelas from "../views/kurikulum/Kelas.vue";
 import Jadwal from "../views/kurikulum/Jadwal.vue";
 import CetakJadwal from "../views/kurikulum/CetakJadwal.vue";
 
-// guru and user can access
+// guru and wali kelas can access
 import Dashboard from "../views/pengajar/Dashboard.vue";
+import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
 
 // all role user can access
 import Profile from "../views/auth/Profile.vue"
@@ -119,6 +120,14 @@ const routes = [
         meta: {
           roles: ["guru", "wali_kelas"]
         }
+      },
+      {
+        path: "nilai-kkm",
+        name: "Nilai KKM Mata Pelajaran",
+        component: NilaiKkm,
+        meta: {
+          roles: ["guru", "wali_kelas"]
+        },
       },
       {
         path: "ubah-profile",
