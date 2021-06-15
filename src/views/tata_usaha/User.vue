@@ -6,11 +6,19 @@
       :items="user"
       sort-by="nuptk"
       class="elevation-1"
+      :search="search"
     >
       <template v-slot:top>
         <v-toolbar flat>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Cari Berdasarkan NUPTK, Nama, nomor telepon, Email, type user"
+            single-line
+            hide-details
+          ></v-text-field>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog persistent v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 color="primary"
@@ -146,7 +154,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="480px">
+          <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text
@@ -173,6 +181,7 @@
           {{ alert.message }}
         </v-alert>
       </template>
+
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small @click="editItem(item)">
           mdi-pencil
@@ -181,6 +190,7 @@
           mdi-delete
         </v-icon> -->
       </template>
+
       <template v-slot:no-data>
         <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
       </template>
@@ -197,6 +207,7 @@ export default {
     MataPelajaranCard
   },
   data: () => ({
+    search: "",
     show1: false,
     valid: true,
     dialog: false,
@@ -222,7 +233,7 @@ export default {
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
       { text: "Type User", value: "type_user" },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "Aksi", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     oldNuptk: "",

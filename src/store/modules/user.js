@@ -66,13 +66,12 @@ const user = {
     resetMengajar({ commit }) {
       commit("RESET_MENGAJAR");
     },
-    getAllUser({ commit, state, rootState }) {
+    getAllUser({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: "user/",
           method: "GET",
-          headers: { Authorization: rootState.auth.token }
         })
           .then((res) => {
             res.data.data.map((e) => {

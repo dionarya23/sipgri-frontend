@@ -7,11 +7,13 @@ const auth = {
     user: JSON.parse(localStorage.getItem("user")) || {},
     isLoading: false,
     isHashverif: true,
+    role : localStorage.getItem("role") || "",
   },
   mutations: {
     AUTH_SUCCESS(state, user) {
       state.token = "Bearer " + user.token;
       state.user = user;
+      state.role = user.type_user;
     },
     LOGOUT(state) {
       state.token = "";
@@ -25,6 +27,7 @@ const auth = {
           .then((res) => {
             const user = res.data.data;
             localStorage.setItem("token", `Bearer ${user.token}`);
+            localStorage.setItem("role", `${user.type_user}`);
             axios.defaults.headers.common["Authorization"] =
               "Bearer " + user.token;
             commit("AUTH_SUCCESS", user);
@@ -51,6 +54,7 @@ const auth = {
         commit("LOGOUT");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
         delete axios.defaults.headers.common["Authorization"];
         resolve();
       });
@@ -135,9 +139,83 @@ const auth = {
           });
       });
     },
+    sendRequestChangePassword({ commit, state }, data) {
+      state.isLoading = true
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "PUT",
+          url: "user/change-password/login/",
+          data,
+        }).then(res => {
+          const { token } = res.data.data
+          const payload = {
+            type: "success",
+            message: "Berhasil mengganti password"
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          localStorage.setItem("token", `Bearer ${token}`);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+          state.isLoading = false
+          resolve(res);
+        }).catch(err => {
+          console.error(err)
+          const payload = {
+            type: "error",
+            message: err.response.data.message
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          reject(err);
+        })
+      })
+    },
+
+    changeProfile({ commit, state }, data) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url : `user/${state.user.id_user}`,
+          method: "PUT",
+          data,
+        }).then(res => {
+          const payload = {
+            type: "success",
+            message: "Berhasil memperbarui profile"
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          resolve(res);
+        }).catch(err => {
+          console.error(err)
+          const payload = {
+            type: "error",
+            message: "Gagal meperbarui profile"
+          }
+          commit("SHOW_ALERT", payload, {root: true});
+          state.isLoading = false
+          reject(err);
+        })
+      })
+    },
+
+    checkDataExist(_, data) {
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url : "user/check/available/",
+          data: data
+        }).then(res => {
+          resolve(res)
+        }).catch(err => {
+          console.error(err);
+          reject(err)
+        })
+      })
+    }
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
+    role : (state) => state.role
   },
 };
 

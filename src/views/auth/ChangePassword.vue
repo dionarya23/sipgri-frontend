@@ -31,7 +31,7 @@
               <v-text-field
                 v-model="data.password"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="[passwordRequired, maxlength]"
+                :rules="[passwordRequired, minlength]"
                 :type="showPassword ? 'text' : 'password'"
                 label="Password Baru"
                 outlined
@@ -44,7 +44,7 @@
                 :append-icon="showPasswordRepeat ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="[
                   repeatPasswordRequired,
-                  maxlength,
+                  minlength,
                   passwordConfirmationRule,
                 ]"
                 :type="showPasswordRepeat ? 'text' : 'password'"
@@ -106,12 +106,13 @@ export default {
         "Ulangi password baru harus sama dengan password"
       );
     },
-    maxlength() {
+    minlength() {
       return (v) => v.length >= 8 || "minimal karater 8 harus melebihi";
     },
   },
   created() {
     this.data.hash = this.$route.params.hash;
+    console.log("hash password : ", this.data.hash)
     this.$store
       .dispatch("auth/verifyHash", this.data.hash)
       .then(() => {})
