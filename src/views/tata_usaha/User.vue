@@ -4,7 +4,7 @@
       :loading="isLoading"
       :headers="headers"
       :items="user"
-      sort-by="nip"
+      sort-by="nuptk"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -33,11 +33,12 @@
                 <v-container>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
-                      :error-messages="isNipAvail"
-                      v-model="editedItem.nip"
+                      :error-messages="isNuptkAvail"
+                      v-model="editedItem.nuptk"
                       type="number"
-                      label="NIP"
-                      :rules="requiredRule"
+                      label="NUPTK"
+                      :counter="16"
+                      :rules="nuptkRule"
                     ></v-text-field>
 
                     <v-text-field
@@ -108,6 +109,14 @@
                           </v-icon>
                         </v-btn>
                       </div>
+                      <v-alert
+                        class="mt-4"
+                        :value="isDuplicate"
+                        type="error"
+                        transition="slide-y-transition"
+                      >
+                        Mata pelajaran yang diampu tidak boleh sama!
+                      </v-alert>
                       <MataPelajaranCard
                         v-for="(m, index) in mengajar"
                         :key="index"
@@ -165,12 +174,12 @@
         </v-alert>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
+        <v-icon small @click="editItem(item)">
           mdi-pencil
         </v-icon>
-        <v-icon small @click="deleteItem(item)">
+        <!-- <v-icon small @click="deleteItem(item)">
           mdi-delete
-        </v-icon>
+        </v-icon> -->
       </template>
       <template v-slot:no-data>
         <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
@@ -181,7 +190,7 @@
 
 <script>
 import { mapState } from "vuex";
-import MataPelajaranCard from "../components/MataPelajaranCard";
+import MataPelajaranCard from "../../components/MataPelajaranCard";
 
 export default {
   components: {
@@ -192,18 +201,22 @@ export default {
     valid: true,
     dialog: false,
     dialogDelete: false,
-    isNipAvail: "",
+    isNuptkAvail: "",
     isEmailAvail: "",
     requiredRule: [(v) => !!v || "Wajib diisi"],
+    nuptkRule: [
+      (v) => !!v || "Wajib diisi",
+      (v) => (v && v.length === 16) || "NUPTK harus 16 digit"
+    ],
     emailRules: [
       (v) => !!v || "E-mail wajib diisi",
       (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
     ],
     headers: [
       {
-        text: "NIP",
+        text: "NUPTK",
         align: "start",
-        value: "nip"
+        value: "nuptk"
       },
       { text: "Nama", value: "nama" },
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
@@ -212,37 +225,53 @@ export default {
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    oldNip: "",
+    oldNuptk: "",
     editedItem: {
-      nip: "",
+      nuptk: "",
       nama: "",
       nomor_telepon: "",
       email: "",
       password: "",
-      type_user: ""
+      type_user: "",
+      mengajar: []
     },
     defaultItem: {
-      nip: "",
+      nuptk: "",
       nama: "",
       nomor_telepon: "",
       email: "",
       password: "",
-      type_user: ""
+      type_user: "",
+      mengajar: []
     },
-    typeUserItems: ["Tata Usaha", "Kurikulum", "Guru"]
+    typeUserItems: ["Tata Usaha", "Kurikulum", "Guru"],
+    isDuplicate: false
   }),
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Tambah Data User" : "Ubah Data User";
     },
     mataPelajaranOne() {
-      return this.mengajar.length > 1;
+      if (this.editedIndex === -1) {
+        return this.mengajar.length > 1;
+      } else {
+        return this.editedItem.mengajar.length > 1;
+      }
+    },
+    mataPelajaranTwo() {
+      if (this.editedIndex === -1) {
+        return this.mengajar.length < 2;
+      } else {
+        return this.editedItem.mengajar.length < 2;
+      }
     },
     typeUserIsGuru() {
       return this.editedItem.type_user === "Guru";
     },
     ...mapState({
-      mengajar: (state) => state.user.mengajar,
+      mengajar: (state) => {
+        return state.user.mengajar;
+      },
       user: (state) => state.user.user,
       isLoading: (state) => state.user.isLoading,
       alert: (state) => state.alert
@@ -254,27 +283,50 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
+    },
+    mengajar(_, values) {
+      this.duplicateCheck(values);
     }
   },
   mounted() {
     this.$store.dispatch("user/getAllUser");
   },
   methods: {
+    duplicateCheck(values) {
+      let valueArr = values.map(function(item) {
+        return item.id_mata_pelajaran;
+      });
+      let isDuplicate = valueArr.some(function(item, idx) {
+        return valueArr.indexOf(item) != idx;
+      });
+      this.isDuplicate = isDuplicate;
+      return isDuplicate;
+    },
     addMengajar() {
-      this.$store.dispatch("user/addMengajar");
+      if (this.editedIndex === -1) {
+        this.$store.dispatch("user/addMengajar");
+      } else {
+        this.editedItem.mengajar.push({
+          kode_mengajar: "",
+          id_mata_pelajaran: 0
+        });
+      }
     },
     removeMengajar() {
-      this.$store.dispatch("user/removeMengajar");
+      if (this.editedIndex === -1) {
+        this.$store.dispatch("user/removeMengajar");
+      } else {
+        this.editedItem.mengajar.pop();
+      }
+    },
+    capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
     capitalizeFirstLetter(string) {
-      let string_array = string.split("_");
-      if (string_array.length > 1) {
-        return `${string_array[0].charAt(0).toUpperCase() +
-          string.slice(1)} ${string_array[1].charAt(0).toUpperCase() +
-          string.slice(1)}`;
-      } else {
-        return `${string.charAt(0).toUpperCase() + string.slice(1)}`;
-      }
+      return string
+        .split("_")
+        .map(this.capitalize)
+        .join(" ");
     },
     // checkNip() {
     //   const data = {
@@ -313,9 +365,10 @@ export default {
     // },
 
     editItem(item) {
+      this.$store.dispatch("user/setMengajar", item.mengajar);
       this.editedIndex = this.user.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.oldNip = item.nip;
+      this.oldNuptk = item.nuptk;
       this.dialog = true;
     },
 
@@ -326,16 +379,17 @@ export default {
     },
 
     deleteItemConfirm() {
-      const nip = this.editedItem.nip;
-      this.$store.dispatch("user/deleteUser", nip);
+      const nuptk = this.editedItem.nuptk;
+      this.$store.dispatch("user/deleteUser", nuptk);
       this.closeDelete();
     },
 
     close() {
       this.dialog = false;
-      this.isNipAvail = "";
+      this.isNuptkAvail = "";
       this.isEmailAvail = "";
       this.$nextTick(() => {
+        this.$store.dispatch("user/resetMengajar");
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
@@ -351,38 +405,42 @@ export default {
     },
 
     save() {
-      let data = { ...this.editedItem };
-      data.type_user = data.type_user
-        .toLowerCase()
-        .split(" ")
-        .join("_");
+      if (!this.duplicateCheck(this.mengajar)) {
+        let data = { oldNuptk: this.oldNuptk, ...this.editedItem };
+        data.type_user = data.type_user
+          .toLowerCase()
+          .split(" ")
+          .join("_");
 
-      console.log(this.mengajar);
-      // if (this.editedIndex > -1) {
-      //   const data = {
-      //     oldNip: this.oldNip,
-      //     ...this.editedItem,
-      //   };
-      //   const editedItem = this.user[this.editedIndex];
-      //   this.$store
-      //     .dispatch("user/updateUser", data)
-      //     .then((res) => {
-      //       Object.assign(editedItem, res.data.data);
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // } else {
-      //   this.$store
-      //     .dispatch("user/createUser", this.editedItem)
-      //     .then((res) => {
-      //       this.user.push(res.data.data);
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // }
-      // this.close();
+        if (this.editedItem.type_user === "Guru") {
+          data = { ...data, mengajar: this.mengajar };
+        }
+
+        if (this.editedIndex > -1) {
+          const editedItem = this.user[this.editedIndex];
+          console.log(editedItem);
+          this.$store
+            .dispatch("user/updateUser", data)
+            .then(() => {
+              console.log(data);
+              data.type_user = this.capitalizeFirstLetter(data.type_user);
+              Object.assign(editedItem, data);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          this.$store
+            .dispatch("user/createUser", data)
+            .then((res) => {
+              this.user.push(res.data.data);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        this.close();
+      }
     }
   }
 };

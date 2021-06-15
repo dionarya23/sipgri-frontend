@@ -3,7 +3,7 @@
     <p style="font-weight:bold">Mata Pelajaran {{ index + 1 }} Yang Diampu</p>
     <v-text-field
       type="text"
-      v-model="guruMengajar.kode_mengajar"
+      v-model="mengajar.kode_mengajar"
       label="Kode Mengajar"
       :rules="rules"
       @change="pushToMengajar"
@@ -14,7 +14,7 @@
       label="Mata Pelajaran"
       return-object
       :items="listMataPelajaran"
-      v-model="guruMengajar.id_mata_pelajaran"
+      v-model="mengajar.id_mata_pelajaran"
       @change="pushToMengajar"
     ></v-autocomplete>
   </div>
@@ -25,30 +25,40 @@ import { mapState } from "vuex";
 export default {
   name: "MataPelajaranCard",
   data: () => ({
-    guruMengajar: {}
+    guruMengajar: {
+      id_mata_pelajaran: 0,
+      kode_mengajar: ""
+    }
   }),
   props: {
     index: Number,
     mengajar: Object,
-    rules: Array
+    rules: Array,
+    currentMengajar: Object
   },
   methods: {
     init() {
       this.guruMengajar = this.mengajar;
     },
     pushToMengajar() {
+      let mengajar = { ...this.mengajar };
+      // console.log("push To Mengajar : ", mengajar);
+      mengajar.id_mata_pelajaran = this.mengajar.id_mata_pelajaran?.id_mata_pelajaran;
+      console.log(mengajar);
       this.$store.dispatch("user/updateMengajar", {
         index: this.index,
-        mengajar: this.guruMengajar
+        mengajar
       });
     }
   },
   mounted() {
     this.$store.dispatch("getAllMataPelajaran");
   },
-  computed: mapState({
-    listMataPelajaran: (state) => state.matapelajaran.mataPelajaran
-  }),
+  computed: {
+    ...mapState({
+      listMataPelajaran: (state) => state.matapelajaran.mataPelajaran
+    })
+  },
   watch: {
     propId: function(new_value) {
       this.init();

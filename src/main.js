@@ -12,9 +12,7 @@ Vue.prototype.$http.defaults.headers.common = {
   Accept: "application/json",
   "Content-Type": "application/json"
 };
-
-// Axios.defaults.baseURL = "https://backend-pgri.herokuapp.com/api";
-Axios.defaults.baseURL = "http://192.168.11.93:9000/api";
+Axios.defaults.baseURL = "https://backend-pgri.herokuapp.com/api";
 const token = localStorage.getItem("token");
 if (token) {
   Vue.prototype.$http.defaults.headers.common["Authorization"] = token;

@@ -20,14 +20,26 @@ const user = {
     SET_USER(state, data) {
       state.user = data;
     },
+    SET_MENGAJAR(state, data) {
+      state.mengajar = data;
+    },
     ADD_MENGAJAR(state, data) {
       state.mengajar.push(data);
+      console.log(state.mengajar, data);
     },
     REMOVE_MENGAJAR(state) {
       state.mengajar.pop();
     },
     UPDATE_MENGAJAR(state, data) {
       state.mengajar[data.index] = data.mengajar;
+    },
+    RESET_MENGAJAR(state) {
+      state.mengajar = [
+        {
+          kode_mengajar: "",
+          id_mata_pelajaran: 0
+        }
+      ];
     }
   },
   actions: {
@@ -40,8 +52,19 @@ const user = {
     removeMengajar({ commit }) {
       commit("REMOVE_MENGAJAR");
     },
-    updateMengajar({ commit }, data) {
-      commit("UPDATE_MENGAJAR", data);
+    setMengajar({ commit }, data) {
+      commit("SET_MENGAJAR", data);
+    },
+    updateMengajar({ commit, state }, { index, mengajar }) {
+      commit("UPDATE_MENGAJAR", { index, mengajar });
+
+      let array_id_mata_pelajaran = [];
+      state.mengajar.map(({ id_mata_pelajaran }) => {
+        array_id_mata_pelajaran.push(id_mata_pelajaran);
+      });
+    },
+    resetMengajar({ commit }) {
+      commit("RESET_MENGAJAR");
     },
     getAllUser({ commit, state, rootState }) {
       state.isLoading = true;
@@ -99,7 +122,7 @@ const user = {
     updateUser({ commit, state }, data) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: `user/${data.oldNip}`, method: "PUT", data })
+        axios({ url: `user/${data.id_user}`, method: "PUT", data })
           .then((res) => {
             state.alert.type = "success";
             state.alert.message = "Berhasil mengubah data user";

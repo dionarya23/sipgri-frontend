@@ -1,9 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import User from "../views/User.vue";
-import Login from "../views/Login.vue";
-import LostPassword from "../views/LostPassword.vue";
-import ChangePassword from "../views/ChangePassword.vue";
+import User from "../views/tata_usaha/User.vue";
+import Login from "../views/auth/Login.vue";
+import LostPassword from "../views/auth/LostPassword.vue";
+import ChangePassword from "../views/auth/ChangePassword.vue";
 import Layout from "../views/Layout.vue";
 
 import store from "../store/index";
