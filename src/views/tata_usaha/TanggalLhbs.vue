@@ -46,7 +46,7 @@
                   <v-text-field
                     v-model="tahun_aktif"
                     label="Tahun Ajaran Aktif"
-                    disabled
+                    readonly
                   ></v-text-field>
 
                   <v-select

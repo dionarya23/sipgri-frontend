@@ -20,7 +20,7 @@
                     <v-text-field
                       label="Mata Pelajaran"
                       v-model="mataPelajaranSelected.nama"
-                      disabled
+                      readonly
                       required
                     ></v-text-field>
 

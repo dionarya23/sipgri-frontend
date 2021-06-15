@@ -320,6 +320,7 @@ export default {
       master: [
         ["Mata Pelajaran", "mdi-book-outline", "/mata-pelajaran"],
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
+        ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
 
       ],
@@ -337,7 +338,7 @@ export default {
 
     guru_menu: [
       ["Nilai KKM", "mdi-note-multiple", "/nilai-kkm"],
-      ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
+      ["Predikat Mapel", "mdi-alphabetical-variant", "/predikat-mapel"],
       ["Penilaian", "mdi-lead-pencil", "/penilaian"]
     ],
 

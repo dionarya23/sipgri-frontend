@@ -68,7 +68,7 @@
                         `${tahunAjaranAktif.tahun_awal}/${tahunAjaranAktif.tahun_akhir}`
                       "
                       label="Tahun Ajaran"
-                      disabled
+                      readonly
                     ></v-text-field>
 
                     <v-autocomplete
@@ -115,7 +115,7 @@
                     <v-text-field
                       :value="editedItem.kode_mengajar"
                       label="Kode Mengajar"
-                      disabled
+                      readonly
                     >
                     </v-text-field>
 

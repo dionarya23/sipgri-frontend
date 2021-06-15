@@ -119,7 +119,7 @@ const predikatSikap = {
             const payload = {
               type: "warning",
               message:
-                "Gagal menghapus eskul dikarenakan sudah terhubung dengan raport",
+                "Gagal menghapus predikat sikap",
             };
             commit("SHOW_ALERT", payload, { root: true });
             reject(err);

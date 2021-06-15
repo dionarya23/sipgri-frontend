@@ -1,5 +1,5 @@
 <template>
-  <div class="mata_pelajaran">
+  <div class="eskul">
     <v-data-table
       :loading="isLoading"
       :headers="headers"

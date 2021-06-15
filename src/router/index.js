@@ -14,6 +14,7 @@ import Kelas from "../views/kurikulum/Kelas.vue";
 import Jadwal from "../views/kurikulum/Jadwal.vue";
 import CetakJadwal from "../views/kurikulum/CetakJadwal.vue";
 import PredikatSikap from "../views/kurikulum/PredikatSikap.vue";
+import NilaiPredikat from "../views/kurikulum/NilaiPredikat.vue";
 
 // guru and wali kelas can access
 import Dashboard from "../views/pengajar/Dashboard.vue";
@@ -78,6 +79,14 @@ const routes = [
         path: "mata-pelajaran",
         name: "Data Mata Pelajaran",
         component: MataPelajaran,
+        meta : {
+          roles: ["kurikulum"]
+        }
+      },
+      {
+        path: "nilai-predikat",
+        name: "Data Nilai Predikat",
+        component: NilaiPredikat,
         meta : {
           roles: ["kurikulum"]
         }

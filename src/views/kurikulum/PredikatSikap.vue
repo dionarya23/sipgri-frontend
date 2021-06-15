@@ -1,15 +1,17 @@
 <template>
-  <div class="mata_pelajaran">
+  <div class="predikat-sikap">
     <v-data-table
       :loading="isLoading"
       :headers="headers"
       :items="predikatSikap"
       class="elevation-1"
-      sort-by="no"
+      sort-by="predikat"
       :search="search"
+      hide-default-footer
     >
       <template v-slot:top>
         <v-toolbar flat>
+
           <v-select
             v-model="search"
             :items="['Spiritual', 'Sosial']"
@@ -19,19 +21,6 @@
 
           <v-spacer></v-spacer>
           <v-dialog persistent v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                depressed
-                class="mb-2 text--white"
-                v-bind="attrs"
-                v-on="on"
-                :loading="isLoading"
-                :disabled="isLoading"
-              >
-                Tambah Data
-              </v-btn>
-            </template>
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
@@ -61,6 +50,7 @@
                       :rules="[rulesInputForm.requiredRule]"
                       :items="listPredikat"
                       required
+                      readonly
                     ></v-select>
 
                     <v-select
@@ -69,6 +59,7 @@
                       :rules="[rulesInputForm.requiredRule]"
                       :items="['Spiritual', 'Sosial']"
                       required
+                      readonly
                     ></v-select>
 
                     <v-textarea
@@ -99,24 +90,6 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog persistent v-model="dialogDelete" max-width="480px">
-            <v-card>
-              <v-card-title class="headline">Peringatan</v-card-title>
-              <v-card-text
-                ><p class="text-h6">
-                  Apakah anda yakin ingin menghapus data ini?
-                </p></v-card-text
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete"
-                  >Batal</v-btn
-                >
-                <v-btn color="error" text @click="deleteItemConfirm">Ya!</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-toolbar>
         <v-alert
           :value="alert.isShow"
@@ -130,9 +103,6 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">
           mdi-pencil
-        </v-icon>
-        <v-icon small @click="deleteItem(item)">
-          mdi-delete
         </v-icon>
       </template>
 
@@ -153,8 +123,7 @@ export default {
       message: "",
     },
     listPredikat: ["A", "B", "C", "D"],
-    search: "",
-    dialogDelete: false,
+    search: "Spiritual",
     valid: true,
     dialog: false,
     headers: [
@@ -190,7 +159,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1
         ? "Tambah Data Predikat Sikap"
-        : "Ubah Data Predikat Sikap";
+        : "Tambah Data Predikat Sikap";
     },
   },
   mounted() {
@@ -212,34 +181,6 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.oldPredikatSikap = { ...item };
       this.dialog = true;
-    },
-
-    closeDelete() {
-      this.$nextTick(() => {
-        this.editedItem = this.defaultItem;
-        this.editedIndex = -1;
-      });
-      this.dialogDelete = false;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.predikatSikap.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-
-    deleteItemConfirm() {
-      const id_predikat_sikap = this.editedItem.id_predikat_sikap;
-      this.$store
-        .dispatch("predikatSikap/deletePredikatSikap", id_predikat_sikap)
-        .then((_) => {
-          this.predikatSikap.splice(this.editedIndex, 1);
-          this.closeDelete();
-        })
-        .catch((err) => {
-          this.closeDelete();
-          console.log(err);
-        });
     },
 
     save() {
