@@ -320,6 +320,8 @@ export default {
       master: [
         ["Mata Pelajaran", "mdi-book-outline", "/mata-pelajaran"],
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
+        ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
+
       ],
       kelas: [
         ["Data Kelas", "mdi-google-classroom", "/data-kelas"],
