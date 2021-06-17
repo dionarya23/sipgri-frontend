@@ -19,10 +19,11 @@ import NilaiPredikat from "../views/kurikulum/NilaiPredikat.vue";
 // guru and wali kelas can access
 import Dashboard from "../views/pengajar/Dashboard.vue";
 import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
+import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 
 // all role user can access
-import Profile from "../views/auth/Profile.vue"
-import Password from "../views/auth/Password.vue"
+import Profile from "../views/auth/Profile.vue";
+import Password from "../views/auth/Password.vue";
 
 import Login from "../views/auth/Login.vue";
 import LostPassword from "../views/auth/LostPassword.vue";
@@ -72,79 +73,87 @@ const routes = [
         name: `Data Tanggal LHBS Tahun Ajaran`,
         component: TanggalLhbs,
         meta: {
-          roles: ["tata_usaha"]
-        }
+          roles: ["tata_usaha"],
+        },
       },
       {
         path: "mata-pelajaran",
         name: "Data Mata Pelajaran",
         component: MataPelajaran,
-        meta : {
-          roles: ["kurikulum"]
-        }
+        meta: {
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "nilai-predikat",
         name: "Data Nilai Predikat",
         component: NilaiPredikat,
-        meta : {
-          roles: ["kurikulum"]
-        }
+        meta: {
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "predikat-sikap",
         name: "Data Predikat Sikap",
         component: PredikatSikap,
         meta: {
-          roles: ["kurikulum"]
-        }
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "eskul",
         name: "Data Esktrakulikuler",
         component: Eskul,
         meta: {
-          roles: ["kurikulum"]
-        }
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "data-kelas",
         name: "Data Kelas",
         component: Kelas,
         meta: {
-          roles: ["kurikulum"]
-        }
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "data-jadwal",
         name: "Data Jadwal",
         component: Jadwal,
         meta: {
-          roles: ["kurikulum"]
-        }
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "jadwal-kelas",
         name: "Cetak Jadwal Kelas",
         component: CetakJadwal,
         meta: {
-          roles: ["kurikulum"]
-        }
+          roles: ["kurikulum"],
+        },
       },
       {
         path: "dashboard",
         name: "Dashboard",
         component: Dashboard,
         meta: {
-          roles: ["guru", "wali_kelas"]
-        }
+          roles: ["guru", "wali_kelas"],
+        },
       },
       {
         path: "nilai-kkm",
         name: "Nilai KKM Mata Pelajaran",
         component: NilaiKkm,
         meta: {
-          roles: ["guru", "wali_kelas"]
+          roles: ["guru", "wali_kelas"],
+        },
+      },
+      {
+        path: "predikat-mapel",
+        name: "Nilai Predikat Mata Pelajaran",
+        component: PredikatMapel,
+        meta: {
+          roles: ["guru", "wali_kelas"],
         },
       },
       {
@@ -152,17 +161,17 @@ const routes = [
         name: "Ubah Profile",
         component: Profile,
         meta: {
-          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
-        } 
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"],
+        },
       },
       {
         path: "ubah-password",
         name: "Ubah Password",
         component: Password,
         meta: {
-          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
-        } 
-      }
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"],
+        },
+      },
     ],
   },
   {
@@ -252,7 +261,7 @@ router.beforeEach((to, from, next) => {
         }
       }
     } else {
-      console.log("masuk login kesini")
+      console.log("masuk login kesini");
       next();
       return;
     }

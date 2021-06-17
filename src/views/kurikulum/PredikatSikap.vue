@@ -64,7 +64,7 @@
 
                     <v-textarea
                       counter
-                      label="Catatan"
+                      label="Catatan Penilaian"
                       :rules="[rulesInputForm.requiredRule]"
                       v-model="editedItem.catatan"
                     ></v-textarea>
@@ -157,9 +157,7 @@ export default {
       predikatSikap: (state) => state.predikatSikap.predikatSikap,
     }),
     formTitle() {
-      return this.editedIndex === -1
-        ? "Tambah Data Predikat Sikap"
-        : "Tambah Data Predikat Sikap";
+      return `Ubah Catatan Nilai Predikat Sikap ${this.editedItem.type_sikap}`
     },
   },
   mounted() {
