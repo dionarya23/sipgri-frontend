@@ -147,7 +147,6 @@ export default {
       firstMapel: (state) => state.predikatMapel.firstMapel,
       predikatMapel: (state) => {
         let predikat_mapel = [];
-        console.log( state.predikatMapel.predikatMapel)
         state.predikatMapel.predikatMapel.map(
           ({ mata_pelajaran, nilai_predikat }) => {
             nilai_predikat.map(
@@ -183,7 +182,6 @@ export default {
        const indexToCompare = typeof this.mapelSelected.index === "number"
             ? this.mapelSelected.index
             : this.mapelSelected
-          console.log("isTrue? : ", indexToCompare, typeof this.mapelSelected.index);
 
         if (
           index === indexToCompare
@@ -193,11 +191,7 @@ export default {
 
       });
       let filtered = this.predikatMapel.filter((mapelPredikat) => {
-        // console.log("mata pelajaran : ", mapelPredikat.mata_pelajaran);
-        console.log("mapel : ", mapel);
-        // console.log("jenis : ", mapelPredikat.jenis_nilai);
-        
-
+      
         return (
           mapelPredikat.mata_pelajaran === mapel && mapelPredikat.jenis_nilai === this.jenisNilaiSelected
         );
