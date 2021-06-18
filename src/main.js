@@ -12,7 +12,7 @@ Vue.prototype.$http.defaults.headers.common = {
   Accept: "application/json",
   "Content-Type": "application/json"
 };
-Axios.defaults.baseURL = process.env.API_BACKEND;
+Axios.defaults.baseURL = "http://localhost:9000/api/";
 const token = localStorage.getItem("token");
 if (token) {
   Vue.prototype.$http.defaults.headers.common["Authorization"] = token;

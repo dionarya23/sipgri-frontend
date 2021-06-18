@@ -41,7 +41,11 @@ export default new Vuex.Store({
       state.alert.isShow = false;
     },
   },
-  actions: {},
+  actions: {
+    doReload() {
+      window.location.reload();
+    }
+  },
   modules: {
     auth,
     user,

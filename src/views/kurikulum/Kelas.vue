@@ -5,7 +5,7 @@
       :headers="headers"
       :items="kelas"
       class="elevation-1"
-      sort-by="no"
+      sort-by="nama_kelas"
       :search="search"
     >
       <template v-slot:top>
@@ -47,8 +47,6 @@
                     {{ alert.message }}
                   </v-alert>
                   <v-form ref="form" v-model="valid" lazy-validation>
-                    
-
                     <v-alert
                       :value="alertLocal.isShow"
                       :type="alertLocal.type || 'error'"
@@ -58,21 +56,18 @@
                     </v-alert>
 
                     <v-autocomplete
-                        v-model="editedItem.tingkat"
-                        :items="['X', 'XI', 'XII']"
-                        label="Tingkat Kelas"
-                       :rules="[rulesInputForm.requiredRule]"
-
+                      v-model="editedItem.tingkat"
+                      :items="['X', 'XI', 'XII']"
+                      label="Tingkat Kelas"
+                      :rules="[rulesInputForm.requiredRule]"
                     >
                     </v-autocomplete>
-                    
 
                     <v-autocomplete
-                        v-model="editedItem.jurusan"
-                        :items="['MIPA', 'IPS']"
-                        label="Jurusan"
-                       :rules="[rulesInputForm.requiredRule]"
-
+                      v-model="editedItem.jurusan"
+                      :items="['MIPA', 'IPS']"
+                      label="Jurusan"
+                      :rules="[rulesInputForm.requiredRule]"
                     >
                     </v-autocomplete>
 
@@ -89,12 +84,24 @@
                       label="Nama Kelas"
                       type="number"
                       :prefix="`${editedItem.tingkat}.${editedItem.jurusan}.`"
-                      :rules="[rulesInputForm.requiredRule, rulesInputForm.maxCharacter]"
+                      :rules="[
+                        rulesInputForm.requiredRule,
+                        rulesInputForm.maxCharacter,
+                      ]"
                       @keyup="storeToEditedNamaKelas"
                       :disabled="isTingkatAndJurusanNotNull"
                       required
                     ></v-text-field>
 
+                    <v-autocomplete
+                      v-model="editedItem.id_wali"
+                      :items="calonWaliKelas"
+                      label="Wali Kelas"
+                      :rules="[rulesInputForm.requiredRule]"
+                      item-value="id_user"
+                      item-text="nama"
+                    >
+                    </v-autocomplete>
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -175,15 +182,16 @@ export default {
     valid: true,
     dialog: false,
     headers: [
-      {
-        text: "No",
-        alignItems: "start",
-        value: "no",
-      },
+      // {
+      //   text: "No",
+      //   alignItems: "start",
+      //   value: "no",
+      // },
       { text: "Nama Kelas", value: "nama_kelas" },
       { text: "Ruangan Kelas", value: "ruangan" },
       { text: "Jurusan", value: "jurusan" },
       { text: "Tingkat", value: "tingkat" },
+      { text: "Wali Kelas", value: "wali_kelas.nama" },
       { text: "Action", value: "actions", sortable: false },
     ],
     editedIndex: -1,
@@ -191,25 +199,28 @@ export default {
     editedItem: {
       id_kelas: 0,
       nama_kelas: "",
-      ruangan : "",
+      ruangan: "",
       jurusan: "",
-      tingkat: ""
+      tingkat: "",
+      id_wali: "",
     },
     defaultItem: {
       id_kelas: 0,
       nama_kelas: "",
-      ruangan : "",
+      ruangan: "",
       jurusan: "",
-      tingkat: ""
+      tingkat: "",
+      id_wali: "",
     },
     oldKelas: {},
     rulesInputForm: {
       requiredRule: (v) => !!v || "Wajib diisi",
-      maxCharacter: (v) => v.length === 1 || 'Maksimal 1 karakter'
+      maxCharacter: (v) => v.length === 1 || "Maksimal 1 karakter",
     },
   }),
   computed: {
     ...mapState({
+      calonWaliKelas: (state) => state.kelas.calonWaliKelas,
       isLoading: (state) => state.kelas.isLoading,
       alert: (state) => state.alert,
       kelas: (state) => {
@@ -221,16 +232,15 @@ export default {
       },
     }),
     formTitle() {
-        return this.editedIndex === -1
-          ? "Tambah Kelas"
-          : "Ubah Kelas";
-      },
-      isTingkatAndJurusanNotNull() {
-          return this.editedItem.tingkat === '' || this.editedItem.jurusan === ''
-      }
+      return this.editedIndex === -1 ? "Tambah Kelas" : "Ubah Kelas";
+    },
+    isTingkatAndJurusanNotNull() {
+      return this.editedItem.tingkat === "" || this.editedItem.jurusan === "";
+    },
   },
   mounted() {
     this.$store.dispatch("kelas/getAllKelas");
+    this.$store.dispatch("kelas/getCalonWaliKelas");
   },
 
   methods: {
@@ -254,7 +264,7 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.kelas.indexOf(item);
-      const [ _, __, no_urut ] = item.nama_kelas.split(".");
+      const [_, __, no_urut] = item.nama_kelas.split(".");
       this.editedItem = Object.assign({}, item);
       this.no_kelas = no_urut;
       this.oldKelas = { ...item };
@@ -295,19 +305,21 @@ export default {
           const isKelasExist =
             this.kelas.filter(
               (item) =>
-                item.nama_kelas === this.editedItem.nama_kelas 
-                || item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase()
+                 item.nama_kelas === this.editedItem.nama_kelas 
+              || item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase()
+              || item.id_wali === this.editedItem.id_wali
             ).length > 0;
 
           if (isKelasExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data nama kelas ${this.editedItem.nama_kelas} dan rungan ${this.editedItem.ruangan} sudah dimasukan sebelumnya!!`,
+              message: `Periksa nama kelas ${this.editedItem.nama_kelas}, rungan ${this.editedItem.ruangan}, wali kelas sudah dimasukan sebelumnya!!`,
             };
-        setTimeout(() => {
+            setTimeout(() => {
               this.alertLocal.isShow = false;
-        }, 6000);
+            }, 6000);
+            this.$refs.form.resetValidation();
           } else {
             this.$store.dispatch("kelas/createKelas", this.editedItem);
             this.close();
@@ -316,36 +328,41 @@ export default {
           const iskelasExist =
             this.kelas.filter(
               (item) =>
-                (item.nama_kelas.toLowerCase() ===
-                  this.editedItem.nama_kelas.toLowerCase() &&
-                item.nama_kelas.toLowerCase() !== this.oldKelas.nama_kelas.toLowerCase()) ||
-                (item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase() && item.ruangan.toLowerCase() !== this.oldKelas.ruangan.toLowerCase())
+                   (item.nama_kelas.toLowerCase() === this.editedItem.nama_kelas.toLowerCase() 
+                && item.nama_kelas.toLowerCase() !== this.oldKelas.nama_kelas.toLowerCase())
+                || (item.ruangan.toLowerCase() === this.editedItem.ruangan.toLowerCase() 
+                && item.ruangan.toLowerCase() !== this.oldKelas.ruangan.toLowerCase())
+                || (item.id_wali === this.editedItem.id_wali && item.id_wali !== this.oldKelas.id_wali)
             ).length > 0;
 
           if (iskelasExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
-              message: `Data nama kelas ${this.editedItem.nama_kelas} dan rungan ${this.editedItem.ruangan} sudah dimasukan sebelumnya!!`,
+              message: `Periksa nama kelas ${this.editedItem.nama_kelas}, rungan ${this.editedItem.ruangan}, wali kelas sudah dimasukan sebelumnya!!`,
             };
             setTimeout(() => {
               this.alertLocal.isShow = false;
-        }, 6000);
+            }, 6000);
+            this.$refs.form.resetValidation();
           } else {
             const upadatedData = { ...this.editedItem };
-            this.$store.dispatch("kelas/updateKelas", {
-              id_kelas: upadatedData.id_kelas,
-              data: upadatedData,
-            }).then(_ => {
-                this.kelas[this.editedIndex].nama_kelas = upadatedData.nama_kelas;
+            this.$store
+              .dispatch("kelas/updateKelas", {
+                id_kelas: upadatedData.id_kelas,
+                data: upadatedData,
+              })
+              .then((_) => {
+                this.kelas[this.editedIndex].nama_kelas =
+                  upadatedData.nama_kelas;
                 this.kelas[this.editedIndex].ruangan = upadatedData.ruangan;
 
                 this.close();
-            }).catch(err => {
+              })
+              .catch((err) => {
                 console.log(err);
                 this.close();
-
-            });
+              });
           }
         }
       }

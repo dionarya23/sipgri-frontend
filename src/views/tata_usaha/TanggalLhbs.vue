@@ -5,6 +5,8 @@
     :items="tanggal_lhbs"
     sort-by="no"
     class="elevation-1"
+    hide-default-header
+    hide-default-footer  
   >
     <template v-slot:[`item.tgl_lhbs`]="{ item }">
       {{ formatDate(item.tgl_lhbs) }}
@@ -14,19 +16,6 @@
       <v-toolbar flat>
         <v-spacer></v-spacer>
         <v-dialog persistent v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              depressed
-              class="mb-2 text--white"
-              v-bind="attrs"
-              v-on="on"
-              :loading="isLoading"
-              :disabled="isLoading"
-            >
-              Tambah Tanggal LHBS
-            </v-btn>
-          </template>
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -49,19 +38,17 @@
                     readonly
                   ></v-text-field>
 
-                  <v-select
+                  <v-text-field
                     v-model="editedItem.semester"
-                    :items="[1, 2]"
-                    :rules="requiredRule"
                     label="Semester"
-                  ></v-select>
-                  <v-select
-                    v-model="editedItem.jenis_penilaian"
-                    :items="jenis_penilaian"
-                    :rules="requiredRule"
-                    label="Jenis Penilaian"
-                    :disabled="editedItem.semester == 0 ? true : false"
-                  ></v-select>
+                    readonly
+                  ></v-text-field>
+
+                   <v-text-field
+                     v-model="editedItem.jenis_penilaian"
+                     label="Jenis Penilaian"
+                    readonly
+                  ></v-text-field>
 
                   <v-text-field
                     v-model="editedItem.tgl_lhbs"
@@ -100,14 +87,14 @@
       </v-alert>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
-          mdi-pencil
-        </v-icon>
-      </template>
+      <v-icon small class="mr-2" @click="editItem(item)">
+        mdi-pencil
+      </v-icon>
+    </template>
 
-      <template v-slot:no-data>
-        <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
-      </template>
+    <template v-slot:no-data>
+      <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
+    </template>
   </v-data-table>
 </template>
 <script>
@@ -121,9 +108,9 @@ export default {
       message: "",
     },
     headers: [
-      { text: "Tanggal LHBS", value: "tgl_lhbs" },
-      { text: "Semester", value: "semester", sortable: false },
       { text: "Jenis Penilaian", value: "jenis_penilaian", sortable: false },
+      { text: "Semester", value: "semester", sortable: false },
+      { text: "Tanggal LHBS", value: "tgl_lhbs" },
       { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
@@ -180,12 +167,18 @@ export default {
         }
       },
     }),
+    mounted() {
+      this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
+    },
   },
-
   methods: {
     formatDate(date) {
-      const [tahun, bulan, tanggal] = date.split("-");
-      return `${tanggal} ${this.bulan[bulan]} ${tahun}`;
+      if (date !== null) {
+        const [tahun, bulan, tanggal] = date.split("-");
+        return `${tanggal} ${this.bulan[bulan]} ${tahun}`;
+      } else {
+        return "";
+      }
     },
 
     close() {
@@ -200,13 +193,12 @@ export default {
     editItem(item) {
       this.editedIndex = this.tanggal_lhbs.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.oldTanggalLHBS = {...item}
+      this.oldTanggalLHBS = { ...item };
       this.dialog = true;
     },
 
     save() {
       if (this.$refs.form.validate()) {
-         
         if (this.editedIndex === -1) {
           delete this.editedItem.id_raport;
           this.editedItem.id_tahun_ajaran = this.tahun_ajaran_aktif.id_tahun_ajaran;
@@ -228,13 +220,13 @@ export default {
             this.valid = false;
           } else {
             let _this = this;
-            const { tgl_lhbs } = this.editedItem
+            const { tgl_lhbs } = this.editedItem;
             this.$store
               .dispatch("raport/createTanggalLHBS", this.editedItem)
               .then((res) => {
                 const { data } = res.data;
                 console.log("tgl_lhbs : ", _this.editedItem.tgl_lhbs);
-                data.tgl_lhbs = tgl_lhbs
+                data.tgl_lhbs = tgl_lhbs;
                 _this.tanggal_lhbs.push(data);
               })
               .catch((err) => {
@@ -246,8 +238,10 @@ export default {
           //update data
           const isTanggalLHBSExist = this.tanggal_lhbs.filter(
             (item) =>
-              (item.semester === this.editedItem.semester && this.oldTanggalLHBS.semester !== item.semester) &&
-              (item.jenis_penilaian === this.editedItem.jenis_penilaian && this.oldTanggalLHBS.jenis_penilaian !== item.jenis_penilaian)
+              item.semester === this.editedItem.semester &&
+              this.oldTanggalLHBS.semester !== item.semester &&
+              item.jenis_penilaian === this.editedItem.jenis_penilaian &&
+                this.oldTanggalLHBS.jenis_penilaian !== item.jenis_penilaian
           );
 
           if (isTanggalLHBSExist.length > 0) {
@@ -262,20 +256,24 @@ export default {
             this.valid = false;
           } else {
             this.editedItem.id_tahun_ajaran = this.tahun_ajaran_aktif.id_tahun_ajaran;
-            const id_raport = this.editedItem.id_raport
-            delete this.editedItem.id_raport
+            const id_raport = this.editedItem.id_raport;
+            delete this.editedItem.id_raport;
             const editedItem = this.tanggal_lhbs[this.editedIndex];
-            this.$store.dispatch("raport/updateTanggalLHBS", {id_raport, data : this.editedItem})
-            .then(_ => {
-              this.editedItem.id_raport = id_raport;
-              Object.assign(editedItem, this.editedItem);
-              this.close();
-            }).catch(err => {
-              console.log(err);
-              this.close();
-            });
+            this.$store
+              .dispatch("raport/updateTanggalLHBS", {
+                id_raport,
+                data: this.editedItem,
+              })
+              .then((_) => {
+                this.editedItem.id_raport = id_raport;
+                Object.assign(editedItem, this.editedItem);
+                this.close();
+              })
+              .catch((err) => {
+                console.log(err);
+                this.close();
+              });
           }
-
         }
       } else {
         this.valid = false;

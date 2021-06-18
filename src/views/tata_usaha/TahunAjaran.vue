@@ -5,7 +5,6 @@
       :headers="headers"
       :items="tahunAjaran"
       sort-by="tahun_ajaran"
-      sort-desc="true"
       class="elevation-1"
       :search="search"
     >

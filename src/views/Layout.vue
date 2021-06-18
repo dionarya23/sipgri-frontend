@@ -95,6 +95,7 @@
               link
               color="secondary"
               :to="link"
+              @click="doReload(title)"
             >
               <v-list-item-title v-text="title"></v-list-item-title>
 
@@ -325,9 +326,9 @@ export default {
 
       ],
       kelas: [
-        ["Data Kelas", "mdi-google-classroom", "/data-kelas"],
+        ["Kelas", "mdi-google-classroom", "/data-kelas"],
         ["Pembagian Kelas", "mdi-slash-forward-box", "/pembagian-kelas"],
-        ["Pembagian Wali", "mdi-account-child", "/pembagian-wali-kelas"],
+        // ["Pembagian Wali", "mdi-account-child", "/pembagian-wali-kelas"],
       ],
 
       jadwal: [
@@ -348,15 +349,18 @@ export default {
     ],
   }),
   methods: {
-    toggleDarkMode() {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-      localStorage.setItem("darkMode", this.$vuetify.theme.dark.toString());
-    },
+
     logout() {
       this.$store
         .dispatch("auth/logout")
         .then(() => this.$router.push("/login"));
     },
+
+    doReload(title) {
+      if (title === "Tanggal LHBS") {
+        window.location.reload();
+      }
+    }
   },
   computed: {
     ...mapState({

@@ -52,7 +52,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("getAllMataPelajaran");
+    this.$store.dispatch("matapelajaran/getAllMataPelajaran");
   },
   computed: {
     ...mapState({

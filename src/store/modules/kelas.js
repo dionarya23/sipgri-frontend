@@ -4,6 +4,7 @@ const kelas = {
   namespaced: true,
   state: {
     kelas: [],
+    calonWaliKelas: [],
     isLoading: false,
   },
   mutations: {
@@ -13,6 +14,9 @@ const kelas = {
     ADD_KELAS(state, newData) {
       state.kelas.unshift(newData);
     },
+    SET_CALON_WALI_KELAS(state, calonWaliKelas) {
+      state.calonWaliKelas = calonWaliKelas;
+    }
   },
   actions: {
     getAllKelas({ commit, state }) {
@@ -32,6 +36,21 @@ const kelas = {
             state.isLoading = false;
             reject(err);
           });
+      });
+    },
+
+    getCalonWaliKelas({ commit }) {
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "GET",
+          url: "user/calon/wali-kelas/"
+        }).then(res => {
+          commit("SET_CALON_WALI_KELAS", res.data.data);
+          resolve(res);
+        }).catch(err => {
+          console.error(err);
+          reject(err);
+        }) 
       });
     },
 
