@@ -5,7 +5,6 @@
     :items="tanggal_lhbs"
     sort-by="no"
     class="elevation-1"
-    hide-default-header
     hide-default-footer  
   >
     <template v-slot:[`item.tgl_lhbs`]="{ item }">

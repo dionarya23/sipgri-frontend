@@ -42,7 +42,6 @@ export default {
     },
     pushToMengajar() {
       let mengajar = { ...this.mengajar };
-      // console.log("push To Mengajar : ", mengajar);
       mengajar.id_mata_pelajaran = this.mengajar.id_mata_pelajaran?.id_mata_pelajaran;
       console.log(mengajar);
       this.$store.dispatch("user/updateMengajar", {
