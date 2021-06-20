@@ -1,0 +1,69 @@
+<template>
+  <div class="absensi">
+    <v-container>
+      <v-row no-gutters>
+        <v-col v-for="(tgl, index) in tgl_lhbs" :key="index">
+          <v-card max-width="344">
+            <v-card-title>
+              Absensi
+            </v-card-title>
+            <v-card-text class="text--primary">
+              Absensi untuk pembuatan raport {{ tgl.jenis_penilaian }}
+            </v-card-text>
+            <v-card-subtitle class="pb-0">
+              <v-icon color="">
+                mdi-calendar-clock
+              </v-icon>
+              Tanggal LHBS : {{ formatDate(tgl.tgl_lhbs) }}
+            </v-card-subtitle>
+            <v-card-actions>
+              <v-btn text color="teal accent-4" @click="reveal = true">
+                Isi Absensi
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+</template>
+
+<script>
+import { mapState } from "vuex";
+export default {
+  data: () => ({
+    bulan: {
+      "01": "Januari",
+      "02": "Februari",
+      "03": "Maret",
+      "04": "April",
+      "05": "Mei",
+      "06": "Juni",
+      "07": "Juli",
+      "08": "Agustus",
+      "09": "September",
+      "10": "Oktober",
+      "11": "November",
+      "12": "Desember",
+    },
+  }),
+  computed: {
+    ...mapState({
+      tgl_lhbs: (state) => state.absensi.tgl_lhbs,
+    }),
+  },
+  mounted() {
+    this.$store.dispatch("absensi/getTanggalLHBS");
+  },
+  methods: {
+    formatDate(date) {
+      if (date !== null) {
+        const [tahun, bulan, tanggal] = date.split("-");
+        return `${tanggal} ${this.bulan[bulan]} ${tahun}`;
+      } else {
+        return "";
+      }
+    },
+  },
+};
+</script>

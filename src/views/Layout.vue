@@ -173,8 +173,12 @@
           </v-list-group>
         </v-list-item-group>
 
-        <v-list-item-group v-else-if="userData.type_user === 'guru' || userData.type_user === 'wali_kelas'">
-           <v-list-item to="/dashboard">
+        <v-list-item-group
+          v-else-if="
+            userData.type_user === 'guru' || userData.type_user === 'wali_kelas'
+          "
+        >
+          <v-list-item to="/dashboard">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
@@ -204,6 +208,14 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
+
+          <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
+            <v-list-item-icon>
+              <v-icon>mdi-clipboard-list-outline</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title>Absensi</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
 
         <v-list-item-group>
@@ -272,12 +284,20 @@
             tahunAjaranAktifLHBS.tahun_akhir
           }}
         </p>
+
         <p
-          v-else-if="$route.name === 'Data Jadwal' || $route.name === 'Cetak Jadwal Kelas'"
+          v-else-if="
+            $route.name === 'Data Jadwal' ||
+              $route.name === 'Cetak Jadwal Kelas' ||
+              $route.name === 'Absensi Peserta Didik'
+          "
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
-          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{ tahunAjaranAktif.tahun_akhir }}
+          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
+            tahunAjaranAktif.tahun_akhir
+          }}
         </p>
+
         <p v-else class="text-h4 text-center text-lg-left text--secondary mb-8">
           {{ $route.name }}
         </p>
@@ -323,7 +343,6 @@ export default {
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
         ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
-
       ],
       kelas: [
         ["Kelas", "mdi-google-classroom", "/data-kelas"],
@@ -340,7 +359,7 @@ export default {
     guru_menu: [
       ["Nilai KKM", "mdi-note-multiple", "/nilai-kkm"],
       ["Predikat Mapel", "mdi-alphabetical-variant", "/predikat-mapel"],
-      ["Penilaian", "mdi-lead-pencil", "/penilaian"]
+      ["Penilaian", "mdi-lead-pencil", "/penilaian"],
     ],
 
     profile: [
@@ -349,7 +368,6 @@ export default {
     ],
   }),
   methods: {
-
     logout() {
       this.$store
         .dispatch("auth/logout")
@@ -360,7 +378,7 @@ export default {
       if (title === "Tanggal LHBS") {
         window.location.reload();
       }
-    }
+    },
   },
   computed: {
     ...mapState({
@@ -375,7 +393,10 @@ export default {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
-    if ( this.userData.type_user === "kurikulum") {
+    if (
+      this.userData.type_user === "kurikulum" ||
+      this.userData.type_user === "wali_kelas"
+    ) {
       this.$store
         .dispatch("tahunAjaran/getTahunAjaranAktif")
         .then((_) => {})

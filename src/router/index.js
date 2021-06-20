@@ -21,6 +21,9 @@ import Dashboard from "../views/pengajar/Dashboard.vue";
 import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
 import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 
+// wali kelas can access
+import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
+
 // all role user can access
 import Profile from "../views/auth/Profile.vue";
 import Password from "../views/auth/Password.vue";
@@ -154,6 +157,14 @@ const routes = [
         component: PredikatMapel,
         meta: {
           roles: ["guru", "wali_kelas"],
+        },
+      },
+      {
+        path: "absensi",
+        name: "Absensi Peserta Didik",
+        component: Absensi,
+        meta: {
+          roles: ["wali_kelas"],
         },
       },
       {
