@@ -44,6 +44,38 @@ const raport = {
       });
     },
 
+    updateStatusPelaksanaan({ commit, state }, id_raport) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "PUT",
+          url: `raport/status-pelaksanaan/aktif/${id_raport}`,
+          data: {
+            status_pelaksanaan: "Aktif",
+          },
+        })
+          .then((res) => {
+            state.isLoading = false;
+            const payload = {
+              type: "success",
+              message: "Berhasil mengubah status pelaksanaan",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error(err);
+            const payload = {
+              type: "error",
+              message: "Gagal mengubah status pelaksanaan",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            reject(err);
+          });
+      });
+    },
+
     createTanggalLHBS({ commit, state }, data) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
@@ -74,33 +106,35 @@ const raport = {
       });
     },
 
-    updateTanggalLHBS({commit, state}, {id_raport, data}) {
+    updateTanggalLHBS({ commit, state }, { id_raport, data }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          method:"PUT",
+          method: "PUT",
           url: `raport/${id_raport}/`,
-          data
-        }).then(res => {
-          state.isLoading = false;
-          const payload = {
-            type: "success",
-            message: "Berhasil memperbarui tanggal lhbs",
-          };
-          commit("SHOW_ALERT", payload, { root: true });
-          resolve(res);
-        }).catch(err => {
-          console.error(err);
-          const payload = {
-            type: "error",
-            message: "Gagal menambahkan tanggal lhbs",
-          };
-          commit("SHOW_ALERT", payload, { root: true });
-          state.isLoading = false;
-          reject(err);
-        });
+          data,
+        })
+          .then((res) => {
+            state.isLoading = false;
+            const payload = {
+              type: "success",
+              message: "Berhasil memperbarui tanggal lhbs",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            console.error(err);
+            const payload = {
+              type: "error",
+              message: "Gagal menambahkan tanggal lhbs",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            state.isLoading = false;
+            reject(err);
+          });
       });
-    }
+    },
   },
   getters: {
     tahun_ajaran_aktif: (state) =>

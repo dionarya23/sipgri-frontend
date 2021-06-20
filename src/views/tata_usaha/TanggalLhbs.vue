@@ -5,7 +5,7 @@
     :items="tanggal_lhbs"
     sort-by="no"
     class="elevation-1"
-    hide-default-footer  
+    hide-default-footer
   >
     <template v-slot:[`item.tgl_lhbs`]="{ item }">
       {{ formatDate(item.tgl_lhbs) }}
@@ -43,9 +43,9 @@
                     readonly
                   ></v-text-field>
 
-                   <v-text-field
-                     v-model="editedItem.jenis_penilaian"
-                     label="Jenis Penilaian"
+                  <v-text-field
+                    v-model="editedItem.jenis_penilaian"
+                    label="Jenis Penilaian"
                     readonly
                   ></v-text-field>
 
@@ -76,6 +76,28 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+        <v-dialog persistent v-model="dialogMakeActive" max-width="480px">
+          <v-card>
+            <v-card-title class="headline">Perhatian!</v-card-title>
+            <v-card-text
+              ><p class="text-h6">
+                Apakah anda yakin ingin mengubah pelaksanaan tgl lhbs ini
+                menjadi aktif ?
+              </p></v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeMakeActive"
+                >Batal</v-btn
+              >
+              <v-btn color="green" text @click="makeActiveItemConfirm"
+                >Ya!</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-toolbar>
       <v-alert
         :value="alert.isShow"
@@ -86,9 +108,19 @@
       </v-alert>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
+      <v-row align="center">
+      <v-btn
+        v-if="item.status_pelaksanaan === 'Tidak Aktif'"
+        color="success"
+        text
+        @click="makeAtive(item)"
+      >
+        Aktif
+      </v-btn>
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil
       </v-icon>
+      </v-row>
     </template>
 
     <template v-slot:no-data>
@@ -101,6 +133,7 @@ import { mapState } from "vuex";
 export default {
   data: () => ({
     valid: true,
+    dialogMakeActive: false,
     alertLocal: {
       isShow: false,
       type: "",
@@ -110,6 +143,11 @@ export default {
       { text: "Jenis Penilaian", value: "jenis_penilaian", sortable: false },
       { text: "Semester", value: "semester", sortable: false },
       { text: "Tanggal LHBS", value: "tgl_lhbs" },
+      {
+        text: "Status Pelaksanaan",
+        value: "status_pelaksanaan",
+        sortable: false,
+      },
       { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
@@ -180,6 +218,36 @@ export default {
       }
     },
 
+    closeMakeActive() {
+      this.dialogMakeActive = false;
+      this.close();
+    },
+
+    makeAtive(item) {
+      this.editedIndex = this.tanggal_lhbs.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogMakeActive = true;
+    },
+
+    makeActiveItemConfirm() {
+      this.$store
+        .dispatch("raport/updateStatusPelaksanaan", this.editedItem.id_raport)
+        .then((_) => {
+          this.tanggal_lhbs.map((item) => {
+            if (item.id_raport === this.editedItem.id_raport) {
+              item.status_pelaksanaan = "Aktif";
+            } else {
+              item.status_pelaksanaan = "Tidak Aktif";
+            }
+          });
+          this.closeMakeActive();
+        })
+        .catch((err) => {
+          console.log(err);
+          this.closeMakeActive();
+        });
+    },
+
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -240,7 +308,7 @@ export default {
               item.semester === this.editedItem.semester &&
               this.oldTanggalLHBS.semester !== item.semester &&
               item.jenis_penilaian === this.editedItem.jenis_penilaian &&
-                this.oldTanggalLHBS.jenis_penilaian !== item.jenis_penilaian
+              this.oldTanggalLHBS.jenis_penilaian !== item.jenis_penilaian
           );
 
           if (isTanggalLHBSExist.length > 0) {

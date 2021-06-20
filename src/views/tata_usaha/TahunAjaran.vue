@@ -117,7 +117,7 @@
                 <v-btn color="blue darken-1" text @click="closeMakeActive"
                   >Batal</v-btn
                 >
-                <v-btn color="error" text @click="makeActiveItemConfirm"
+                <v-btn color="green" text @click="makeActiveItemConfirm"
                   >Ya!</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -139,7 +139,7 @@
           mdi-pencil
         </v-icon> -->
         <v-row v-show="item.status_aktif !== 'Aktif'" align="center">
-          <v-btn color="secondary" @click="editItem(item)">
+          <v-btn text color="success" @click="editItem(item)">
             Aktif
           </v-btn>
 

@@ -3,7 +3,7 @@
     <v-container>
       <v-row no-gutters>
         <v-col v-for="(tgl, index) in tgl_lhbs" :key="index">
-          <v-card max-width="344">
+          <v-card max-width="344" :disabled="tgl.status_pelaksanaan === 'Tidak Aktif'">
             <v-card-title>
               Absensi {{ formatTitle(tgl.jenis_penilaian) }}
             </v-card-title>
