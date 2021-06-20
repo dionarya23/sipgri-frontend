@@ -16,17 +16,6 @@
 
       <v-list>
         <v-list-item-group v-if="userData.type_user === 'tata_usaha'">
-          <!-- Kalau mau bikin menu TANPA sub-menu, copas yang ini 
-          <v-list-item to="/contoh">
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-title>Contoh</v-list-item-title>
-          </v-list-item> -->
-
-          <!-- --------------------------------- -->
-
           <!-- Kalau mau bikin menu DENGAN sub-menu, copas yang ini  -->
           <!-- Terus bikin array contohnya udah ada di bawah -->
           <v-list-group :value="true" no-action prepend-icon="mdi-database">
@@ -298,6 +287,20 @@
           }}
         </p>
 
+        <p
+          v-else-if="$route.name === 'Pengisian Absensi'"
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          <v-btn @click="back" text color="black">
+            <v-icon>
+              mdi-arrow-left
+            </v-icon>
+          </v-btn>
+          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
+            tahunAjaranAktif.tahun_akhir
+          }}
+        </p>
+
         <p v-else class="text-h4 text-center text-lg-left text--secondary mb-8">
           {{ $route.name }}
         </p>
@@ -368,6 +371,10 @@ export default {
     ],
   }),
   methods: {
+    back() {
+      this.$router.back();
+    },
+
     logout() {
       this.$store
         .dispatch("auth/logout")

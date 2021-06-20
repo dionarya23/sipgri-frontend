@@ -5,10 +5,10 @@
         <v-col v-for="(tgl, index) in tgl_lhbs" :key="index">
           <v-card max-width="344">
             <v-card-title>
-              Absensi
+              Absensi {{ formatTitle(tgl.jenis_penilaian) }}
             </v-card-title>
             <v-card-text class="text--primary">
-              Absensi untuk pembuatan raport {{ tgl.jenis_penilaian }}
+              Absensi untuk kelas <b>{{ kelas.nama_kelas }}</b> dalam pembuatan raport <b>{{ tgl.jenis_penilaian }}</b>
             </v-card-text>
             <v-card-subtitle class="pb-0">
               <v-icon color="">
@@ -17,7 +17,7 @@
               Tanggal LHBS : {{ formatDate(tgl.tgl_lhbs) }}
             </v-card-subtitle>
             <v-card-actions>
-              <v-btn text color="teal accent-4" @click="reveal = true">
+              <v-btn :to="`/detail-absensi/${tgl.id_raport}`" text color="teal accent-4" @click="reveal=true">
                 Isi Absensi
               </v-btn>
             </v-card-actions>
@@ -50,10 +50,12 @@ export default {
   computed: {
     ...mapState({
       tgl_lhbs: (state) => state.absensi.tgl_lhbs,
+      kelas: (state) => state.absensi.kelas_diampu
     }),
   },
   mounted() {
     this.$store.dispatch("absensi/getTanggalLHBS");
+    this.$store.dispatch("absensi/getKelasYangDiampu");
   },
   methods: {
     formatDate(date) {
@@ -64,6 +66,18 @@ export default {
         return "";
       }
     },
+
+    formatTitle(title) {
+      if (title === "Penilaian Tengah Semester 1") {
+        return "PTS";
+      } else if (title === "Penilaian Akhir Semester") {
+        return "PAS";
+      } else if (title === "Penilaian Tengah Semester 2") {
+        return "PTS 2";
+      } else if (title === "Penilaian Akhir Tahun") {
+        return "PAT";
+      }
+    }
   },
 };
 </script>

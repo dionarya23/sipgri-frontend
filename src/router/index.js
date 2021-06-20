@@ -23,6 +23,7 @@ import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 
 // wali kelas can access
 import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
+import DetailAbsensi from "../views/pengajar/wali_kelas/DetailAbsensi.vue";
 
 // all role user can access
 import Profile from "../views/auth/Profile.vue";
@@ -166,6 +167,14 @@ const routes = [
         meta: {
           roles: ["wali_kelas"],
         },
+      },
+      {
+        path: "detail-absensi/:id_raport",
+        name: "Pengisian Absensi",
+        component: DetailAbsensi,
+        meta: {
+          roles: ["wali_kelas"]
+        }
       },
       {
         path: "ubah-profile",
