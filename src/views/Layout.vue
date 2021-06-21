@@ -198,13 +198,40 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
+           <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
             <v-list-item-icon>
               <v-icon>mdi-clipboard-list-outline</v-icon>
             </v-list-item-icon>
 
             <v-list-item-title>Absensi</v-list-item-title>
           </v-list-item>
+
+           <v-list-group
+           v-if="userData.type_user === 'wali_kelas'"
+            :value="true"
+            no-action
+            prepend-icon="mdi-file-plus"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Raport</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="([title, icon, link], i) in wali_kelas_menu"
+              :key="i"
+              link
+              color="secondary"
+              :to="link"
+            >
+              <v-list-item-title v-text="title"></v-list-item-title>
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+         
         </v-list-item-group>
 
         <v-list-item-group>
@@ -363,6 +390,12 @@ export default {
       ["Nilai KKM", "mdi-note-multiple", "/nilai-kkm"],
       ["Predikat Mapel", "mdi-alphabetical-variant", "/predikat-mapel"],
       ["Penilaian", "mdi-lead-pencil", "/penilaian"],
+    ],
+
+    wali_kelas_menu: [
+      ["Catatan Wali Kelas", "mdi-account-edit", "/catatan-wali-kelas"],
+      ["Nilai Eskul", "mdi-note-plus", "/nilai-eskul"],
+      ["Prestasi Siswa", "mdi-trophy-outline", "/prestasi-siswa"]
     ],
 
     profile: [

@@ -1,20 +1,20 @@
 <template>
   <div class="absensi">
     <v-container>
-      <v-row no-gutters>
-        <v-col v-for="(tgl, index) in tgl_lhbs" :key="index">
-          <v-card max-width="344" :disabled="tgl.status_pelaksanaan === 'Tidak Aktif'">
+      <v-row no-gutters class="mb-6">
+        <v-col cols="sm" v-for="(tgl, index) in tgl_lhbs" :key="index">
+          <v-card  tile class="pa-2" :disabled="tgl.status_pelaksanaan === 'Tidak Aktif'">
             <v-card-title>
               Absensi {{ formatTitle(tgl.jenis_penilaian) }}
             </v-card-title>
             <v-card-text class="text--primary">
-              Absensi untuk kelas <b>{{ kelas.nama_kelas }}</b> dalam pembuatan raport <b>{{ tgl.jenis_penilaian }}</b>
+              Absensi untuk kelas <b>{{ kelas.nama_kelas }}</b> dalam pembuatan raport <br/><b>{{ tgl.jenis_penilaian }}</b>
             </v-card-text>
             <v-card-subtitle class="pb-0">
               <v-icon color="">
                 mdi-calendar-clock
               </v-icon>
-              Tanggal LHBS : {{ formatDate(tgl.tgl_lhbs) }}
+              Tanggal LHBS : <br/>{{ formatDate(tgl.tgl_lhbs) }}
             </v-card-subtitle>
             <v-card-actions>
               <v-btn :to="`/detail-absensi/${tgl.id_raport}`" text color="teal accent-4" @click="reveal=true">
@@ -23,6 +23,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
+
       </v-row>
     </v-container>
   </div>
