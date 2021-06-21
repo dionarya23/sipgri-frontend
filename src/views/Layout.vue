@@ -303,9 +303,10 @@
 
         <p
           v-else-if="
-            $route.name === 'Data Jadwal' ||
-              $route.name === 'Cetak Jadwal Kelas' ||
-              $route.name === 'Absensi Peserta Didik'
+                 $route.name === 'Data Jadwal' 
+              || $route.name === 'Cetak Jadwal Kelas'
+              || $route.name === 'Absensi Peserta Didik'
+              || $route.name === 'Nilai Eskul'
           "
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
@@ -373,6 +374,8 @@ export default {
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
         ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
+        ["Predikat Nilai Eskul", "mdi-scoreboard-outline", "/predikat-eskul"],
+
       ],
       kelas: [
         ["Kelas", "mdi-google-classroom", "/data-kelas"],

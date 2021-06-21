@@ -15,6 +15,7 @@ import Jadwal from "../views/kurikulum/Jadwal.vue";
 import CetakJadwal from "../views/kurikulum/CetakJadwal.vue";
 import PredikatSikap from "../views/kurikulum/PredikatSikap.vue";
 import NilaiPredikat from "../views/kurikulum/NilaiPredikat.vue";
+import PredikatEskul from "../views/kurikulum/PredikatEskul.vue";
 
 // guru and wali kelas can access
 import Dashboard from "../views/pengajar/Dashboard.vue";
@@ -25,6 +26,8 @@ import Penilaian from "../views/pengajar/guru/Penilaian.vue";
 // wali kelas can access
 import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
 import DetailAbsensi from "../views/pengajar/wali_kelas/DetailAbsensi.vue";
+import NilaiEskul from "../views/pengajar/wali_kelas/Eskul.vue";
+import DetailNilaiEskul from "../views/pengajar/wali_kelas/DetailNilaiEskul.vue";
 
 // all role user can access
 import Profile from "../views/auth/Profile.vue";
@@ -106,6 +109,14 @@ const routes = [
         },
       },
       {
+        path: "predikat-eskul",
+        name: "Data Predikat Nilai Eskul",
+        component: PredikatEskul,
+        meta: {
+          roles: ["kurikulum"],
+        },
+      },
+      {
         path: "eskul",
         name: "Data Esktrakulikuler",
         component: Eskul,
@@ -181,6 +192,22 @@ const routes = [
         path: "detail-absensi/:id_raport",
         name: "Pengisian Absensi",
         component: DetailAbsensi,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
+        path: "nilai-eskul",
+        name: "Nilai Eskul",
+        component: NilaiEskul,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
+        path: "detail-nilai-eskul/:id_raport",
+        name: "Pengisian Nilai Eskul",
+        component: NilaiEskul,
         meta: {
           roles: ["wali_kelas"]
         }

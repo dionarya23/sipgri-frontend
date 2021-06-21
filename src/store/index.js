@@ -14,6 +14,8 @@ import predikatSikap from "./modules/predikatSikap";
 import nilaiPredikat from "./modules/nilaiPredikat";
 import predikatMapel from "./modules/predikatMapel";
 import absensi from "./modules/absensi";
+import nilaiEskul from "./modules/nilaiEskul";
+import predikatEskul from "./modules/predikatEskul";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -61,6 +63,8 @@ export default new Vuex.Store({
     nilaiPredikat,
     predikatMapel,
     absensi,
+    nilaiEskul,
+    predikatEskul,
   },
   getters: {},
   plugins: [

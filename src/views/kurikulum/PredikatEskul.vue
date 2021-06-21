@@ -1,7 +1,7 @@
 <template>
-  <div class="predikat-mapel">
+  <div class="predikat-eskul">
     <v-data-table
-      :items="filterPredikatNilai"
+      :items="listNilaiPredikat"
       :headers="headers"
       class="elevation-1"
       hide-default-footer
@@ -9,20 +9,14 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-select
-            v-model="mapelSelected"
-            :items="listMapel"
+            v-model="selectedEskul"
+            :items="eskuList"
             item-value="index"
-            item-text="mata_pelajaran"
-            label="Filter Mata Pelajaran"
+            item-text="jenis"
+            label="Filter Esktrakulikuler"
             dense
           ></v-select>
           <v-spacer></v-spacer>
-          <v-select
-            v-model="jenisNilaiSelected"
-            :items="['Pengetahuan', 'Keterampilan']"
-            label="Filter Jenis Nilai"
-            dense
-          ></v-select>
 
           <v-spacer></v-spacer>
 
@@ -30,16 +24,16 @@
             <v-card>
               <v-card-title>
                 <span class="headline"
-                  >Ubah Catatan Nilai Predikat Mata Pelajaran
-                  {{ mapelSelected.mata_pelajaran }}</span
+                  >Ubah Catatan Nilai Predikat Eskul
+                  {{ selectedEskul.jenis }}</span
                 >
               </v-card-title>
               <v-card-text>
                 <v-container>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
-                      label="Mata Pelajaran"
-                      v-model="editedItem.mata_pelajaran"
+                      label="Estrakulikuler"
+                      v-model="editedItem.eskul"
                       readonly
                     >
                     </v-text-field>
@@ -47,13 +41,6 @@
                     <v-text-field
                       label="Nilai Predikat"
                       v-model="editedItem.predikat"
-                      readonly
-                    >
-                    </v-text-field>
-
-                    <v-text-field
-                      label="Jenis Nilai"
-                      v-model="editedItem.jenis_nilai"
                       readonly
                     >
                     </v-text-field>
@@ -111,121 +98,97 @@ export default {
     valid: true,
     dialog: false,
     headers: [
-      { text: "Mata Pelajaran", value: "mata_pelajaran", sortable: false },
-      { text: "Jenis Nilai", value: "jenis_nilai", sortable: false },
       { text: "Nilai Predikat", value: "predikat", sortable: false },
       { text: "Catatan Penilaian", value: "catatan", sortable: false },
       { text: "Action", value: "actions", sortable: false },
     ],
-    jenisNilaiSelected: "Pengetahuan",
     rulesForm: {
       requiredRules: (v) => !!v || "Wajib Diisi",
     },
-    mapelSelected: {
+    selectedEskul: {
       index: 0,
     },
     editedIndex: -1,
     editedItem: {
-      id_predikat_mapel: "",
-      mata_pelajaran: "",
+      id_predikat_eskul: "",
+      id_esktrakulikuler: "",
+      eskul: "",
       predikat: "",
-      jenis_nilai: "",
       catatan: "",
     },
     defaultItem: {
-      id_predikat_mapel: "",
-      mata_pelajaran: "",
+      id_predikat_eskul: "",
+      id_esktrakulikuler: "",
+      eskul: "",
       predikat: "",
-      jenis_nilai: "",
       catatan: "",
     },
   }),
   computed: {
     ...mapState({
       alert: (state) => state.alert,
-      isLoading: (state) => state.predikatMapel.isLoading,
-      firstMapel: (state) => state.predikatMapel.firstMapel,
-      predikatMapel: (state) => {
-        let predikat_mapel = [];
-        state.predikatMapel.predikatMapel.map(
-          ({ mata_pelajaran, nilai_predikat }) => {
-            nilai_predikat.map(
-              ({ id_predikat_mapel, predikat, catatan, jenis_nilai }) => {
-                predikat_mapel.push({
-                  mata_pelajaran,
-                  id_predikat_mapel,
-                  predikat,
-                  catatan,
-                  jenis_nilai,
-                });
-              }
-            );
-          }
-        );
-        return predikat_mapel;
-      },
-      listMapel: (state) => {
-        return state.predikatMapel.predikatMapel.map(
-          ({ mata_pelajaran }, index) => {
-            return {
-              mata_pelajaran,
-              index,
-            };
-          }
-        );
-      },
+      isLoading: (state) => state.predikatEskul.isLoading,
+      eskul: (state) => state.predikatEskul.eskul,
     }),
-    filterPredikatNilai() {
-      let mapel = "";
-
-      this.listMapel.map((e, index) => {
-        const indexToCompare =
-          typeof this.mapelSelected.index === "number"
-            ? this.mapelSelected.index
-            : this.mapelSelected;
-
-        if (index === indexToCompare) {
-          mapel = e.mata_pelajaran;
+    firstEskul() {
+      return typeof this.eskul[0] !== "undefined" ? this.eskul[0] : {};
+    },
+    eskuList() {
+      return this.eskul.map((eskul, index) => ({
+        index,
+        id_esktrakulikuler: eskul.id_esktrakulikuler,
+        jenis: eskul.jenis,
+        predikat_eskul: eskul.predikat_eskul,
+      }));
+    },
+    listNilaiPredikat() {
+      let index =
+        typeof this.selectedEskul.index === "undefined"
+          ? this.selectedEskul
+          : this.selectedEskul.index;
+      let listPredikat = [];
+      this.eskuList.map((eskul) => {
+        if (eskul.index === index) {
+          eskul.predikat_eskul.map((item) => {
+            listPredikat.push({
+              id_predikat_eskul: item.id_predikat_eskul,
+              id_esktrakulikuler: item.id_esktrakulikuler,
+              eskul: eskul.jenis,
+              predikat: item.predikat,
+              catatan: item.catatan,
+            });
+          });
         }
       });
-      let filtered = this.predikatMapel.filter((mapelPredikat) => {
-        return (
-          mapelPredikat.mata_pelajaran === mapel &&
-          mapelPredikat.jenis_nilai === this.jenisNilaiSelected
-        );
-      });
-
-      return filtered;
+      return listPredikat;
     },
   },
   mounted() {
-    this.$store.dispatch("predikatMapel/getAllPredikatMapel");
+    this.$store.dispatch("predikatEskul/getAllPredikatEskul");
   },
   methods: {
     save() {
       if (this.$refs.form.validate()) {
         this.$store
-          .dispatch("predikatMapel/updatePredikatMapel", {
-            id_predikat_mapel: this.editedItem.id_predikat_mapel,
-            updatedData: {
-              catatan: this.editedItem.catatan,
-            },
+          .dispatch("predikatEskul/updateCatatanPredikatNilaiEskul", {
+            id_predikat_eskul: this.editedItem.id_predikat_eskul,
+            catatan: this.editedItem.catatan,
           })
           .then((_) => {
-            this.predikatMapel[
+            this.listNilaiPredikat[
               this.editedIndex
             ].catatan = this.editedItem.catatan;
             this.close();
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             this.close();
           });
       }
     },
 
     editItem(item) {
-      this.editedIndex = this.predikatMapel.indexOf(item);
+      this.editedIndex = this.listNilaiPredikat.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
