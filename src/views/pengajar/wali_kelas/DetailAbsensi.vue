@@ -74,7 +74,7 @@
                         type="number"
                         :rules="[
                           rulesInputForm.requiredRule,
-                          rulesInputForm.notMinus,
+                          rulesInputForm.notMinus
                         ]"
                       >
                       </v-text-field>
@@ -85,7 +85,7 @@
                         type="number"
                         :rules="[
                           rulesInputForm.requiredRule,
-                          rulesInputForm.notMinus,
+                          rulesInputForm.notMinus
                         ]"
                       >
                       </v-text-field>
@@ -96,7 +96,7 @@
                         type="number"
                         :rules="[
                           rulesInputForm.requiredRule,
-                          rulesInputForm.notMinus,
+                          rulesInputForm.notMinus
                         ]"
                       >
                       </v-text-field>
@@ -153,11 +153,11 @@ export default {
     alertLocal: {
       isShow: false,
       type: "error",
-      message: "",
+      message: ""
     },
     rulesInputForm: {
       requiredRule: (v) => !!v || "Wajib diisi",
-      notMinus: (v) => Number(v) >= 0 || "Tidak boleh kurang dari 0",
+      notMinus: (v) => Number(v) >= 0 || "Tidak boleh kurang dari 0"
     },
     valid: true,
     dialog: false,
@@ -165,33 +165,33 @@ export default {
       {
         text: "NISN",
         value: "peserta_didik.nisn",
-        sortable: false,
+        sortable: false
       },
       {
         text: "NIS",
         value: "peserta_didik.nis",
-        sortable: false,
+        sortable: false
       },
       {
         text: "Nama",
-        value: "peserta_didik.nama",
+        value: "peserta_didik.nama"
       },
       {
         text: "Tanpa Keterangan",
         value: "peserta_didik.absensi_siswa.alpha",
-        sortable: false,
+        sortable: false
       },
       {
         text: "Izin",
         value: "peserta_didik.absensi_siswa.izin",
-        sortable: false,
+        sortable: false
       },
       {
         text: "Sakit",
         value: "peserta_didik.absensi_siswa.sakit",
-        sortable: false,
+        sortable: false
       },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Action", value: "actions", sortable: false }
     ],
     editedItem: {
       id_absensi: -1,
@@ -200,7 +200,7 @@ export default {
       id_raport: -1,
       alpha: "",
       izin: "",
-      sakit: "",
+      sakit: ""
     },
     defaultItem: {
       id_absensi: -1,
@@ -209,9 +209,9 @@ export default {
       id_raport: -1,
       alpha: "",
       izin: "",
-      sakit: "",
+      sakit: ""
     },
-    editedIndex: -1,
+    editedIndex: -1
   }),
   computed: {
     ...mapState({
@@ -219,7 +219,7 @@ export default {
       isLoading: (state) => state.absensi.isLoading,
       detail_kelas: (state) => state.absensi.detail_kelas.kelas_siswa,
       raport: (state) => state.absensi.raport,
-      nama_kelas: (state) => state.absensi.detail_kelas.nama_kelas,
+      nama_kelas: (state) => state.absensi.detail_kelas.nama_kelas
     }),
     tahunAjaranSemester() {
       return `${this.raport.tahun_ajaran.tahun_awal}/${this.raport.tahun_ajaran.tahun_akhir} - Semester ${this.raport.semester}`;
@@ -228,7 +228,7 @@ export default {
       return this.editedIndex === -1
         ? "Tambah Data Absensi"
         : "Ubah Data Absensi";
-    },
+    }
   },
   mounted() {
     this.$store.dispatch(
@@ -246,7 +246,7 @@ export default {
           alpha,
           izin,
           sakit,
-          id_raport,
+          id_raport
         } = this.editedItem;
         if (this.editedItem.id_absensi === -1) {
           // membuat data baru
@@ -257,24 +257,35 @@ export default {
               alpha,
               sakit,
               izin,
-              id_raport,
+              id_raport
             })
             .then((res) => {
               const { data } = res.data;
-            console.log(this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa)
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa = {};
-            console.log(this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa )
-              
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.id_absensi =
-                data.id_absensi;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.id_raport =
-                data.id_raport;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.alpha =
-                data.alpha;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.sakit =
-                data.sakit;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.izin =
-                data.izin;
+              console.log(
+                this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa
+              );
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa = {};
+              console.log(
+                this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa
+              );
+
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.id_absensi = data.id_absensi;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.id_raport = data.id_raport;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.alpha = data.alpha;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.sakit = data.sakit;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.izin = data.izin;
 
               this.close();
             })
@@ -292,13 +303,19 @@ export default {
                 alpha,
                 sakit,
                 izin,
-                id_raport,
-              },
+                id_raport
+              }
             })
             .then((_) => {
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.alpha = alpha;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.izin = izin;
-              this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa.sakit = sakit;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.alpha = alpha;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.izin = izin;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.sakit = sakit;
               this.close();
             })
             .catch((err) => {
@@ -329,7 +346,7 @@ export default {
           izin,
           sakit,
           id_absensi,
-          id_raport,
+          id_raport
         } = item.peserta_didik.absensi_siswa;
         this.editedItem = Object.assign(
           {},
@@ -340,7 +357,7 @@ export default {
             id_raport,
             alpha,
             izin,
-            sakit,
+            sakit
           }
         );
       } else {
@@ -353,12 +370,12 @@ export default {
             id_raport: this.raport.id_raport,
             alpha: null,
             izin: null,
-            sakit: null,
+            sakit: null
           }
         );
       }
       this.dialog = true;
-    },
-  },
+    }
+  }
 };
 </script>

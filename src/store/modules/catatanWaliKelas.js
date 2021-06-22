@@ -1,49 +1,18 @@
 import axios from "axios";
 
-// !Ambil peserta didik beserta catatan (untuk table) :
-// GET {{url}}/catatan-wali-kelas/peserta-didik/:id_raport
-
-// !Masukin kesemua catatan wali kelas bulk :
-// POST {{url}}/catatan-wali-kelas/bulk
-// data : {
-// "id_raport": 7,
-// "id_kelas": 8,
-// "catatan": "Selamat atas pembagian raport akhir semester mantap sekalli bujang bujang"
-// }
-
-// !Membuat Catatan Wali kelas misal catatan wali kelas null:
-// POST {{url}}/catatan-wali-kelas
-// data: {
-// "id_peserta_didik" : 1,
-// "catatan" : "Terimakasih atas perjuangan anda selama ini",
-// "id_raport" : 7
-// }
-
-// !Update Catatan Wali Kelas misal tidak null catatan wali kelas nya:
-// PUT {{url}}/catatan-wali-kelas/:id_catatan
-// data: {
-//  "catatan" : "Terimakasih atas perjuangan anda selama ini"
-// }
-
 const catatanWaliKelas = {
   namespaced: true,
   state: {
     isLoading: false,
     raport: {},
-    catatan: []
+    catatan: [],
+    tableCatatan: []
   },
   mutations: {
-    SET_TGL_LHBS_RAPORT(state, tglHBSRaport) {
-      state.tgl_lhbs = tglHBSRaport;
-    },
-    SET_KELAS_DIAMPU(state, kelas) {
-      state.kelas_diampu = kelas;
-    },
-    SET_PESERTA_DIDIK(state, detail_kelas) {
-      state.detail_kelas = detail_kelas;
+    SET_TABLE_CATATAN(state, data) {
+      state.tableCatatan = data;
     },
     SET_RAPORT(state, raport) {
-      console.log("raport : ", raport);
       state.catatan = raport.tanggal.filter((e) => {
         return (
           e.jenis_penilaian === "Penilaian Akhir Semester" ||
@@ -54,17 +23,130 @@ const catatanWaliKelas = {
     }
   },
   actions: {
-    getRaport({ commit }, id_raport) {
+    getRaport({ commit, state }) {
+      state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: "raport/tahun-ajaran/aktif",
           method: "GET"
         })
           .then((res) => {
+            state.isLoading = false;
             commit("SET_RAPORT", res.data.data);
             resolve(res);
           })
           .catch((err) => {
+            state.isLoading = false;
+            reject(err);
+          });
+      });
+    },
+    getTableCatatan({ commit, state }, id_raport) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `catatan-wali-kelas/peserta-didik/${id_raport}`,
+          method: "GET"
+        })
+          .then((res) => {
+            state.isLoading = false;
+            commit("SET_TABLE_CATATAN", res.data.data);
+            console.log(res.data.data);
+            resolve(res);
+          })
+          .catch((err) => {
+            state.isLoading = false;
+            reject(err);
+          });
+      });
+    },
+    createCatatanForAll({ commit, state }, data) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url: "catatan-wali-kelas/bulk",
+          data
+        })
+          .then((res) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "success",
+              message: "berhasil menambahkan catatan"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "gagal menambahkan catatan"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+          });
+      });
+    },
+    createCatatan({ commit, state }, data) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url: "catatan-wali-kelas",
+          data
+        })
+          .then((res) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "success",
+              message: "berhasil menambahkan catatan"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "gagal menambahkan catatan"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+          });
+      });
+    },
+    updateCatatan({ commit, state }, { id_catatan, data }) {
+      state.isLoading = true;
+      console.log(id_catatan, data);
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "PUT",
+          url: `catatan-wali-kelas/${id_catatan}/`,
+          data
+        })
+          .then((res) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "success",
+              message: "berhasil mengupdate absensi"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            resolve(res);
+          })
+          .catch((err) => {
+            state.isLoading = false;
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "gagal mengupdate absensi"
+            };
+            commit("SHOW_ALERT", payload, { root: true });
             reject(err);
           });
       });
