@@ -22,6 +22,7 @@ import Dashboard from "../views/pengajar/Dashboard.vue";
 import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
 import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 import Penilaian from "../views/pengajar/guru/Penilaian.vue";
+import DetailNilai from "../views/pengajar/guru/DetailNilai.vue";
 
 // wali kelas can access
 import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
@@ -174,8 +175,16 @@ const routes = [
       },
       {
         path: "penilaian",
-        name: "Penilaian Peserta Didik",
+        name: "Penilaian Mata Pelajaran",
         component: Penilaian,
+        meta: {
+          roles: ["guru", "wali_kelas"],
+        },
+      },
+      {
+        path: "detail-isi-nilai/:kode_mengajar/:id_kelas",
+        name: "Pengisian Nilai Peserta Didik",
+        component: DetailNilai,
         meta: {
           roles: ["guru", "wali_kelas"],
         },

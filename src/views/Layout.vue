@@ -198,7 +198,7 @@
             </v-list-item>
           </v-list-group>
 
-           <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
+          <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
             <v-list-item-icon>
               <v-icon>mdi-clipboard-list-outline</v-icon>
             </v-list-item-icon>
@@ -206,8 +206,8 @@
             <v-list-item-title>Absensi</v-list-item-title>
           </v-list-item>
 
-           <v-list-group
-           v-if="userData.type_user === 'wali_kelas'"
+          <v-list-group
+            v-if="userData.type_user === 'wali_kelas'"
             :value="true"
             no-action
             prepend-icon="mdi-file-plus"
@@ -230,8 +230,6 @@
               </v-list-item-icon>
             </v-list-item>
           </v-list-group>
-
-         
         </v-list-item-group>
 
         <v-list-item-group>
@@ -303,10 +301,10 @@
 
         <p
           v-else-if="
-                 $route.name === 'Data Jadwal' 
-              || $route.name === 'Cetak Jadwal Kelas'
-              || $route.name === 'Absensi Peserta Didik'
-              || $route.name === 'Nilai Eskul'
+            $route.name === 'Data Jadwal' ||
+              $route.name === 'Cetak Jadwal Kelas' ||
+              $route.name === 'Absensi Peserta Didik' ||
+              $route.name === 'Nilai Eskul'
           "
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
@@ -316,7 +314,35 @@
         </p>
 
         <p
-          v-else-if="$route.name === 'Pengisian Absensi' || $route.name === 'Pengisian Nilai Eskul'"
+          v-else-if="$route.name === 'Penilaian Mata Pelajaran'"
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
+            tahunAjaranAktif.tahun_akhir
+          }}
+          Jenis {{ raportAktif.jenis_penilaian }}
+        </p>
+
+        <p
+          v-else-if="$route.name === 'Pengisian Nilai Peserta Didik'"
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          <v-btn @click="back" text color="black">
+            <v-icon>
+              mdi-arrow-left
+            </v-icon>
+          </v-btn>
+          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
+            tahunAjaranAktif.tahun_akhir
+          }}
+          Jenis {{ raportAktif.jenis_penilaian }}
+        </p>
+
+        <p
+          v-else-if="
+            $route.name === 'Pengisian Absensi' ||
+              $route.name === 'Pengisian Nilai Eskul'
+          "
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
           <v-btn @click="back" text color="black">
@@ -375,7 +401,6 @@ export default {
         ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
         ["Predikat Eskul", "mdi-scoreboard-outline", "/predikat-eskul"],
-
       ],
       kelas: [
         ["Kelas", "mdi-google-classroom", "/data-kelas"],
@@ -398,7 +423,7 @@ export default {
     wali_kelas_menu: [
       ["Catatan Wali Kelas", "mdi-account-edit", "/catatan-wali-kelas"],
       ["Nilai Eskul", "mdi-note-plus", "/nilai-eskul"],
-      ["Prestasi Siswa", "mdi-trophy-outline", "/prestasi-siswa"]
+      ["Prestasi Siswa", "mdi-trophy-outline", "/prestasi-siswa"],
     ],
 
     profile: [
@@ -427,6 +452,7 @@ export default {
     ...mapState({
       tahunAjaranAktifLHBS: (state) => state.raport.tahun_ajaran_aktif,
       tahunAjaranAktif: (state) => state.tahunAjaran.tahunAjaranAktif,
+      raportAktif: (state) => state.nilaiSiswa.raportStatusAktif,
     }),
   },
   mounted() {
@@ -436,9 +462,14 @@ export default {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
+    if (this.$route.name === "Penilaian Mata Pelajaran" || this.$route.name === 'Pengisian Nilai Peserta Didik') {
+      this.$store.dispatch("nilaiSiswa/getRaportStatusPelaksanaanAktif");
+    }
+
     if (
       this.userData.type_user === "kurikulum" ||
-      this.userData.type_user === "wali_kelas"
+      this.userData.type_user === "wali_kelas" ||
+      this.userData.type_user === "guru"
     ) {
       this.$store
         .dispatch("tahunAjaran/getTahunAjaranAktif")
