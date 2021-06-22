@@ -20,7 +20,6 @@ const absensi = {
       state.detail_kelas = detail_kelas;
     },
     SET_RAPORT(state, raport) {
-      console.log("raport : ", raport);
       state.raport = raport;
     }
   },

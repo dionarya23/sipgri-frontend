@@ -25,7 +25,7 @@
               <v-card-title>
                 <span class="headline"
                   >Ubah Catatan Nilai Predikat Eskul
-                  {{ selectedEskul.jenis }}</span
+                  {{ editedItem.eskul }}</span
                 >
               </v-card-title>
               <v-card-text>

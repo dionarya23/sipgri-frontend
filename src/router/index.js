@@ -207,7 +207,7 @@ const routes = [
       {
         path: "detail-nilai-eskul/:id_raport",
         name: "Pengisian Nilai Eskul",
-        component: NilaiEskul,
+        component: DetailNilaiEskul,
         meta: {
           roles: ["wali_kelas"]
         }

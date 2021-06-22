@@ -5,6 +5,11 @@
 export default {
     data: () => ({
         
-    })
+    }),
+    computed: {
+        // ...mapState({
+            
+        // })
+    }
 }
 </script>

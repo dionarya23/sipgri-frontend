@@ -374,7 +374,7 @@ export default {
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
         ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
-        ["Predikat Nilai Eskul", "mdi-scoreboard-outline", "/predikat-eskul"],
+        ["Predikat Eskul", "mdi-scoreboard-outline", "/predikat-eskul"],
 
       ],
       kelas: [
