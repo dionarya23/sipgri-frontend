@@ -335,7 +335,18 @@
           {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
             tahunAjaranAktif.tahun_akhir
           }}
-          Jenis {{ raportAktif.jenis_penilaian }}
+        </p>
+
+        <p v-else-if="$route.name === 'Pengisian Catatan Wali Kelas'" 
+          class="text-h4 text-center text-lg-left text--secondary mb-8"
+        >
+          <v-btn @click="back" text color="black">
+            <v-icon>
+              mdi-arrow-left
+            </v-icon>
+          </v-btn>
+
+          {{ $route.name }}
         </p>
 
         <p
@@ -462,7 +473,10 @@ export default {
       this.$store.dispatch("raport/getTanggalLHBSByStatusAktif");
     }
 
-    if (this.$route.name === "Penilaian Mata Pelajaran" || this.$route.name === 'Pengisian Nilai Peserta Didik') {
+    if (
+      this.$route.name === "Penilaian Mata Pelajaran" ||
+      this.$route.name === "Pengisian Nilai Peserta Didik"
+    ) {
       this.$store.dispatch("nilaiSiswa/getRaportStatusPelaksanaanAktif");
     }
 

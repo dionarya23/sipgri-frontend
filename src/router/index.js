@@ -233,7 +233,7 @@ const routes = [
       },
       {
         path: "catatan-wali-kelas/:id_raport",
-        name: "Catatan Wali Kelas",
+        name: "Pengisian Catatan Wali Kelas",
         component: DetailCatatan,
         meta: {
           roles: ["wali_kelas"]

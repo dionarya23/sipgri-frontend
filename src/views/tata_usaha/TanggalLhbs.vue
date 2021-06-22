@@ -115,7 +115,7 @@
         text
         @click="makeAtive(item)"
       >
-        Aktif
+        Aktifkan
       </v-btn>
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil

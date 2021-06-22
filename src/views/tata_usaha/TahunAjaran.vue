@@ -140,7 +140,7 @@
         </v-icon> -->
         <v-row v-show="item.status_aktif !== 'Aktif'" align="center">
           <v-btn text color="success" @click="editItem(item)">
-            Aktif
+            Aktifkan
           </v-btn>
 
           <v-icon large @click="deleteItem(item)">
