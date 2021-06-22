@@ -17,6 +17,7 @@ import absensi from "./modules/absensi";
 import nilaiEskul from "./modules/nilaiEskul";
 import predikatEskul from "./modules/predikatEskul";
 import nilaiSiswa from "./modules/nilaiSiswa";
+import catatanWaliKelas from "./modules/catatanWaliKelas";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -27,8 +28,8 @@ export default new Vuex.Store({
     alert: {
       isShow: false,
       type: "",
-      message: "",
-    },
+      message: ""
+    }
   },
   mutations: {
     SHOW_ALERT(state, payload) {
@@ -43,7 +44,7 @@ export default new Vuex.Store({
     },
     CLOSE_ALERT(state) {
       state.alert.isShow = false;
-    },
+    }
   },
   actions: {
     doReload() {
@@ -67,12 +68,13 @@ export default new Vuex.Store({
     nilaiEskul,
     predikatEskul,
     nilaiSiswa,
+    catatanWaliKelas,
   },
   getters: {},
   plugins: [
     createPersistedState({
       paths: ["auth.user"],
-      key: ["user"],
-    }),
-  ],
+      key: ["user"]
+    })
+  ]
 });

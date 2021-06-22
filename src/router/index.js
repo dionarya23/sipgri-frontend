@@ -23,6 +23,8 @@ import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
 import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 import Penilaian from "../views/pengajar/guru/Penilaian.vue";
 import DetailNilai from "../views/pengajar/guru/DetailNilai.vue";
+import CatatanWaliKelas from "../views/pengajar/raport/CatatanWaliKelas.vue";
+import DetailCatatan from "../views/pengajar/raport/DetailCatatan.vue";
 
 // wali kelas can access
 import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
@@ -50,7 +52,7 @@ const routes = [
     redirect: "/user",
     component: Layout,
     meta: {
-      requiresAuth: true,
+      requiresAuth: true
     },
     children: [
       {
@@ -58,56 +60,56 @@ const routes = [
         name: "Data User",
         component: User,
         meta: {
-          roles: ["tata_usaha"],
-        },
+          roles: ["tata_usaha"]
+        }
       },
       {
         path: "tahun-ajaran",
         name: "Data Tahun Ajaran",
         component: TahunAjaran,
         meta: {
-          roles: ["tata_usaha"],
-        },
+          roles: ["tata_usaha"]
+        }
       },
       {
         path: "peserta-didik",
         name: "Data Peserta Didik",
         component: PesertaDidik,
         meta: {
-          roles: ["tata_usaha"],
-        },
+          roles: ["tata_usaha"]
+        }
       },
       {
         path: "tanggal-lhbs",
         name: `Data Tanggal LHBS Tahun Ajaran`,
         component: TanggalLhbs,
         meta: {
-          roles: ["tata_usaha"],
-        },
+          roles: ["tata_usaha"]
+        }
       },
       {
         path: "mata-pelajaran",
         name: "Data Mata Pelajaran",
         component: MataPelajaran,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "nilai-predikat",
         name: "Data Nilai Predikat",
         component: NilaiPredikat,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "predikat-sikap",
         name: "Data Predikat Sikap",
         component: PredikatSikap,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "predikat-eskul",
@@ -122,64 +124,64 @@ const routes = [
         name: "Data Esktrakulikuler",
         component: Eskul,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "data-kelas",
         name: "Data Kelas",
         component: Kelas,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "data-jadwal",
         name: "Data Jadwal",
         component: Jadwal,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "jadwal-kelas",
         name: "Cetak Jadwal Kelas",
         component: CetakJadwal,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "dashboard",
         name: "Dashboard",
         component: Dashboard,
         meta: {
-          roles: ["guru", "wali_kelas"],
-        },
+          roles: ["guru", "wali_kelas"]
+        }
       },
       {
         path: "nilai-kkm",
         name: "Nilai KKM Mata Pelajaran",
         component: NilaiKkm,
         meta: {
-          roles: ["guru", "wali_kelas"],
-        },
+          roles: ["guru", "wali_kelas"]
+        }
       },
       {
         path: "predikat-mapel",
         name: "Nilai Predikat Mata Pelajaran",
         component: PredikatMapel,
         meta: {
-          roles: ["guru", "wali_kelas"],
-        },
+          roles: ["guru", "wali_kelas"]
+        }
       },
       {
         path: "penilaian",
         name: "Penilaian Mata Pelajaran",
         component: Penilaian,
         meta: {
-          roles: ["guru", "wali_kelas"],
-        },
+          roles: ["guru", "wali_kelas"]
+        }
       },
       {
         path: "detail-isi-nilai/:kode_mengajar/:id_kelas",
@@ -194,8 +196,8 @@ const routes = [
         name: "Absensi Peserta Didik",
         component: Absensi,
         meta: {
-          roles: ["wali_kelas"],
-        },
+          roles: ["wali_kelas"]
+        }
       },
       {
         path: "detail-absensi/:id_raport",
@@ -222,22 +224,38 @@ const routes = [
         }
       },
       {
+        path: "catatan-wali-kelas",
+        name: "Catatan Wali Kelas",
+        component: CatatanWaliKelas,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
+        path: "catatan-wali-kelas/:id_raport",
+        name: "Catatan Wali Kelas",
+        component: DetailCatatan,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
         path: "ubah-profile",
         name: "Ubah Profile",
         component: Profile,
         meta: {
-          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"],
-        },
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
+        }
       },
       {
         path: "ubah-password",
         name: "Ubah Password",
         component: Password,
         meta: {
-          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"],
-        },
-      },
-    ],
+          roles: ["kurikulum", "tata_usaha", "guru", "wali_kelas"]
+        }
+      }
+    ]
   },
   {
     path: "/login",
@@ -249,7 +267,7 @@ const routes = [
         return;
       }
       next("/");
-    },
+    }
   },
   {
     path: "/lost-password",
@@ -261,7 +279,7 @@ const routes = [
         return;
       }
       next("/");
-    },
+    }
   },
   {
     path: "/change-password/:hash",
@@ -273,14 +291,14 @@ const routes = [
         return;
       }
       next("/");
-    },
-  },
+    }
+  }
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes,
+  routes
 });
 
 router.beforeEach((to, from, next) => {
@@ -292,25 +310,25 @@ router.beforeEach((to, from, next) => {
         switch (store.getters["auth/role"]) {
           case "tata_usaha":
             next({
-              name: "Data User",
+              name: "Data User"
             });
             break;
 
           case "kurikulum":
             next({
-              name: "Data Mata Pelajaran",
+              name: "Data Mata Pelajaran"
             });
             break;
 
           case "guru":
             next({
-              name: "Dashboard",
+              name: "Dashboard"
             });
             break;
 
           case "wali_kelas":
             next({
-              name: "Dashboard",
+              name: "Dashboard"
             });
             break;
 
@@ -320,7 +338,7 @@ router.beforeEach((to, from, next) => {
             localStorage.removeItem("role");
             delete axios.defaults.headers.common["Authorization"];
             next({
-              name: "Login",
+              name: "Login"
             });
             break;
         }
