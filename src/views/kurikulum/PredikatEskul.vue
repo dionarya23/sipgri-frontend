@@ -100,7 +100,7 @@ export default {
     headers: [
       { text: "Nilai Predikat", value: "predikat", sortable: false },
       { text: "Catatan Penilaian", value: "catatan", sortable: false },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     rulesForm: {
       requiredRules: (v) => !!v || "Wajib Diisi",

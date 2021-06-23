@@ -130,7 +130,7 @@ export default {
       { text: "Nilai Predikat", value: "predikat", sortable: false },
       { text: "Catatan Penilaian", value: "catatan", sortable: false },
       { text: "Tipe Nilai Sikap", value: "type_sikap" },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {

@@ -135,7 +135,7 @@ export default {
         align: "center",
         sortable: false,
       },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
   }),
   computed: {

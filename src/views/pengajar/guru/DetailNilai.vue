@@ -350,7 +350,7 @@ export default {
           value: "peserta_didik.nilai.predikat_sikap",
           sortable: false,
         },
-        { text: "Action", value: "actions", sortable: false },
+        { text: "Aksi", value: "actions", sortable: false },
       ];
     },
   },

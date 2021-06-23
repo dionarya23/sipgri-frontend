@@ -6,6 +6,8 @@ import User from "../views/tata_usaha/User.vue";
 import TahunAjaran from "../views/tata_usaha/TahunAjaran.vue";
 import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
+import CetakRaport from "../views/tata_usaha/CetakRaport.vue";
+import DetailCetakRaport from "../views/tata_usaha/DetailCetakRaport.vue";
 
 // kurikulum
 import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
@@ -83,6 +85,22 @@ const routes = [
         path: "tanggal-lhbs",
         name: `Data Tanggal LHBS Tahun Ajaran`,
         component: TanggalLhbs,
+        meta: {
+          roles: ["tata_usaha"]
+        }
+      },
+      {
+        path: "cetak-raport",
+        name: `Cetak Raport`,
+        component: CetakRaport,
+        meta: {
+          roles: ["tata_usaha"]
+        }
+      },
+      {
+        path: "cetak-raport-kelas/:id_kelas",
+        name: `Cetak Raport Kelas`,
+        component: DetailCetakRaport,
         meta: {
           roles: ["tata_usaha"]
         }

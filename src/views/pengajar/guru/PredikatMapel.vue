@@ -115,7 +115,7 @@ export default {
       { text: "Jenis Nilai", value: "jenis_nilai", sortable: false },
       { text: "Nilai Predikat", value: "predikat", sortable: false },
       { text: "Catatan Penilaian", value: "catatan", sortable: false },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     jenisNilaiSelected: "Pengetahuan",
     rulesForm: {

@@ -191,7 +191,7 @@ export default {
         value: "peserta_didik.absensi_siswa.sakit",
         sortable: false
       },
-      { text: "Action", value: "actions", sortable: false }
+      { text: "Aksi", value: "actions", sortable: false }
     ],
     editedItem: {
       id_absensi: -1,

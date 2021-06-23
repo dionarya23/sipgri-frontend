@@ -147,7 +147,7 @@ export default {
         value: "no",
       },
       { text: "Nama Eskul", value: "jenis" },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {

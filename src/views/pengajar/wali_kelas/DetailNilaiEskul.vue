@@ -219,7 +219,7 @@ export default {
         text: "Eskul dan Nilai",
         value: "peserta_didik.kegiatan_eskul_murid",
       },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {

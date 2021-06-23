@@ -176,7 +176,7 @@ export default {
         value: "peserta_didik.catatan_wali_kelas.catatan",
         sortable: false
       },
-      { text: "Action", value: "actions", sortable: false }
+      { text: "Aksi", value: "actions", sortable: false }
     ],
     editedItem: {
       id_catatan: -1,

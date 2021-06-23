@@ -192,7 +192,7 @@ export default {
       { text: "Jurusan", value: "jurusan" },
       { text: "Tingkat", value: "tingkat" },
       { text: "Wali Kelas", value: "wali_kelas.nama" },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     no_kelas: "",

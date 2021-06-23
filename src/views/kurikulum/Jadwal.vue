@@ -284,7 +284,7 @@ export default {
       { text: "Hari", value: "hari" },
       { text: "Jam Mulai", value: "jam_mulai" },
       { text: "Jam Selesai", value: "jam_selesai" },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     list_hari: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],

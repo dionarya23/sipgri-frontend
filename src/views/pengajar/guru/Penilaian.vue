@@ -40,7 +40,7 @@ export default {
         value: "mengajar.mata_pelajaran.mata_pelajaran",
         sortable: false,
       },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
   }),
   computed: {

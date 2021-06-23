@@ -155,7 +155,7 @@ export default {
       },
       { text: "Nama Mata Pelajaran", value: "mata_pelajaran" },
       { text: "Kelompok", value: "kelompok", sortable: false },
-      { text: "Action", value: "actions", sortable: false },
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     id_mata_pelajaran: -1,
