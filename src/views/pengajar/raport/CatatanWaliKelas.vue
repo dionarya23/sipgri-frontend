@@ -1,7 +1,13 @@
 <template>
   <div class="catatan-wali-kelas">
     <v-container>
-      <v-row no-gutters class="mb-6">
+      <div class="text-center" v-if="isLoading">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
+      <v-row no-gutters class="mb-6" v-else>
         <v-col cols="sm" v-for="(tgl, index) in catatan" :key="index">
           <v-card
             tile
@@ -59,6 +65,7 @@ export default {
   computed: {
     ...mapState({
       raport: (state) => state.catatanWaliKelas.raport,
+      isLoading: (state) => state.catatanWaliKelas.isLoading,
       catatan: (state) => state.catatanWaliKelas.catatan,
       kelas: (state) => state.absensi.kelas_diampu
     })

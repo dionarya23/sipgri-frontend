@@ -19,6 +19,7 @@ import predikatEskul from "./modules/predikatEskul";
 import nilaiSiswa from "./modules/nilaiSiswa";
 import catatanWaliKelas from "./modules/catatanWaliKelas";
 import cetakRaport from "./modules/cetakRaport";
+import prestasi from "./modules/prestasi";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -71,6 +72,7 @@ export default new Vuex.Store({
     nilaiSiswa,
     catatanWaliKelas,
     cetakRaport,
+    prestasi
   },
   getters: {},
   plugins: [
