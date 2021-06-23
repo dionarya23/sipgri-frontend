@@ -1,14 +1,17 @@
 <template>
-  <div class="detail-catatan">
+  <div class="detail-prestasi">
     <v-card>
       <v-card-title>
-        Kelas {{ tableCatatan.nama_kelas }} catatan untuk
+        Kelas {{ prestasi.nama_kelas }} prestasi untuk
         {{ raport.jenis_penilaian }}
       </v-card-title>
       <v-data-table
         :loading="isLoading"
         :headers="headers"
-        :items="tableCatatan.kelas_siswa"
+        :items="prestasi.kelas_siswa"
+        :expanded.sync="expanded"
+        item-key="id_peserta_didik"
+        show-expand
         class="elevation-1"
         sort-by="no"
         :search="search"
@@ -24,19 +27,6 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <v-dialog persistent v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  depressed
-                  class="mb-2 text--white"
-                  v-bind="attrs"
-                  v-on="on"
-                  :loading="isLoading"
-                  :disabled="isLoading"
-                >
-                  Tambah Catatan untuk semua
-                </v-btn>
-              </template>
               <v-card>
                 <v-card-title>
                   {{ formTitle }}
@@ -75,27 +65,61 @@
                       </v-text-field>
 
                       <v-text-field
-                        v-if="editedItem.nama !== ''"
                         label="Nama Peserta Didik"
                         v-model="editedItem.nama"
                         readonly
                       >
                       </v-text-field>
 
-                      <v-text-field
-                        v-else
-                        label="Nama Kelas"
-                        v-model="tableCatatan.nama_kelas"
-                        readonly
-                      >
-                      </v-text-field>
+                      <div class="text-left mb-4">
+                        <v-btn
+                          class="mx-2"
+                          fab
+                          dark
+                          small
+                          color="primary"
+                          @click="addPrestasi"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
 
-                      <v-textarea
-                        label="Catatan"
-                        v-model="editedItem.catatan"
-                        :rules="[rulesInputForm.requiredRule]"
+                        <v-btn
+                          class="mx-2"
+                          fab
+                          dark
+                          small
+                          color="danger"
+                          v-if="isPrestasiOne"
+                          @click="removePrestasi"
+                        >
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+
+                      <div
+                        class="mb-2"
+                        v-for="(prestasi, index) in editedItem.prestasi"
+                        :key="prestasi.id_prestasi"
                       >
-                      </v-textarea>
+                        <span>Prestasi ke-{{ index + 1 }}</span>
+                        <v-text-field
+                          label="Jenis Kegiatan"
+                          v-model="prestasi.jenis_kegiatan"
+                          :rules="[rulesInputForm.requiredRule]"
+                        >
+                        </v-text-field>
+                        <v-textarea
+                          rows="3"
+                          label="Keterangan"
+                          v-model="prestasi.keterangan_kegiatan"
+                          :rules="[rulesInputForm.requiredRule]"
+                        >
+                        </v-textarea>
+                      </div>
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -136,6 +160,32 @@
         <template v-slot:no-data>
           <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
         </template>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length" class="pa-2">
+            <v-list subheader three-line>
+              <v-subheader><h2>Daftar Prestasi</h2></v-subheader>
+
+              <v-list-item v-if="item.peserta_didik.prestasi.length === 0">
+                <v-list-item-content>
+                  <v-list-item-title>Belum memiliki prestasi</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item
+                v-else
+                v-for="e in item.peserta_didik.prestasi"
+                :key="e.id_prestasi"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ e.jenis_kegiatan }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    e.keterangan_kegiatan
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </td>
+        </template>
       </v-data-table>
     </v-card>
   </div>
@@ -144,6 +194,7 @@
 import { mapState } from "vuex";
 export default {
   data: () => ({
+    expanded: [],
     search: "",
     alertLocal: {
       isShow: false,
@@ -171,123 +222,71 @@ export default {
         value: "peserta_didik.nama"
       },
       {
-        text: "Catatan",
-        value: "peserta_didik.catatan_wali_kelas.catatan",
+        text: "Jumlah Prestasi",
+        value: "peserta_didik.prestasi.length",
         sortable: false
       },
-      { text: "Action", value: "actions", sortable: false }
+      { text: "Action", value: "actions", sortable: false },
+      { text: "", value: "data-table-expand" }
     ],
     editedItem: {
-      id_catatan: -1,
       nama: "",
       id_peserta_didik: -1,
       id_raport: -1,
-      catatan: ""
+      prestasi: []
     },
     defaultItem: {
-      id_catatan: -1,
       nama: "",
       id_peserta_didik: -1,
       id_raport: -1,
-      catatan: ""
+      prestasi: []
     },
     editedIndex: -1
   }),
   computed: {
     ...mapState({
       alert: (state) => state.alert,
-      isLoading: (state) => state.catatanWaliKelas.isLoading,
-      tableCatatan: (state) => state.catatanWaliKelas.tableCatatan,
+      isLoading: (state) => state.prestasi.isLoading,
+      prestasi: (state) => state.prestasi.prestasi,
       raport: (state) => state.absensi.raport
     }),
     tahunAjaranSemester() {
       return `${this.raport.tahun_ajaran.tahun_awal}/${this.raport.tahun_ajaran.tahun_akhir} - Semester ${this.raport.semester}`;
     },
     formTitle() {
-      return this.editedIndex === -1
-        ? "Tambah Catatan Wali Kelas (Semua Murid)"
-        : "Ubah Catatan Wali Kelas per Peserta";
+      return "Tambah Prestasi Peserta Didik";
+    },
+    isPrestasiOne() {
+      return this.editedItem.prestasi.length > 1;
     }
   },
   mounted() {
-    this.$store.dispatch(
-      "catatanWaliKelas/getTableCatatan",
-      this.$route.params.id_raport
-    );
+    this.$store.dispatch("prestasi/getPrestasi", this.$route.params.id_raport);
     this.$store.dispatch("absensi/getRaport", this.$route.params.id_raport);
   },
   methods: {
     save() {
       if (this.$refs.form.validate()) {
-        const { id_peserta_didik, catatan } = this.editedItem;
+        const { id_peserta_didik, prestasi } = this.editedItem;
         let id_raport = parseInt(this.$route.params.id_raport);
-        console.log(this.editedIndex);
-        if (this.editedIndex === -1) {
-          let data = {
-            id_raport,
-            id_kelas: this.tableCatatan.id_kelas,
-            catatan
-          };
+        let data = {
+          id_peserta_didik,
+          id_raport,
+          list_prestasi: prestasi
+        };
 
-          this.$store
-            .dispatch("catatanWaliKelas/createCatatanForAll", data)
-            .then(() => {
-              let source = { catatan_wali_kelas: { catatan } };
-
-              this.tableCatatan.kelas_siswa.forEach((e) => {
-                Object.assign(e.peserta_didik, source);
-              });
-              this.close();
-            })
-            .catch((err) => {
-              console.error(err);
-              this.close();
-            });
-        } else if (this.editedItem.id_catatan !== -1) {
-          console.log(
-            this.tableCatatan.kelas_siswa[this.editedIndex].peserta_didik
-              .catatan_wali_kelas.catatan
-          );
-          // update data
-          this.$store
-            .dispatch("catatanWaliKelas/updateCatatan", {
-              id_catatan: this.editedItem.id_catatan,
-              data: {
-                catatan
-              }
-            })
-            .then(() => {
-              this.tableCatatan.kelas_siswa[
-                this.editedIndex
-              ].peserta_didik.catatan_wali_kelas.catatan = catatan;
-              this.close();
-            })
-            .catch((err) => {
-              console.error(err);
-              this.close();
-            });
-        } else {
-          let data = {
-            catatan,
-            id_peserta_didik,
-            id_raport
-          };
-
-          this.$store
-            .dispatch("catatanWaliKelas/createCatatan", data)
-            .then(() => {
-              let source = { catatan_wali_kelas: { catatan } };
-              Object.assign(
-                this.tableCatatan.kelas_siswa[this.editedIndex].peserta_didik,
-                source
-              );
-              this.close();
-            })
-            .catch((err) => {
-              console.error(err);
-              this.close();
-            });
-        }
+        this.$store
+          .dispatch("prestasi/createPrestasi", data)
+          .then(() => {
+            this.prestasi.kelas_siswa[
+              this.editedIndex
+            ].peserta_didik.prestasi = [...this.editedItem.prestasi];
+            this.close();
+          })
+          .catch((err) => {
+            console.error(err);
+            this.close();
+          });
       }
       this.valid = false;
     },
@@ -302,25 +301,29 @@ export default {
       this.$refs.form.resetValidation();
     },
 
+    addPrestasi() {
+      this.editedItem.prestasi.push({
+        jenis_kegiatan: "",
+        keterangan_kegiatan: ""
+      });
+    },
+
+    removePrestasi() {
+      this.editedItem.prestasi.pop();
+    },
+
     editItem(item) {
-      this.editedIndex = this.tableCatatan.kelas_siswa.indexOf(item);
-      console.log(item);
+      this.editedIndex = this.prestasi.kelas_siswa.indexOf(item);
       const { nama } = item.peserta_didik;
       const id_peserta_didik = item.id_peserta_didik;
-      if (item.peserta_didik.catatan_wali_kelas !== null) {
-        const {
-          catatan,
-          id_catatan,
-          id_raport
-        } = item.peserta_didik.catatan_wali_kelas;
+      if (item.peserta_didik.prestasi.length !== 0) {
         this.editedItem = Object.assign(
           {},
           {
-            id_catatan,
             nama,
             id_peserta_didik,
-            id_raport,
-            catatan
+            id_raport: this.$route.params.id_raport,
+            prestasi: item.peserta_didik.prestasi
           }
         );
       } else {
@@ -329,12 +332,12 @@ export default {
           {
             nama,
             id_peserta_didik,
-            id_catatan: -1,
-            id_raport: this.raport.id_raport,
-            catatan_wali_kelas: null
+            id_raport: this.$route.params.id_raport,
+            prestasi: [{ jenis_kegiatan: "", keterangan_kegiatan: "" }]
           }
         );
       }
+      console.log(this.editedItem);
       this.dialog = true;
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="absensi">
+  <div class="prestasi">
     <v-container>
       <div class="text-center" v-if="isLoading">
         <v-progress-circular
@@ -8,33 +8,33 @@
         ></v-progress-circular>
       </div>
       <v-row no-gutters class="mb-6" v-else>
-        <v-col cols="sm" v-for="(tgl, index) in tgl_lhbs" :key="index">
+        <v-col cols="sm" v-for="(tgl, index) in card" :key="index">
           <v-card
             tile
             class="pa-2"
             :disabled="tgl.status_pelaksanaan === 'Tidak Aktif'"
           >
             <v-card-title>
-              Absensi {{ formatTitle(tgl.jenis_penilaian) }}
+              Prestasi {{ formatTitle(tgl.jenis_penilaian) }}
             </v-card-title>
             <v-card-text class="text--primary">
-              Absensi untuk kelas <b>{{ kelas.nama_kelas }}</b> dalam pembuatan
+              Prestasi untuk kelas <b>{{ kelas.nama_kelas }}</b> dalam pembuatan
               raport <br /><b>{{ tgl.jenis_penilaian }}</b>
             </v-card-text>
             <v-card-subtitle class="pb-0">
               <v-icon color="">
                 mdi-calendar-clock
               </v-icon>
-              Tanggal LHBS : <br />{{ formatDate(tgl.tgl_lhbs) }}
+              Tanggal LHBS : {{ formatDate(tgl.tgl_lhbs) }}
             </v-card-subtitle>
             <v-card-actions>
               <v-btn
-                :to="`/detail-absensi/${tgl.id_raport}`"
+                :to="`/prestasi-siswa/${tgl.id_raport}`"
                 text
                 color="teal accent-4"
                 @click="reveal = true"
               >
-                Isi Absensi
+                Detail Prestasi
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -65,13 +65,13 @@ export default {
   }),
   computed: {
     ...mapState({
-      tgl_lhbs: (state) => state.absensi.tgl_lhbs,
-      isLoading: (state) => state.absensi.isLoading,
+      isLoading: (state) => state.prestasi.isLoading,
+      card: (state) => state.catatanWaliKelas.catatan,
       kelas: (state) => state.absensi.kelas_diampu
     })
   },
   mounted() {
-    this.$store.dispatch("absensi/getTanggalLHBS");
+    this.$store.dispatch("catatanWaliKelas/getRaport");
     this.$store.dispatch("absensi/getKelasYangDiampu");
   },
   methods: {

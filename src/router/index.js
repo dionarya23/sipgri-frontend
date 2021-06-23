@@ -25,6 +25,8 @@ import Penilaian from "../views/pengajar/guru/Penilaian.vue";
 import DetailNilai from "../views/pengajar/guru/DetailNilai.vue";
 import CatatanWaliKelas from "../views/pengajar/raport/CatatanWaliKelas.vue";
 import DetailCatatan from "../views/pengajar/raport/DetailCatatan.vue";
+import Prestasi from "../views/pengajar/prestasi/Prestasi.vue";
+import DetailPrestasi from "../views/pengajar/prestasi/DetailPrestasi.vue";
 
 // wali kelas can access
 import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
@@ -116,8 +118,8 @@ const routes = [
         name: "Data Predikat Nilai Eskul",
         component: PredikatEskul,
         meta: {
-          roles: ["kurikulum"],
-        },
+          roles: ["kurikulum"]
+        }
       },
       {
         path: "eskul",
@@ -188,8 +190,8 @@ const routes = [
         name: "Pengisian Nilai Peserta Didik",
         component: DetailNilai,
         meta: {
-          roles: ["guru", "wali_kelas"],
-        },
+          roles: ["guru", "wali_kelas"]
+        }
       },
       {
         path: "absensi",
@@ -235,6 +237,22 @@ const routes = [
         path: "catatan-wali-kelas/:id_raport",
         name: "Pengisian Catatan Wali Kelas",
         component: DetailCatatan,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
+        path: "prestasi-siswa",
+        name: "Prestasi Siswa",
+        component: Prestasi,
+        meta: {
+          roles: ["wali_kelas"]
+        }
+      },
+      {
+        path: "prestasi-siswa/:id_raport",
+        name: "Detail Prestasi Siswa",
+        component: DetailPrestasi,
         meta: {
           roles: ["wali_kelas"]
         }
