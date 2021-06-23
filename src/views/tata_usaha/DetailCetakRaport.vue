@@ -17,7 +17,6 @@
         :search="search"
         :loading="isLoading"
         class="elevation-1"
-        hide-default-footer
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -42,7 +41,9 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn text color="teal" @click="cetakRaport(item)">
+          <v-btn :disabled="item.peserta_didik.nilai_nilai.length === 0 &&
+          item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
+          item.peserta_didik.absensi_siswa === null" text color="teal" @click="cetakRaport(item)">
             Cetak
           </v-btn>
         </template>
@@ -123,23 +124,11 @@ export default {
   methods: {
     cetakRaport(item) {},
     checkStatusRaport(item) {
-        console.log
-      if (
-        this.raport.jenis_penilaian === "Penilaian Tengah Semester 1" ||
-        this.raport.jenis_penilaian === "Penilaian Tengah Semester 2"
-      ) {
         return item.peserta_didik.nilai_nilai.length === 0 &&
           item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
           item.peserta_didik.absensi_siswa === null
           ? "Sedang dalam proses pembuatan"
           : "Siap dicetak";
-      } else {
-        return item.peserta_didik.nilai_nilai.length === 0 &&
-          item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
-          item.peserta_didik.absensi_siswa === null
-          ? "Sedang dalam proses pembuatan"
-          : "Siap dicetak";
-      }
     },
     formatDate(date) {
       if (date !== null) {
