@@ -432,9 +432,7 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.pesertaDidikList.indexOf(item);
-      console.log("Indexnya : ", this.pesertaDidikList[this.editedIndex].id_peserta_didik, this.editedIndex);
-      console.log("nama : ", item.peserta_didik.nama);
-
+      
       if (item.peserta_didik.nilai !== null) {
         this.editedItem = Object.assign(
           {},

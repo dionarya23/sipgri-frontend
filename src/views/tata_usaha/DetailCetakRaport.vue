@@ -114,7 +114,6 @@ export default {
     }),
   },
   mounted() {
-      console.log("idKelas : ",  this.$route.params.id_kelas);
     this.$store.dispatch(
       "cetakRaport/getDetailKelas",
       this.$route.params.id_kelas
@@ -122,7 +121,11 @@ export default {
     this.$store.dispatch("cetakRaport/getRaportAktif");
   },
   methods: {
-    cetakRaport(item) {},
+    cetakRaport(item) {
+      if (this.raport.jenis_penilaian === "Penilaian Tengah Semester 1" || this.raport.jenis_penilaian === "Penilaian Tengah Semester 2") {
+       window.open(`http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`)
+      }
+    },
     checkStatusRaport(item) {
         return item.peserta_didik.nilai_nilai.length === 0 &&
           item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
