@@ -41,9 +41,16 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn :disabled="item.peserta_didik.nilai_nilai.length === 0 &&
-          item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
-          item.peserta_didik.absensi_siswa === null" text color="teal" @click="cetakRaport(item)">
+          <v-btn
+            :disabled="
+              item.peserta_didik.nilai_nilai.length === 0 &&
+                item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
+                item.peserta_didik.absensi_siswa === null
+            "
+            text
+            color="teal"
+            @click="cetakRaport(item)"
+          >
             Cetak
           </v-btn>
         </template>
@@ -60,6 +67,7 @@
 
 <script>
 import { mapState } from "vuex";
+import printJS from 'print-js';
 export default {
   data: () => ({
     bulan: {
@@ -122,16 +130,19 @@ export default {
   },
   methods: {
     cetakRaport(item) {
-      if (this.raport.jenis_penilaian === "Penilaian Tengah Semester 1" || this.raport.jenis_penilaian === "Penilaian Tengah Semester 2") {
-       window.open(`http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`)
+      if (
+        this.raport.jenis_penilaian === "Penilaian Tengah Semester 1" ||
+        this.raport.jenis_penilaian === "Penilaian Tengah Semester 2"
+      ) {
+        printJS({printable:`http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`, type:'pdf', modalMessage: 'Harap tunggu, sedang membuat raport...', showModal:true})
       }
     },
     checkStatusRaport(item) {
-        return item.peserta_didik.nilai_nilai.length === 0 &&
-          item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
-          item.peserta_didik.absensi_siswa === null
-          ? "Sedang dalam proses pembuatan"
-          : "Siap dicetak";
+      return item.peserta_didik.nilai_nilai.length === 0 &&
+        item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
+        item.peserta_didik.absensi_siswa === null
+        ? "Sedang dalam proses pembuatan"
+        : "Siap dicetak";
     },
     formatDate(date) {
       if (date !== null) {

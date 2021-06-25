@@ -101,7 +101,7 @@ const routes = [
       },
       {
         path: "cetak-raport-kelas/:id_kelas",
-        name: `Cetak Raport Kelas`,
+        name: `Cetak Raport Peserta Didik`,
         component: DetailCetakRaport,
         meta: {
           roles: ["tata_usaha"]

@@ -368,7 +368,7 @@
         </p>
 
         <p
-          v-else-if="$route.name === 'Cetak Raport Kelas'"
+          v-else-if="$route.name === 'Cetak Raport Peserta Didik'"
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
           <v-btn @click="back" text color="black">

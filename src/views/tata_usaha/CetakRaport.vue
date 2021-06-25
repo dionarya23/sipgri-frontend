@@ -111,6 +111,7 @@ export default {
       },
       { text: "Aksi", value: "actions", align: "center", sortable: false },
     ],
+    
   }),
   computed: {
     ...mapState({
