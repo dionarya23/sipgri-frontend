@@ -67,7 +67,7 @@
 
 <script>
 import { mapState } from "vuex";
-import printJS from 'print-js';
+import printJS from "print-js";
 export default {
   data: () => ({
     bulan: {
@@ -134,7 +134,35 @@ export default {
         this.raport.jenis_penilaian === "Penilaian Tengah Semester 1" ||
         this.raport.jenis_penilaian === "Penilaian Tengah Semester 2"
       ) {
-        printJS({printable:`http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`, type:'pdf', modalMessage: 'Harap tunggu, sedang membuat raport...', showModal:true})
+        printJS({
+          printable: `http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
+          type: "pdf",
+          modalMessage: "Harap tunggu, sedang mendapatkan raport...",
+          showModal: true,
+          onError: _ => {
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "Gagal mengambil mencetak raport",
+            };
+            this.$store.dispatch("showError", payload)
+          }
+        });
+      }else{
+         printJS({
+          printable: `http://localhost:9000/api/raport/pat/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
+          type: "pdf",
+          modalMessage: "Harap tunggu, sedang mendapatkan raport...",
+          showModal: true,
+          onError: _ => {
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "Gagal mengambil mencetak raport",
+            };
+            this.$store.dispatch("showError", payload)
+          }
+        });
       }
     },
     checkStatusRaport(item) {

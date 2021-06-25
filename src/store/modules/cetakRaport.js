@@ -60,7 +60,7 @@ const cetakRaport = {
             const payload = {
               isShow: true,
               type: "error",
-              message: "Gagagl mengambil raport aktif",
+              message: "Gagal mengambil raport aktif",
             };
             commit("SHOW_ALERT", payload, { root: true });
             reject(err);

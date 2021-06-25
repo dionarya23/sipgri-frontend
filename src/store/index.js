@@ -51,6 +51,9 @@ export default new Vuex.Store({
   actions: {
     doReload() {
       window.location.reload();
+    },
+    showError({ commit }, payload) {
+      commit("SHOW_ALERT", payload)
     }
   },
   modules: {

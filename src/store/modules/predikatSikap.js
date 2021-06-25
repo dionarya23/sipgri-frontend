@@ -8,7 +8,7 @@ const predikatSikap = {
   },
   mutations: {
     SET_PREDIKAT_SIKAP(state, predikatSikap) {
-      state.predikatSikap = predikatSikap;
+      state.predikatSikap = predikatSikap.filter(nilai => nilai.predikat !== "TL");
     },
     ADD_PREDIKAT_SIKAP(state, newData) {
       state.predikatSikap.unshift(newData);
