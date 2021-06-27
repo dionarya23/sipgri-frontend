@@ -306,7 +306,7 @@
                   outlined
                   type="error"
                 >
-                  Berhasil menambahkan {{ jumlah_sukses }} peserta didik dan
+                  {{ messageBerhasil(jumlah_sukses) }}
                   terdapat {{ fail_insert.length }} peserta didik yang gagal di
                   import, harap cek kembali data nisn, nis agar terhindar
                   duplikasi data
@@ -531,6 +531,9 @@ export default {
     this.$store.dispatch("pesertaDidik/getAllPesertaDidik");
   },
   methods: {
+    messageBerhasil(jumlahBerhasil) {
+      return jumlahBerhasil !== 0 ? `Berhasil menambahkan {{ jumlah_sukses }} peserta didik dan` : ""
+    },
     forceUpper() {
       this.editedItem.nama = this.editedItem.nama.toUpperCase();
     },

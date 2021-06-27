@@ -111,7 +111,9 @@ const user = {
           .catch((err) => {
             console.error(err);
             state.alert.type = "error";
-            state.alert.message = "Gagal menambah data user";
+            state.alert.message = err.response.message === "kode mengajar already exist"
+              ? "Gagal Memasukan data, kode mengajar sudah digunakan"
+              : "Gagal Memasukan data",
             commit("SHOW_ALERT", state.alert, { root: true });
             state.isLoading = false;
             reject(err);

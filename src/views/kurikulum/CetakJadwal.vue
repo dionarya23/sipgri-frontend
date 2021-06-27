@@ -33,6 +33,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import printJS from "print-js";
 export default {
   data: () => ({
     isLoading: false,
@@ -51,13 +52,26 @@ export default {
     this.$store.dispatch("jadwal/getJadwalByTahunAjaranAktif");
   },
   methods: {
-      cetak() {
-          if (this.$refs.form.validate()) {
-              window.open(`http://localhost:9000/api/jadwal/kelas/${this.id_kelas}/${this.tahunAjaranAktif.id_tahun_ajaran}/document`)
-          }else{
-            this.valid = false
-          }
-      },
-  }
+    cetak() {
+      if (this.$refs.form.validate()) {
+        printJS({
+          printable: `http://localhost:9000/api/jadwal/kelas/${this.id_kelas}/${this.tahunAjaranAktif.id_tahun_ajaran}/document`,
+          type: "pdf",
+          modalMessage: "Harap tunggu, sedang mendapatkan jadwal...",
+          showModal: true,
+          onError: (_) => {
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "Jadwal belum tersedia, harap isi terlebih dahulu",
+            };
+            this.$store.dispatch("showError", payload);
+          },
+        });
+      } else {
+        this.valid = false;
+      }
+    },
+  },
 };
 </script>

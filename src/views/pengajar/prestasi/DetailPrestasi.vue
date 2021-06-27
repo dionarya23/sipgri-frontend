@@ -79,6 +79,7 @@
                           small
                           color="primary"
                           @click="addPrestasi"
+                          v-if="isPrestasiThree"
                         >
                           <v-icon dark>
                             mdi-plus
@@ -258,6 +259,9 @@ export default {
     },
     isPrestasiOne() {
       return this.editedItem.prestasi.length > 1;
+    },
+    isPrestasiThree() {
+      return this.editedItem.prestasi.length < 3;
     }
   },
   mounted() {
@@ -302,10 +306,12 @@ export default {
     },
 
     addPrestasi() {
+      // if (this.editedItem.prestasi.length < 3) {
       this.editedItem.prestasi.push({
         jenis_kegiatan: "",
         keterangan_kegiatan: ""
       });
+      // }
     },
 
     removePrestasi() {

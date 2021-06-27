@@ -158,7 +158,7 @@ export default {
             const payload = {
               isShow: true,
               type: "error",
-              message: "Gagal mengambil mencetak raport",
+              message: "Gagal mengambil raport",
             };
             this.$store.dispatch("showError", payload)
           }
