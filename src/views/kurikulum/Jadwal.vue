@@ -6,7 +6,6 @@
       :items="jadwal"
       class="elevation-1"
       sort-by="no"
-      :search="search"
     >
       <template v-slot:[`item.jam_mulai`]="{ item }">
         {{ formatTime(item.jam_mulai) }}
@@ -18,13 +17,17 @@
 
       <template v-slot:top>
         <v-toolbar flat>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Cari Berdasarkan Kelas, Hari, Mata Pelajaran, Guru"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-autocomplete
+            class="mt-8"
+            v-model="kelasSelected"
+            :items="lisKelasWithIndex"
+            :loading="isLoading"
+            item-text="nama_kelas"
+            item-value="index"
+            color="white"
+            label="Filter Berdasarkan Kelas"
+          ></v-autocomplete>
+
           <v-spacer></v-spacer>
           <v-dialog persistent v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
@@ -77,7 +80,7 @@
                       item-value="id_kelas"
                       label="Kelas"
                       :items="list_kelas"
-                      :rules="[rulesInputForm.requiredRule]"
+                      readonly
                     >
                     </v-autocomplete>
 
@@ -259,9 +262,11 @@ export default {
       type: "error",
       message: "",
     },
-    search: "",
     dialogDelete: false,
     valid: true,
+    kelasSelected: {
+      index: 0,
+    },
     dialog: false,
     id_mata_pelajaran: "",
     pengajar: [],
@@ -354,9 +359,9 @@ export default {
       tahunAjaranAktif: (state) => state.tahunAjaran.tahunAjaranAktif,
       isLoading: (state) => state.jadwal.isLoading,
       alert: (state) => state.alert,
-      list_kelas: (state) => state.kelas.kelas,
+      list_kelas: (state) => state.jadwal.kelas,
       guru_mengajar: (state) => state.jadwal.guru_mengajar,
-      jadwal: (state) => {
+      jadwal2: (state) => {
         const { jadwal } = state.jadwal;
         jadwal.map((item, index) => {
           item.no = index + 1;
@@ -364,27 +369,49 @@ export default {
         return jadwal;
       },
     }),
+    jadwal(){
+      let index =
+        typeof this.kelasSelected.index === "undefined"
+          ? this.kelasSelected
+          : this.kelasSelected.index;
+      return this.jadwal2.filter(jadwal => jadwal.id_kelas == this.list_kelas[index].id_kelas)
+    },
+
     formTitle() {
       return this.editedIndex === -1
         ? "Tambah Data Jadwal"
         : "Ubah Data Jadwal";
     },
+
+    lisKelasWithIndex() {
+      return this.list_kelas.map((e, index) => ({
+        index,
+        nama_kelas: e.nama_kelas,
+        id_kelas: e.id_kelas,
+      }));
+    },
   },
+
   mounted() {
-    this.$store.dispatch("jadwal/getJadwalByTahunAjaranAktif");
-    this.$store.dispatch("kelas/getAllKelas");
-    this.$store.dispatch("jadwal/getGuruMengajar");
-  },
+  Promise.all([ this.$store.dispatch("jadwal/getJadwalByTahunAjaranAktif"),  this.$store.dispatch("jadwal/getGuruMengajar")])
+  .then(values => {
+    const [res1, _] = values
+    const { kelas } = res1.data.data
+    this.editedItem.id_kelas = typeof kelas[0] !== 'undefined' ? kelas[0].id_kelas : "";
+  }).catch(err => {
+    console.log("Error : ", err)
+  })
+ },
 
   methods: {
     openDialoag() {
       this.dialog = true;
-       this.$nextTick(() => {
+      this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
         this.id_mata_pelajaran = "";
         this.idGuruSelected = "";
-        this.pengajar = []
+        this.pengajar = [];
       });
       this.$refs.form.resetValidation();
     },
@@ -418,7 +445,7 @@ export default {
         this.editedIndex = -1;
         this.id_mata_pelajaran = "";
         this.idGuruSelected = "";
-        this.pengajar = []
+        this.pengajar = [];
       });
       this.$refs.form.resetValidation();
     },
@@ -471,29 +498,26 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
-        
-
         if (this.editedIndex === -1) {
           const {
-          id_kelas,
-          kode_mengajar,
-          jam_mulai,
-          jam_selesai,
-          hari,
-          keterangan,
-        } = this.editedItem;
+            id_kelas,
+            kode_mengajar,
+            jam_mulai,
+            jam_selesai,
+            hari,
+            keterangan,
+          } = this.editedItem;
 
-
-        const jadwalFromInput = {
-          id_tahun_ajaran: this.tahunAjaranAktif.id_tahun_ajaran,
-          id_kelas,
-          kode_mengajar,
-          jam_mulai: `${jam_mulai}:10`,
-          jam_selesai: `${jam_selesai}:00`,
-          hari,
-          id_guru: this.idGuruSelected,
-          keterangan: keterangan === "" ? "Mata Pelajaran" : keterangan,
-        };
+          const jadwalFromInput = {
+            id_tahun_ajaran: this.tahunAjaranAktif.id_tahun_ajaran,
+            id_kelas,
+            kode_mengajar,
+            jam_mulai: `${jam_mulai}:10`,
+            jam_selesai: `${jam_selesai}:00`,
+            hari,
+            id_guru: this.idGuruSelected,
+            keterangan: keterangan === "" ? "Mata Pelajaran" : keterangan,
+          };
 
           const isJadwalGuruExist =
             this.jadwal.filter((item) => {
@@ -512,12 +536,12 @@ export default {
               ).getTime();
 
               const guruScheduleExist =
-                   item.hari === jadwalFromInput.hari
-                && item.mengajar.id_guru === this.idGuruSelected
-                && Math.min(jamMulaiCurrent, jamSelesaiCurrent)
-                <= Math.max(jamMulaiInput, jamSelesaiInput)
-                && Math.max(jamMulaiCurrent, jamSelesaiCurrent)
-                >= Math.min(jamMulaiInput, jamSelesaiInput);
+                item.hari === jadwalFromInput.hari &&
+                item.mengajar.id_guru === this.idGuruSelected &&
+                Math.min(jamMulaiCurrent, jamSelesaiCurrent) <=
+                  Math.max(jamMulaiInput, jamSelesaiInput) &&
+                Math.max(jamMulaiCurrent, jamSelesaiCurrent) >=
+                  Math.min(jamMulaiInput, jamSelesaiInput);
               return guruScheduleExist;
             }).length > 0;
 
@@ -538,12 +562,12 @@ export default {
               ).getTime();
 
               const classScheduleExist =
-                   item.hari === jadwalFromInput.hari
-                && item.id_kelas === jadwalFromInput.id_kelas 
-                && Math.min(jamMulaiCurrent, jamSelesaiCurrent) 
-                <= Math.max(jamMulaiInput, jamSelesaiInput)
-                && Math.max(jamMulaiCurrent, jamSelesaiCurrent)
-                >= Math.min(jamMulaiInput, jamSelesaiInput);
+                item.hari === jadwalFromInput.hari &&
+                item.id_kelas === jadwalFromInput.id_kelas &&
+                Math.min(jamMulaiCurrent, jamSelesaiCurrent) <=
+                  Math.max(jamMulaiInput, jamSelesaiInput) &&
+                Math.max(jamMulaiCurrent, jamSelesaiCurrent) >=
+                  Math.min(jamMulaiInput, jamSelesaiInput);
               return classScheduleExist;
             }).length > 0;
 
@@ -575,27 +599,26 @@ export default {
           }
         } else {
           const {
-          id_kelas,
-          kode_mengajar,
-          jam_mulai,
-          jam_selesai,
-          hari,
-          keterangan,
-        } = this.editedItem;
+            id_kelas,
+            kode_mengajar,
+            jam_mulai,
+            jam_selesai,
+            hari,
+            keterangan,
+          } = this.editedItem;
 
-        const jadwalFromInput = {
-          id_tahun_ajaran: this.tahunAjaranAktif.id_tahun_ajaran,
-          id_kelas,
-          kode_mengajar,
-          jam_mulai: `${jam_mulai}:10`,
-          jam_selesai: `${jam_selesai}:00`,
-          hari,
-          id_guru: this.idGuruSelected,
-          keterangan: keterangan === "" ? "Mata Pelajaran" : keterangan,
-        };
+          const jadwalFromInput = {
+            id_tahun_ajaran: this.tahunAjaranAktif.id_tahun_ajaran,
+            id_kelas,
+            kode_mengajar,
+            jam_mulai: `${jam_mulai}:10`,
+            jam_selesai: `${jam_selesai}:00`,
+            hari,
+            id_guru: this.idGuruSelected,
+            keterangan: keterangan === "" ? "Mata Pelajaran" : keterangan,
+          };
           const isJadwalGuruExist =
             this.jadwal.filter((item) => {
-
               const jamMulaiCurrent = new Date(
                 `01/01/2001 ${item.jam_mulai}:01`
               ).getTime();
@@ -611,15 +634,16 @@ export default {
               ).getTime();
 
               const guruScheduleExist =
-                 item.id_jadwal !== this.editedItem.id_jadwal ?
-                 item.hari === jadwalFromInput.hari
-                 && item.mengajar.id_guru === this.idGuruSelected 
-                 && Math.min(jamMulaiCurrent, jamSelesaiCurrent) 
-                 <= Math.max(jamMulaiInput, jamSelesaiInput)
-                 && Math.max(jamMulaiCurrent, jamSelesaiCurrent) 
-                 >= Math.min(jamMulaiInput, jamSelesaiInput) : item.no === 0;
+                item.id_jadwal !== this.editedItem.id_jadwal
+                  ? item.hari === jadwalFromInput.hari &&
+                    item.mengajar.id_guru === this.idGuruSelected &&
+                    Math.min(jamMulaiCurrent, jamSelesaiCurrent) <=
+                      Math.max(jamMulaiInput, jamSelesaiInput) &&
+                    Math.max(jamMulaiCurrent, jamSelesaiCurrent) >=
+                      Math.min(jamMulaiInput, jamSelesaiInput)
+                  : item.no === 0;
 
-                 return guruScheduleExist
+              return guruScheduleExist;
             }).length > 0;
 
           const isClassScheduleExist =
@@ -639,17 +663,18 @@ export default {
               ).getTime();
 
               const classScheduleExist =
-                 item.id_jadwal !== this.editedItem.id_jadwal ?
-                 item.hari === jadwalFromInput.hari 
-                 && item.id_kelas === jadwalFromInput.id_kelas 
-                 && Math.min(jamMulaiCurrent, jamSelesaiCurrent) 
-                 <= Math.max(jamMulaiInput, jamSelesaiInput)
-                 && Math.max(jamMulaiCurrent, jamSelesaiCurrent) 
-                 >= Math.min(jamMulaiInput, jamSelesaiInput) : item.no === 0;
+                item.id_jadwal !== this.editedItem.id_jadwal
+                  ? item.hari === jadwalFromInput.hari &&
+                    item.id_kelas === jadwalFromInput.id_kelas &&
+                    Math.min(jamMulaiCurrent, jamSelesaiCurrent) <=
+                      Math.max(jamMulaiInput, jamSelesaiInput) &&
+                    Math.max(jamMulaiCurrent, jamSelesaiCurrent) >=
+                      Math.min(jamMulaiInput, jamSelesaiInput)
+                  : item.no === 0;
               return classScheduleExist;
             }).length > 0;
 
-            console.log("Validation : ", isJadwalGuruExist, isClassScheduleExist);
+          console.log("Validation : ", isJadwalGuruExist, isClassScheduleExist);
 
           if (isJadwalGuruExist) {
             this.alertLocal = {
@@ -692,17 +717,25 @@ export default {
                   kelas,
                   mengajar,
                 } = res.data.data;
-                console.log("Data Sebelum diubah : ",  this.jadwal[this.editedIndex], this.jadwal[this.editedIndex].hari);
-                this.jadwal[this.editedIndex].id_kelas = id_kelas
-                this.jadwal[this.editedIndex].kode_mengajar = kode_mengajar
-                this.jadwal[this.editedIndex].jam_mulai = jam_mulai
-                this.jadwal[this.editedIndex].jam_selesai = jam_selesai
-                this.jadwal[this.editedIndex].hari = hari
-                this.jadwal[this.editedIndex].keterangan = keterangan
-                this.jadwal[this.editedIndex].tahun_ajaran = tahun_ajaran
-                this.jadwal[this.editedIndex].kelas = kelas
-                this.jadwal[this.editedIndex].mengajar = mengajar
-                console.log("Data Sesudah diubah : ",  this.jadwal[this.editedIndex], this.jadwal[this.editedIndex].hari);
+                console.log(
+                  "Data Sebelum diubah : ",
+                  this.jadwal[this.editedIndex],
+                  this.jadwal[this.editedIndex].hari
+                );
+                this.jadwal[this.editedIndex].id_kelas = id_kelas;
+                this.jadwal[this.editedIndex].kode_mengajar = kode_mengajar;
+                this.jadwal[this.editedIndex].jam_mulai = jam_mulai;
+                this.jadwal[this.editedIndex].jam_selesai = jam_selesai;
+                this.jadwal[this.editedIndex].hari = hari;
+                this.jadwal[this.editedIndex].keterangan = keterangan;
+                this.jadwal[this.editedIndex].tahun_ajaran = tahun_ajaran;
+                this.jadwal[this.editedIndex].kelas = kelas;
+                this.jadwal[this.editedIndex].mengajar = mengajar;
+                console.log(
+                  "Data Sesudah diubah : ",
+                  this.jadwal[this.editedIndex],
+                  this.jadwal[this.editedIndex].hari
+                );
                 this.close();
               })
               .catch((err) => {

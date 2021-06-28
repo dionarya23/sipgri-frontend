@@ -6,7 +6,8 @@ const jadwal = {
     jadwal: [],
     isLoading: false,
     guru_mengajar: [],
-    jadwal_guru: []
+    jadwal_guru: [],
+    kelas: []
   },
   mutations: {
     SET_JADWAL(state, jadwal) {
@@ -21,6 +22,9 @@ const jadwal = {
     ADD_JADWAL(state, newData) {
       state.jadwal.unshift(newData);
     },
+    SET_KELAS(state, kelas) {
+      state.kelas = kelas
+    }
   },
   actions: {
     getJadwalGuru({commit}) {
@@ -67,7 +71,8 @@ const jadwal = {
           .then((res) => {
             state.isLoading = false;
             const { data } = res.data;
-            commit("SET_JADWAL", data);
+            commit("SET_JADWAL", data.jadwal);
+            commit("SET_KELAS", data.kelas);
             resolve(res);
           })
           .catch((err) => {
