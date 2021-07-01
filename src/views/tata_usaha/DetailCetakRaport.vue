@@ -68,6 +68,8 @@
 <script>
 import { mapState } from "vuex";
 import printJS from "print-js";
+import endpoint from '../../config/endpoint.js';
+
 export default {
   data: () => ({
     bulan: {
@@ -135,7 +137,7 @@ export default {
         this.raport.jenis_penilaian === "Penilaian Tengah Semester 2"
       ) {
         printJS({
-          printable: `http://localhost:9000/api/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
+          printable: `${endpoint}/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
           type: "pdf",
           modalMessage: "Harap tunggu, sedang mendapatkan raport...",
           showModal: true,
@@ -150,7 +152,7 @@ export default {
         });
       }else{
          printJS({
-          printable: `http://localhost:9000/api/raport/pat/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
+          printable: `${endpoint}raport/pat/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
           type: "pdf",
           modalMessage: "Harap tunggu, sedang mendapatkan raport...",
           showModal: true,

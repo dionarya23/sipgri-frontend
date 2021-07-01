@@ -34,6 +34,7 @@
 <script>
 import { mapState } from "vuex";
 import printJS from "print-js";
+import endpoint from '../../config/endpoint'
 export default {
   data: () => ({
     isLoading: false,
@@ -55,7 +56,7 @@ export default {
     cetak() {
       if (this.$refs.form.validate()) {
         printJS({
-          printable: `http://localhost:9000/api/jadwal/kelas/${this.id_kelas}/${this.tahunAjaranAktif.id_tahun_ajaran}/document`,
+          printable: `${endpoint}jadwal/kelas/${this.id_kelas}/${this.tahunAjaranAktif.id_tahun_ajaran}/document`,
           type: "pdf",
           modalMessage: "Harap tunggu, sedang mendapatkan jadwal...",
           showModal: true,
