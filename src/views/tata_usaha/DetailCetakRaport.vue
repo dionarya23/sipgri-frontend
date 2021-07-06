@@ -137,7 +137,7 @@ export default {
         this.raport.jenis_penilaian === "Penilaian Tengah Semester 2"
       ) {
         printJS({
-          printable: `${endpoint}/raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
+          printable: `${endpoint}raport/cetak/${item.id_peserta_didik}/peserta-didik/${this.raport.id_raport}/${item.peserta_didik.nama}`,
           type: "pdf",
           modalMessage: "Harap tunggu, sedang mendapatkan raport...",
           showModal: true,
