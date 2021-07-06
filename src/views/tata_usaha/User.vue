@@ -97,6 +97,7 @@
                           small
                           color="primary"
                           @click="addMengajar"
+                          v-show="mataPelajaranGreaterThanTwo"
                         >
                           <v-icon dark>
                             mdi-plus
@@ -204,7 +205,7 @@ import MataPelajaranCard from "../../components/MataPelajaranCard";
 
 export default {
   components: {
-    MataPelajaranCard
+    MataPelajaranCard,
   },
   data: () => ({
     search: "",
@@ -217,23 +218,23 @@ export default {
     requiredRule: [(v) => !!v || "Wajib diisi"],
     nuptkRule: [
       (v) => !!v || "Wajib diisi",
-      (v) => (v && v.length === 16) || "NUPTK harus 16 digit"
+      (v) => (v && v.length === 16) || "NUPTK harus 16 digit",
     ],
     emailRules: [
       (v) => !!v || "E-mail wajib diisi",
-      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid"
+      (v) => /.+@.+\..+/.test(v) || "E-mail harus valid",
     ],
     headers: [
       {
         text: "NUPTK",
         align: "start",
-        value: "nuptk"
+        value: "nuptk",
       },
       { text: "Nama", value: "nama" },
       { text: "No. Telepon", value: "nomor_telepon", sortable: false },
       { text: "Email", value: "email" },
       { text: "Type User", value: "type_user" },
-      { text: "Aksi", value: "actions", sortable: false }
+      { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     oldNuptk: "",
@@ -244,7 +245,7 @@ export default {
       email: "",
       password: "",
       type_user: "",
-      mengajar: []
+      mengajar: [],
     },
     defaultItem: {
       nuptk: "",
@@ -253,10 +254,10 @@ export default {
       email: "",
       password: "",
       type_user: "",
-      mengajar: []
+      mengajar: [],
     },
     typeUserItems: ["Tata Usaha", "Kurikulum", "Guru"],
-    isDuplicate: false
+    isDuplicate: false,
   }),
   computed: {
     formTitle() {
@@ -269,7 +270,8 @@ export default {
         return this.editedItem.mengajar.length > 1;
       }
     },
-    mataPelajaranTwo() {
+
+    mataPelajaranGreaterThanTwo() {
       if (this.editedIndex === -1) {
         return this.mengajar.length < 2;
       } else {
@@ -285,8 +287,8 @@ export default {
       },
       user: (state) => state.user.user,
       isLoading: (state) => state.user.isLoading,
-      alert: (state) => state.alert
-    })
+      alert: (state) => state.alert,
+    }),
   },
   watch: {
     dialog(val) {
@@ -297,7 +299,7 @@ export default {
     },
     mengajar(_, values) {
       this.duplicateCheck(values);
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("user/getAllUser");
@@ -319,7 +321,7 @@ export default {
       } else {
         this.editedItem.mengajar.push({
           kode_mengajar: "",
-          id_mata_pelajaran: 0
+          id_mata_pelajaran: 0,
         });
       }
     },
@@ -339,41 +341,6 @@ export default {
         .map(this.capitalize)
         .join(" ");
     },
-    // checkNip() {
-    //   const data = {
-    //     nip: this.editedItem.nip
-    //   };
-    //   if (this.editedIndex === -1) {
-    //     this.$store
-    //       .dispatch("user/checkNip", data)
-    //       .then((result) => {
-    //         this.isNipAvail = result.data.data.is_available
-    //           ? ""
-    //           : "NIP sudah pernah dipakai";
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   }
-    // },
-
-    // checkEmail() {
-    //   const data = {
-    //     email: this.editedItem.email
-    //   };
-    //   if (this.editedIndex === -1) {
-    //     this.$store
-    //       .dispatch("user/checkEmail", data)
-    //       .then((result) => {
-    //         this.isEmailAvail = result.data.data.is_available
-    //           ? ""
-    //           : "Email sudah pernah dipakai";
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   }
-    // },
 
     editItem(item) {
       this.$store.dispatch("user/setMengajar", item.mengajar);
@@ -452,7 +419,7 @@ export default {
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>
