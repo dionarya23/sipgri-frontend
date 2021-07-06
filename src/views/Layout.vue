@@ -402,20 +402,20 @@ export default {
       master: [
         ["User", "mdi-account-tie", "/user"],
         ["Peserta Didik", "mdi-school", "/peserta-didik"],
-        ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"],
+        ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"]
       ],
       kenaikanKelas: [
         ["Laporan", "mdi-alert-octagon", "/laporan-tidak-naik-kelas"],
         [
           "Ubah Tingkat Siswa",
           "mdi-format-font-size-increase",
-          "/ubah-tingkat-siswa",
-        ],
+          "/ubah-tingkat-siswa"
+        ]
       ],
       raport: [
         ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],
-        ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"],
-      ],
+        ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"]
+      ]
     },
 
     kurikulum_menu: {
@@ -424,36 +424,36 @@ export default {
         ["Esktrakulikuler", "mdi-basketball", "/eskul"],
         ["Nilai Predikat", "mdi-alphabetical-variant", "/nilai-predikat"],
         ["Predikat Sikap", "mdi-alpha-s-circle-outline", "/predikat-sikap"],
-        ["Predikat Eskul", "mdi-scoreboard-outline", "/predikat-eskul"],
+        ["Predikat Eskul", "mdi-scoreboard-outline", "/predikat-eskul"]
       ],
       kelas: [
         ["Kelas", "mdi-google-classroom", "/data-kelas"],
-        ["Pembagian Kelas", "mdi-slash-forward-box", "/pembagian-kelas"],
+        ["Pembagian Kelas", "mdi-slash-forward-box", "/pembagian-kelas"]
         // ["Pembagian Wali", "mdi-account-child", "/pembagian-wali-kelas"],
       ],
 
       jadwal: [
         ["Data Jadwal", "mdi-clock-outline", "/data-jadwal"],
-        ["Cetak Jadwal Kelas", "mdi-cloud-print-outline", "/jadwal-kelas"],
-      ],
+        ["Cetak Jadwal Kelas", "mdi-cloud-print-outline", "/jadwal-kelas"]
+      ]
     },
 
     guru_menu: [
       ["Nilai KKM", "mdi-note-multiple", "/nilai-kkm"],
       ["Predikat Mapel", "mdi-alphabetical-variant", "/predikat-mapel"],
-      ["Penilaian", "mdi-lead-pencil", "/penilaian"],
+      ["Penilaian", "mdi-lead-pencil", "/penilaian"]
     ],
 
     wali_kelas_menu: [
       ["Catatan Wali Kelas", "mdi-account-edit", "/catatan-wali-kelas"],
       ["Nilai Eskul", "mdi-note-plus", "/nilai-eskul"],
-      ["Prestasi Siswa", "mdi-trophy-outline", "/prestasi-siswa"],
+      ["Prestasi Siswa", "mdi-trophy-outline", "/prestasi-siswa"]
     ],
 
     profile: [
       ["Ubah Profile", "mdi-account-settings", "/ubah-profile"],
-      ["Ubah Password", "mdi-form-textbox-password", "/ubah-password"],
-    ],
+      ["Ubah Password", "mdi-form-textbox-password", "/ubah-password"]
+    ]
   }),
   methods: {
     back() {
@@ -470,14 +470,14 @@ export default {
       if (title === "Tanggal LHBS") {
         window.location.reload();
       }
-    },
+    }
   },
   computed: {
     ...mapState({
       tahunAjaranAktifLHBS: (state) => state.raport.tahun_ajaran_aktif,
       tahunAjaranAktif: (state) => state.tahunAjaran.tahunAjaranAktif,
-      raportAktif: (state) => state.nilaiSiswa.raportStatusAktif,
-    }),
+      raportAktif: (state) => state.nilaiSiswa.raportStatusAktif
+    })
   },
   mounted() {
     this.userData = this.$store.state.auth.user;
@@ -504,7 +504,7 @@ export default {
         .then((_) => {})
         .catch((err) => console.log(err));
     }
-  },
+  }
 };
 </script>
 <style scoped>

@@ -8,6 +8,8 @@ import PesertaDidik from "../views/tata_usaha/PesertaDidik.vue";
 import TanggalLhbs from "../views/tata_usaha/TanggalLhbs.vue";
 import CetakRaport from "../views/tata_usaha/CetakRaport.vue";
 import DetailCetakRaport from "../views/tata_usaha/DetailCetakRaport.vue";
+import TidakNaikKelas from "../views/tata_usaha/TidakNaikKelas.vue";
+import UbahTingkatSiswa from "../views/tata_usaha/UbahTingkatSiswa.vue";
 
 // kurikulum
 import MataPelajaran from "../views/kurikulum/MataPelajaran.vue";
@@ -103,6 +105,22 @@ const routes = [
         path: "cetak-raport-kelas/:id_kelas",
         name: `Cetak Raport Peserta Didik`,
         component: DetailCetakRaport,
+        meta: {
+          roles: ["tata_usaha"]
+        }
+      },
+      {
+        path: "laporan-tidak-naik-kelas",
+        name: `Laporan Tidak Naik Kelas`,
+        component: TidakNaikKelas,
+        meta: {
+          roles: ["tata_usaha"]
+        }
+      },
+      {
+        path: "ubah-tingkat-siswa",
+        name: `Ubah Tingkat Siswa`,
+        component: UbahTingkatSiswa,
         meta: {
           roles: ["tata_usaha"]
         }
