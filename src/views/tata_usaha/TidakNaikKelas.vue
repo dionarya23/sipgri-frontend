@@ -14,6 +14,23 @@
         class="elevation-1"
         :search="search"
       >
+
+      <template v-slot:top>
+          <v-toolbar flat>
+          <v-spacer></v-spacer>
+             <v-btn
+                color="primary"
+                depressed
+                class="mb-2 text--white"
+                v-bind="attrs"
+                v-on="on"
+                :loading="isLoading"
+                :disabled="isLoading"
+              >
+                Cetak Laporan
+              </v-btn>
+          </v-toolbar>
+      </template>
         <!-- <template v-slot:top>
           <v-toolbar flat>
             <v-text-field
@@ -150,12 +167,6 @@
           </v-alert>
         </template> -->
 
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn text color="teal">
-            Cetak
-          </v-btn>
-        </template>
-
         <template v-slot:no-data>
           <p class="mt-4">Belum ada data yang bisa ditampilkan.</p>
         </template>
@@ -224,7 +235,7 @@ export default {
         value: "nama"
         // value: "peserta_didik.nama"
       },
-      { text: "Aksi", value: "actions", sortable: false },
+      // { text: "Aksi", value: "actions", sortable: false },
       { text: "", value: "data-table-expand" }
     ],
     tidakNaikKelas: [

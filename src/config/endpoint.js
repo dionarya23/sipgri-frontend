@@ -1,1 +1,1 @@
-export default 'http://54.179.51.75:9000/api/'
+export default 'https://backend-pgri.herokuapp.com/api/'

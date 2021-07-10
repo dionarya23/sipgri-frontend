@@ -400,9 +400,9 @@ export default {
     // ** Tinggal tambah mdi-kode-icon
     tata_usaha_menu: {
       master: [
-        ["User", "mdi-account-tie", "/user"],
-        ["Peserta Didik", "mdi-school", "/peserta-didik"],
-        ["Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"]
+        ["Data User", "mdi-account-tie", "/user"],
+        ["Data Peserta Didik", "mdi-school", "/peserta-didik"],
+        ["Data Tahun Ajaran", "mdi-calendar", "/tahun-ajaran"]
       ],
       kenaikanKelas: [
         ["Laporan", "mdi-alert-octagon", "/laporan-tidak-naik-kelas"],
