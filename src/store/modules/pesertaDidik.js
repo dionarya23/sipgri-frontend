@@ -125,19 +125,49 @@ const pesertaDidik = {
           reject(err);
         });
       });
+    },
+
+    checkAvailable(_, data) {
+      return  new Promise((resolve, reject) => {
+        axios({
+          method: "POST",
+          url : "peserta-didik/check/available/",
+          data
+        }).then(res => resolve(res))
+        .catch(err => reject(err))
+      })
+    },
+  
+    deletePesertaDidik({commit, state}, id_peserta_didik) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          method: "DELETE",
+          url: `peserta-didik/${id_peserta_didik}/`
+        }).then((res) => {
+          const payload = {
+            type: "success",
+            message: "Berhasil menghapus data peserta didik",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          state.isLoading = false;
+          state.pesertaDidik = state.pesertaDidik.filter((item) => {
+            return item.id_peserta_didik != id_peserta_didik;
+          });
+          resolve(res);
+        }).catch((err) => {
+          console.error(err);
+          const payload = {
+            type: "error",
+            message: "Terjadi Kesalahan saat menghapus data",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          state.isLoading = false;
+          reject(err);
+        });
+      });
     }
   },
-
-  checkAvailable(_, data) {
-    return  new Promise((resolve, reject) => {
-      axios({
-        method: "POST",
-        url : "peserta-didik/check/available/",
-        data
-      }).then(res => resolve(res))
-      .catch(err => reject(err))
-    })
-  }
 };
 
 export default pesertaDidik;

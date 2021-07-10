@@ -338,7 +338,7 @@
           </v-dialog>
           <!-- end of duplicate data peserta didik -->
 
-          <!-- <v-dialog persistent v-model="dialogDelete" max-width="480px">
+          <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
               <v-card-text
@@ -355,7 +355,7 @@
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
-          </v-dialog> -->
+          </v-dialog>
         </v-toolbar>
         <v-alert
           :value="alert.isShow"
@@ -370,9 +370,9 @@
         <v-icon small class="mr-2" @click="editItem(item)">
           mdi-pencil
         </v-icon>
-        <!-- <v-icon small @click="deleteItem(item)">
+        <v-icon small @click="deleteItem(item)">
           mdi-delete
-        </v-icon> -->
+        </v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -666,17 +666,17 @@ export default {
       this.dialog = true;
     },
 
-    // deleteItemConfirm() {
-    //   const id_peserta_didik = this.editedItem.id_peserta_didik;
-    //   this.$store.dispatch("pesertaDidik/deletePesertaDidik", id_peserta_didik);
-    //   this.closeDelete();
-    // },
+    deleteItemConfirm() {
+      const id_peserta_didik = this.editedItem.id_peserta_didik;
+      this.$store.dispatch("pesertaDidik/deletePesertaDidik", id_peserta_didik);
+      this.closeDelete();
+    },
 
-    //  deleteItem(item) {
-    //   this.editedIndex = this.pesertaDidik.indexOf(item);
-    //   this.editedItem = Object.assign({}, item);
-    //   this.dialogDelete = true;
-    // },
+     deleteItem(item) {
+      this.editedIndex = this.pesertaDidik.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
 
     getKeyByValue(object, value) {
       return Object.keys(object).find((key) => object[key] === value);

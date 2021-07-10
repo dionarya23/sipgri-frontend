@@ -41,8 +41,9 @@
                 <v-container>
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
-                      :error-messages="isNuptkAvail"
+                      :error-messages="is_nuptk_avail"
                       v-model="editedItem.nuptk"
+                      @change="checkInputDuplicate('nuptk')"
                       type="number"
                       label="NUPTK"
                       :counter="16"
@@ -56,16 +57,19 @@
                     ></v-text-field>
 
                     <v-text-field
+                      :error-messages="is_nomor_telepon_avail"
                       v-model="editedItem.nomor_telepon"
                       type="number"
                       label="No. Telepon"
+                      @change="checkInputDuplicate('nomor_telepon')"
                       :rules="requiredRule"
                     ></v-text-field>
 
                     <v-text-field
+                      :error-messages="is_email_avail"
                       v-model="editedItem.email"
-                      :error-messages="isEmailAvail"
                       :rules="emailRules"
+                      @change="checkInputDuplicate('email')"
                       label="Email"
                     ></v-text-field>
 
@@ -118,6 +122,7 @@
                           </v-icon>
                         </v-btn>
                       </div>
+
                       <v-alert
                         class="mt-4"
                         :value="isDuplicate"
@@ -126,6 +131,7 @@
                       >
                         Mata pelajaran yang diampu tidak boleh sama!
                       </v-alert>
+
                       <MataPelajaranCard
                         v-for="(m, index) in mengajar"
                         :key="index"
@@ -187,9 +193,9 @@
         <v-icon small @click="editItem(item)">
           mdi-pencil
         </v-icon>
-        <!-- <v-icon small @click="deleteItem(item)">
+        <v-icon small @click="deleteItem(item)">
           mdi-delete
-        </v-icon> -->
+        </v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -208,13 +214,19 @@ export default {
     MataPelajaranCard,
   },
   data: () => ({
+    alertLocal: {
+      isShow: false,
+      type: "",
+      message: "",
+    },
     search: "",
     show1: false,
     valid: true,
     dialog: false,
     dialogDelete: false,
-    isNuptkAvail: "",
-    isEmailAvail: "",
+    is_nuptk_avail: "",
+    is_email_avail: "",
+    is_nomor_telepon_avail: "",
     requiredRule: [(v) => !!v || "Wajib diisi"],
     nuptkRule: [
       (v) => !!v || "Wajib diisi",
@@ -305,6 +317,34 @@ export default {
     this.$store.dispatch("user/getAllUser");
   },
   methods: {
+    checkInputDuplicate(attribute) {
+      if (this.editedIndex !== -1) {
+      let isDuplicate = this.user.some((item) => {
+        if (attribute !== "email") {
+          return Number(item[attribute]) == this.editedItem[attribute];
+        } else {
+          return item[attribute] == this.editedItem[attribute];
+        }
+      });
+
+      this[`is_${attribute}_avail`] = isDuplicate
+        ? `${attribute} sudah dipakai oleh user yang lain`
+        : "";
+      } else {
+        let isDuplicate = this.user.some((item) => {
+        if (attribute !== "email") {
+          return Number(item[attribute]) == this.editedItem[attribute] && item.id_user !== this.editedItem.id_user;
+        } else {
+          return item[attribute] == this.editedItem[attribute] && item.id_user !== this.editedItem.id_user;;
+        }
+      });
+
+      this[`is_${attribute}_avail`] = isDuplicate
+        ? `${attribute} sudah dipakai oleh user yang lain`
+        : "";
+      }
+    },
+
     duplicateCheck(values) {
       let valueArr = values.map(function(item) {
         return item.id_mata_pelajaran;
@@ -357,8 +397,8 @@ export default {
     },
 
     deleteItemConfirm() {
-      const nuptk = this.editedItem.nuptk;
-      this.$store.dispatch("user/deleteUser", nuptk);
+      const id_user = this.editedItem.id_user;
+      this.$store.dispatch("user/deleteUser", id_user);
       this.closeDelete();
     },
 

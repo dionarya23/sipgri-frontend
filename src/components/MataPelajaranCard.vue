@@ -8,7 +8,7 @@
       :rules="rules"
       @change="pushToMengajar"
     ></v-text-field>
-    <v-autocomplete
+     <v-autocomplete
       item-text="mata_pelajaran"
       item-value="id_mata_pelajaran"
       label="Mata Pelajaran"
@@ -43,7 +43,7 @@ export default {
     pushToMengajar() {
       let mengajar = { ...this.mengajar };
       mengajar.id_mata_pelajaran = this.mengajar.id_mata_pelajaran?.id_mata_pelajaran;
-      console.log(mengajar);
+      console.log("push to mengajar : ", mengajar);
       this.$store.dispatch("user/updateMengajar", {
         index: this.index,
         mengajar

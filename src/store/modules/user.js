@@ -141,17 +141,17 @@ const user = {
           });
       });
     },
-    deleteUser({ commit, state }, nip) {
+    deleteUser({ commit, state }, id_user) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
-        axios({ url: `user/${nip}`, method: "DELETE" })
+        axios({ url: `user/${id_user}`, method: "DELETE" })
           .then((res) => {
             state.isLoading = false;
             state.alert.type = "success";
             state.alert.message = "Berhasil menghapus data user";
             commit("SHOW_ALERT", state.alert, { root: true });
             state.user = state.user.filter((item) => {
-              return item.nip != nip;
+              return item.id_user != id_user;
             });
             resolve(res);
           })
