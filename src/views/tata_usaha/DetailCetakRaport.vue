@@ -42,10 +42,26 @@
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
+            v-if="raport.jenis_penilaian !== 'Penilaian Akhir Tahun' || raport.jenis_penilaian !== 'Penilaian Tengah Semester'"
             :disabled="
-              item.peserta_didik.nilai_nilai.length === 0 &&
-                item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
-                item.peserta_didik.absensi_siswa === null
+               item.peserta_didik.nilai_nilai.length === 0 
+            || item.peserta_didik.kegiatan_eskul_murid.length === 0 
+            || item.peserta_didik.absensi_siswa === null
+            "
+            text
+            color="teal"
+            @click="cetakRaport(item)"
+          >
+            Cetak
+          </v-btn>
+
+          <v-btn
+           v-else
+            :disabled="
+               item.peserta_didik.nilai_nilai.length === 0 
+            || item.peserta_didik.kegiatan_eskul_murid.length === 0 
+            || item.peserta_didik.absensi_siswa === null 
+            || item.peserta_didik.catatan_wali_kelas === null
             "
             text
             color="teal"
@@ -168,11 +184,20 @@ export default {
       }
     },
     checkStatusRaport(item) {
-      return item.peserta_didik.nilai_nilai.length === 0 &&
-        item.peserta_didik.kegiatan_eskul_murid.length === 0 &&
+      if (this.raport.jenis_penilaian !== "Penilaian Akhir Tahun" || this.raport.jenis_penilaian !== "Penilaian Akhir Semester") {
+      return item.peserta_didik.nilai_nilai.length === 0 ||
+        item.peserta_didik.kegiatan_eskul_murid.length === 0 ||
         item.peserta_didik.absensi_siswa === null
         ? "Sedang dalam proses pembuatan"
         : "Siap dicetak";
+      }else{
+        return item.peserta_didik.nilai_nilai.length === 0 
+      || item.peserta_didik.kegiatan_eskul_murid.length === 0
+      || item.peserta_didik.absensi_siswa === null
+      || item.peserta_didik.catatan_wali_kelas === null
+        ? "Sedang dalam proses pembuatan"
+        : "Siap dicetak";
+      }
     },
     formatDate(date) {
       if (date !== null) {

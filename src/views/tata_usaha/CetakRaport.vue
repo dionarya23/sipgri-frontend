@@ -8,7 +8,7 @@
         }}
       </v-card-title>
       <v-card-subtitle>
-        Tanggal LHBS: {{ formatDate(raport.tgl_lhbs) }}
+        Tanggal LHBS (Pembagian Raport): {{ formatDate(raport.tgl_lhbs) }}
       </v-card-subtitle>
       <v-data-table
         :headers="headers"

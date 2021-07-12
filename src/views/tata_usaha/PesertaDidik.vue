@@ -18,6 +18,42 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
+        
+
+          <v-dialog persistent v-model="dialogNaikKelas" max-width="480px">
+                 <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  depressed
+                  class="mx-2 texr--white"
+                  :loading="isLoading"
+                  :disabled="isLoading || raportAktif.jenis_penilaian !== 'Penilaian Akhir Tahun'"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                Naikan Kelas Siswa
+                </v-btn>
+                </template>
+
+                <v-card>
+                  <v-card-title class="headline">Peringatan</v-card-title>
+                  <v-card-text
+                    ><p class="text-h6">
+                      Apakah anda yakin ingin menaikan kelas siswa?
+                    </p></v-card-text
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeNaikanKelas"
+                      >Batal</v-btn
+                    >
+                    <v-btn color="success" text @click="naikKelasConfirm">Ya!</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
+
           <v-dialog persistent v-model="dialogUpload" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -337,7 +373,6 @@
             </v-card>
           </v-dialog>
           <!-- end of duplicate data peserta didik -->
-
           <v-dialog persistent v-model="dialogDelete" max-width="480px">
             <v-card>
               <v-card-title class="headline">Peringatan</v-card-title>
@@ -394,6 +429,7 @@ export default {
     dialogUpload: false,
     dialogDelete: false,
     dialogDuplicate: false,
+    dialogNaikKelas: false,
     is_nis_avail: "",
     is_nisn_avail: "",
     is_nomor_telepon_avail: "",
@@ -525,12 +561,23 @@ export default {
         });
         return pesertaDidik;
       },
+      raportAktif: (state) => state.cetakRaport.raportAktif
     }),
   },
   mounted() {
     this.$store.dispatch("pesertaDidik/getAllPesertaDidik");
+    this.$store.dispatch("cetakRaport/getRaportAktif");
   },
   methods: {
+    closeNaikanKelas(){
+      this.dialogNaikKelas = false;
+    },
+
+    // confirm untuk naik kelas
+    naikKelasConfirm(){
+
+    },
+
     messageBerhasil(jumlahBerhasil) {
       return jumlahBerhasil !== 0 ? `Berhasil menambahkan {{ jumlah_sukses }} peserta didik dan` : ""
     },

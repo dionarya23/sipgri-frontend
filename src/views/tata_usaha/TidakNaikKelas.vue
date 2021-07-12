@@ -1,6 +1,6 @@
 <template>
   <div class="tidak-naik-kelas">
-    <v-card>
+    <v-card  v-if="tahunAjaran.jenis_penilaian === 'Penilaian Akhir Tahun'">
       <v-card-title> Tahun Ajaran {{ tahun_ajaran_aktif }} </v-card-title>
       <v-data-table
         :headers="headers"
@@ -30,7 +30,7 @@
               :loading="isLoading"
               :disabled="
                 isLoading ||
-                  tahunAjaran.jenis_penilaian === 'Penilaian Akhir Tahun'
+                  tahunAjaran.jenis_penilaian !== 'Penilaian Akhir Tahun'
               "
               @click="cetakLaporan"
             >
@@ -84,6 +84,16 @@
           </td>
         </template>
       </v-data-table>
+    </v-card>
+    <v-card v-else>
+        <v-card-text>
+          <p class="text-h4 text--primary">
+            Perhatian!!
+          </p>
+          <div class="text--primary">
+           Laporan Siswa Peserta Didik Tidak Naik Kelas Tahun Ajaran {{ tahun_ajaran_aktif }} Belum Tersedia
+          </div>
+        </v-card-text>
     </v-card>
   </div>
 </template>

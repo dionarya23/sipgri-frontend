@@ -77,6 +77,7 @@ const cetakRaport = {
         })
           .then((res) => {
             state.isLoading = false;
+            console.log("detail kelas", res.data.data);
             commit("SET_KELAS", res.data.data);
             resolve(res);
           })
