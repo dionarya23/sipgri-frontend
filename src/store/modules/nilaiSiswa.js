@@ -19,6 +19,7 @@ const nilaiSiswa = {
       state.raportStatusAktif = raport;
     },
     SET_PESERTA_DIDIK_NILAI(state, pesertaDidikNilai) {
+      console.log("Detail peserta didik :", pesertaDidikNilai);
       state.pesertaDidikNilai = pesertaDidikNilai;
     },
     SET_RAPORT_AKTIF(state, raport) {
@@ -37,7 +38,7 @@ const nilaiSiswa = {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          url: "jadwal/kelas/guru/",
+          url: "jadwal/kelas/guru/", 
           method: "GET",
         })
           .then((res) => {
@@ -128,8 +129,12 @@ const nilaiSiswa = {
         })
           .then((res) => {
             state.isLoading = false;
-            commit("SET_PESERTA_DIDIK_NILAI", res.data.data.kelas);
-            commit("SET_RAPORT_AKTIF", res.data.data.raport);
+            const { kelas, raport } = res.data.data
+            console.log(" Kelas getListPesertaDidik : ", res.data.data);
+            console.log(" raport getListPesertaDidik : ", raport);
+
+            commit("SET_PESERTA_DIDIK_NILAI", kelas);
+            commit("SET_RAPORT_AKTIF", raport);
             resolve(res);
           })
           .catch((err) => {

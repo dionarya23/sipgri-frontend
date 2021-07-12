@@ -198,7 +198,7 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-item to="/absensi" if="userData.type_user === 'wali_kelas'">
+          <v-list-item to="/absensi" v-if="userData.type_user === 'wali_kelas'">
             <v-list-item-icon>
               <v-icon>mdi-clipboard-list-outline</v-icon>
             </v-list-item-icon>
