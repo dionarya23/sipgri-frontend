@@ -5,11 +5,17 @@ const pesertaDidik = {
   state: {
     pesertaDidik: [],
     isLoading: false,
+    isAlreadyNaikKelas: localStorage.getItem("naikKelas"),
   },
   mutations: {
     SET_PESERTA_DIDIK(state, pesertaDidik) {
+      state.pesertaDidik = [];
       state.pesertaDidik = pesertaDidik;
     },
+    SET_ALREADY_NAIK_KELAS(state, data){
+      localStorage.naikKelas = data
+      state.isAlreadyNaikKelas = data;
+    }
   },
   actions: {
     
@@ -31,6 +37,36 @@ const pesertaDidik = {
             reject(err);
           });
       });
+    },
+
+    naikKelas({commit, state}) {
+      state.isLoading = true;
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "peserta-didik/kenaikan/kelas/",
+          method: "GET"
+        }).then(res => {
+          state.isLoading = false;
+          const { pesertaDidikNew, raportAktif } = res.data.data
+          commit("SET_PESERTA_DIDIK", pesertaDidikNew);
+          commit("SET_ALREADY_NAIK_KELAS", `true_${raportAktif.jenis_penilaian}${raportAktif.id_raport}`)
+          const payload = {
+            type: "success",
+            message: "Sukses menaikan kelas siswa",
+          };
+          commit("SHOW_ALERT", payload, { root: true });
+          resolve(res);
+        }).catch(err => {
+            console.error(err);
+            state.isLoading = false;
+            const payload = {
+              type: "error",
+              message: "Terjadi Kesalahan saat menaikan tingkat kelas siswa",
+            };
+            commit("SHOW_ALERT", payload, { root: true });
+            reject(err);
+        })
+      })
     },
 
     uploadExcelFile({ commit, state }, formData) {

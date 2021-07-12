@@ -406,11 +406,11 @@ export default {
       ],
       kenaikanKelas: [
         ["Laporan", "mdi-alert-octagon", "/laporan-tidak-naik-kelas"],
-        [
-          "Ubah Tingkat Siswa",
-          "mdi-format-font-size-increase",
-          "/ubah-tingkat-siswa"
-        ]
+        // [
+        //   "Ubah Tingkat Siswa",
+        //   "mdi-format-font-size-increase",
+        //   "/ubah-tingkat-siswa"
+        // ]
       ],
       raport: [
         ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],

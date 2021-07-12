@@ -27,7 +27,7 @@
                   depressed
                   class="mx-2 texr--white"
                   :loading="isLoading"
-                  :disabled="isLoading || raportAktif.jenis_penilaian !== 'Penilaian Akhir Tahun'"
+                  :disabled="isLoading || raportAktif.jenis_penilaian !== 'Penilaian Akhir Tahun' || isAlreadyNaikKelas"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -553,6 +553,7 @@ export default {
 
     ...mapState({
       isLoading: (state) => state.pesertaDidik.isLoading,
+      naikKelas: (state) => state.pesertaDidik.isAlreadyNaikKelas,
       alert: (state) => state.alert,
       pesertaDidik: (state) => {
         const { pesertaDidik } = state.pesertaDidik;
@@ -563,6 +564,10 @@ export default {
       },
       raportAktif: (state) => state.cetakRaport.raportAktif
     }),
+
+    isAlreadyNaikKelas() {
+      return this.naikKelas === `true_${this.raportAktif.jenis_penilaian}${this.raportAktif.id_raport}`
+    }
   },
   mounted() {
     this.$store.dispatch("pesertaDidik/getAllPesertaDidik");
@@ -575,7 +580,8 @@ export default {
 
     // confirm untuk naik kelas
     naikKelasConfirm(){
-
+      this.$store.dispatch("pesertaDidik/naikKelas");
+      this.closeNaikanKelas();
     },
 
     messageBerhasil(jumlahBerhasil) {

@@ -91,7 +91,7 @@
             Perhatian!!
           </p>
           <div class="text--primary">
-           Laporan Siswa Peserta Didik Tidak Naik Kelas Tahun Ajaran {{ tahun_ajaran_aktif }} Belum Tersedia
+           Laporan peserta didik tidak memenuhi syarat kenaikan kelas tahun ajaran {{ tahun_ajaran_aktif }} belum tersedia
           </div>
         </v-card-text>
     </v-card>
