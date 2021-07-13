@@ -28,6 +28,7 @@ const auth = {
             const user = res.data.data;
             localStorage.setItem("token", `Bearer ${user.token}`);
             localStorage.setItem("naikKelas", "");
+            localStorage.setItem("pembagianKelas", "");
             localStorage.setItem("role", `${user.type_user}`);
             axios.defaults.headers.common["Authorization"] =
               "Bearer " + user.token;
@@ -56,6 +57,7 @@ const auth = {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("role");
+        localStorage.removeItem("pembagianKelas");
         localStorage.removeItem("naikKelas");
         delete axios.defaults.headers.common["Authorization"];
         resolve();

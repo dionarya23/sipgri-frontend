@@ -18,7 +18,6 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
-        
 
           <v-dialog persistent v-model="dialogNaikKelas" max-width="480px">
                  <template v-slot:activator="{ on, attrs }">
@@ -336,11 +335,11 @@
               <v-card-text>
                 <v-alert
                   border="left"
-                  color="red"
+                  color="yellow"
                   dense
-                  icon="mdi-alert"
+                  icon="mdi-error"
                   outlined
-                  type="error"
+                  type="warning"
                 >
                   {{ messageBerhasil(jumlah_sukses) }}
                   terdapat {{ fail_insert.length }} peserta didik yang gagal di
@@ -465,7 +464,7 @@ export default {
       { text: "NIS", value: "nis", sortable: false },
       { text: "Nama", value: "nama", sortable: false },
       { text: "Jenis Kelamin", value: "jenis_kelamin", sortable: false },
-      { text: "Minat Jurusan", value: "minat_jurusan", sortable: false },
+      { text: "Jurusan", value: "minat_jurusan", sortable: false },
       { text: "Tingkat", value: "tingkat" },
     ],
     defaultItem: {
@@ -585,7 +584,7 @@ export default {
     },
 
     messageBerhasil(jumlahBerhasil) {
-      return jumlahBerhasil !== 0 ? `Berhasil menambahkan {{ jumlah_sukses }} peserta didik dan` : ""
+      return jumlahBerhasil !== 0 ? `Berhasil menambahkan ${jumlahBerhasil} peserta didik dan` : ""
     },
     forceUpper() {
       this.editedItem.nama = this.editedItem.nama.toUpperCase();

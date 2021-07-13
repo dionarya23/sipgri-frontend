@@ -20,7 +20,8 @@ import nilaiSiswa from "./modules/nilaiSiswa";
 import catatanWaliKelas from "./modules/catatanWaliKelas";
 import cetakRaport from "./modules/cetakRaport";
 import prestasi from "./modules/prestasi";
-import tidakNaikKelas from './modules/tidakNaikKelas';
+import tidakNaikKelas from "./modules/tidakNaikKelas";
+import pembagianKelas from "./modules/pembagianKelas";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -31,8 +32,8 @@ export default new Vuex.Store({
     alert: {
       isShow: false,
       type: "",
-      message: ""
-    }
+      message: "",
+    },
   },
   mutations: {
     SHOW_ALERT(state, payload) {
@@ -47,15 +48,15 @@ export default new Vuex.Store({
     },
     CLOSE_ALERT(state) {
       state.alert.isShow = false;
-    }
+    },
   },
   actions: {
     doReload() {
       window.location.reload();
     },
     showError({ commit }, payload) {
-      commit("SHOW_ALERT", payload)
-    }
+      commit("SHOW_ALERT", payload);
+    },
   },
   modules: {
     auth,
@@ -77,13 +78,14 @@ export default new Vuex.Store({
     catatanWaliKelas,
     cetakRaport,
     prestasi,
-    tidakNaikKelas
+    tidakNaikKelas,
+    pembagianKelas,
   },
   getters: {},
   plugins: [
     createPersistedState({
       paths: ["auth.user"],
-      key: ["user"]
-    })
-  ]
+      key: ["user"],
+    }),
+  ],
 });
