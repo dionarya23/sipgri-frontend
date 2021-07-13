@@ -67,8 +67,8 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn text color="teal" :disabled="item.kelas_siswa.length === 0">
-            Cetak
+          <v-btn @click="cetakDaftarSiswa(item.id_kelas)" text color="teal" :disabled="item.kelas_siswa.length === 0">
+            Cetak 
           </v-btn>
         </template>
 
@@ -83,6 +83,8 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import printJS from "print-js";
+import endpoint from '../../config/endpoint'
 
 export default {
   data: () => ({
@@ -148,6 +150,22 @@ export default {
     confirmPembagianKelas(){
       this.$store.dispatch("pembagianKelas/doPembagianKelas");
       this.closePembagianKelas();
+    },
+    cetakDaftarSiswa(id_kelas){
+       printJS({
+          printable: `${endpoint}kelas/list-peserta-didik/${id_kelas}`,
+          type: "pdf",
+          modalMessage: "Harap tunggu, sedang mendapatkan daftar peserta didik...",
+          showModal: true,
+          onError: (_) => {
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "Terjadi kesalahan saat mendapatkan peserta didik",
+            };
+            this.$store.dispatch("showError", payload);
+          },
+        });
     }
   },
 };
