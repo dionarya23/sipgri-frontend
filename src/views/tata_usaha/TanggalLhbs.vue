@@ -51,7 +51,7 @@
 
                   <v-text-field
                     v-model="editedItem.tgl_lhbs"
-                    label="Tanggal LHBS"
+                    label="Tanggal Pembagian Raport"
                     :rules="requiredRule"
                     type="date"
                   ></v-text-field>
@@ -82,7 +82,7 @@
             <v-card-title class="headline">Perhatian!</v-card-title>
             <v-card-text
               ><p class="text-h6">
-                Apakah anda yakin ingin mengubah pelaksanaan tgl lhbs ini
+                Apakah anda yakin ingin mengubah pelaksanaan ini
                 menjadi aktif ?
               </p></v-card-text
             >
@@ -140,9 +140,9 @@ export default {
       message: "",
     },
     headers: [
-      { text: "Jenis Penilaian", value: "jenis_penilaian", sortable: false },
+      { text: "Jenis Raport", value: "jenis_penilaian", sortable: false },
       { text: "Semester", value: "semester", sortable: false },
-      { text: "Tanggal LHBS", value: "tgl_lhbs" },
+      { text: "Tanggal Pembagian Raport", value: "tgl_lhbs", sortable: false},
       {
         text: "Status Pelaksanaan",
         value: "status_pelaksanaan",
@@ -187,7 +187,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1
         ? "Tambah Tanggal LHBS"
-        : "Ubah Tanggal LHBS";
+        : "Ubah Tanggal Pembagian Raport";
     },
     ...mapState({
       isLoading: (state) => state.raport.isLoading,

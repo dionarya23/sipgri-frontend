@@ -24,14 +24,15 @@ const absensi = {
     }
   },
   actions: {
-    getRaport({ commit }, id_raport) {
+    getRaport({ commit }) {
       return new Promise((resolve, reject) => {
         axios({
-          url: `raport/${id_raport}`,
+          url: `raport/status-pelaksanaan/aktif/`,
           method: "GET"
         })
           .then((res) => {
             commit("SET_RAPORT", res.data.data);
+            console.log("absensi raport : ", res.data.data);
             resolve(res);
           })
           .catch((err) => {
@@ -137,16 +138,17 @@ const absensi = {
       });
     },
 
-    getAbsensiByWaliKelas({ commit, state }, id_raport) {
+    getAbsensiByWaliKelas({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
           method: "GET",
-          url: `absensi/wali-kelas/${id_raport}`
+          url: `absensi/wali-kelas/`
         })
           .then((res) => {
             state.isLoading = false;
             commit("SET_PESERTA_DIDIK", res.data.data);
+            console.log("Absensi : ", res.data.data);
             resolve(res);
           })
           .catch((err) => {

@@ -2,9 +2,14 @@
   <div class="detail-absensi">
     <v-card>
       <v-card-title>
-        Kelas {{ nama_kelas }} absensi untuk
-        {{ raport.jenis_penilaian }}
+       Rekap Absensi Kelas {{ nama_kelas }}
       </v-card-title>
+      <v-card-subtitle>
+        Periode: {{ getPeriode }}  <br/>
+        Semester : {{ raport.semester }}<br/>
+        Tahun Ajaran : {{ raport.tahun_ajaran.tahun_awal }}/{{ raport.tahun_ajaran.tahun_akhir }}
+        <!-- Pembuatan Raport: {{ raport.jenis_penilaian.toLowerCase() }} -->
+      </v-card-subtitle>
       <v-data-table
         :loading="isLoading"
         :headers="headers"
@@ -55,7 +60,7 @@
                       </v-text-field>
 
                       <v-text-field
-                        label="Absensi untuk Jenis Penilaian"
+                        label="Absensi untuk Raport"
                         v-model="raport.jenis_penilaian"
                         readonly
                       >
@@ -93,6 +98,18 @@
                       <v-text-field
                         label="Izin"
                         v-model="editedItem.izin"
+                        type="number"
+                        :rules="[
+                          rulesInputForm.requiredRule,
+                          rulesInputForm.notMinus
+                        ]"
+                      >
+                      </v-text-field>
+
+
+                      <v-text-field
+                        label="Jumlah Hadir"
+                        v-model="editedItem.jumlah_hadir"
                         type="number"
                         :rules="[
                           rulesInputForm.requiredRule,
@@ -191,6 +208,11 @@ export default {
         value: "peserta_didik.absensi_siswa.sakit",
         sortable: false
       },
+       {
+        text: "Jumlah Hadir",
+        value: "peserta_didik.absensi_siswa.jumlah_hadir",
+        sortable: false
+      },
       { text: "Aksi", value: "actions", sortable: false }
     ],
     editedItem: {
@@ -200,7 +222,8 @@ export default {
       id_raport: -1,
       alpha: "",
       izin: "",
-      sakit: ""
+      sakit: "",
+      jumlah_hadir: "",
     },
     defaultItem: {
       id_absensi: -1,
@@ -209,7 +232,8 @@ export default {
       id_raport: -1,
       alpha: "",
       izin: "",
-      sakit: ""
+      sakit: "",
+      jumlah_hadir: "",
     },
     editedIndex: -1
   }),
@@ -228,15 +252,25 @@ export default {
       return this.editedIndex === -1
         ? "Tambah Data Absensi"
         : "Ubah Data Absensi";
+    },
+    getPeriode() {
+      return this.raport.jenis_penilaian === 'Penilaian Tengah Semester 1' ? `Juli - September ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === 'Penilaian Akhir Semester' ? `Oktober - Desember ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === "Penilaian Tengah Semester 2" ? `Januari - Maret ${this.raport.tahun_ajaran.tahun_akhir}` 
+      : `April - Juni ${this.raport.tahun_ajaran.tahun_akhir}`;
     }
   },
   mounted() {
+    // this.$store.dispatch(
+    //   "absensi/getAbsensiByWaliKelas",
+    //   this.$route.params.id_raport
+    // );
     this.$store.dispatch(
-      "absensi/getAbsensiByWaliKelas",
-      this.$route.params.id_raport
+      "absensi/getAbsensiByWaliKelas"
     );
-
-    this.$store.dispatch("absensi/getRaport", this.$route.params.id_raport);
+ 
+    // this.$store.dispatch("absensi/getRaport", this.$route.params.id_raport);
+    this.$store.dispatch("absensi/getRaport");
   },
   methods: {
     save() {
@@ -246,6 +280,7 @@ export default {
           alpha,
           izin,
           sakit,
+          jumlah_hadir,
           id_raport
         } = this.editedItem;
         if (this.editedItem.id_absensi === -1) {
@@ -257,20 +292,14 @@ export default {
               alpha,
               sakit,
               izin,
+              jumlah_hadir,
               id_raport
             })
             .then((res) => {
               const { data } = res.data;
-              console.log(
-                this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa
-              );
               this.detail_kelas[
                 this.editedIndex
               ].peserta_didik.absensi_siswa = {};
-              console.log(
-                this.detail_kelas[this.editedIndex].peserta_didik.absensi_siswa
-              );
-
               this.detail_kelas[
                 this.editedIndex
               ].peserta_didik.absensi_siswa.id_absensi = data.id_absensi;
@@ -286,6 +315,9 @@ export default {
               this.detail_kelas[
                 this.editedIndex
               ].peserta_didik.absensi_siswa.izin = data.izin;
+                this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.jumlah_hadir = data.jumlah_hadir;
 
               this.close();
             })
@@ -303,6 +335,7 @@ export default {
                 alpha,
                 sakit,
                 izin,
+                jumlah_hadir,
                 id_raport
               }
             })
@@ -316,6 +349,9 @@ export default {
               this.detail_kelas[
                 this.editedIndex
               ].peserta_didik.absensi_siswa.sakit = sakit;
+              this.detail_kelas[
+                this.editedIndex
+              ].peserta_didik.absensi_siswa.jumlah_hadir = jumlah_hadir;
               this.close();
             })
             .catch((err) => {
@@ -345,6 +381,7 @@ export default {
           alpha,
           izin,
           sakit,
+          jumlah_hadir,
           id_absensi,
           id_raport
         } = item.peserta_didik.absensi_siswa;
@@ -357,7 +394,8 @@ export default {
             id_raport,
             alpha,
             izin,
-            sakit
+            sakit,
+            jumlah_hadir,
           }
         );
       } else {
@@ -370,7 +408,8 @@ export default {
             id_raport: this.raport.id_raport,
             alpha: null,
             izin: null,
-            sakit: null
+            sakit: null,
+            jumlah_hadir: null
           }
         );
       }

@@ -9,6 +9,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
+          <h3>Mata Pelajaran yang Anda Ajar</h3>
           <v-dialog persistent v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>

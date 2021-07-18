@@ -1,5 +1,9 @@
 <template>
-  <div class="nilai-kkm">
+  <div class="penilaian">
+    <v-card>
+      <v-card-title>
+        Daftar Kelas yang Diajar
+      </v-card-title>
     <v-data-table
       :headers="headers"
       class="elevation-1"
@@ -23,6 +27,7 @@
         </v-btn>
       </template>
     </v-data-table>
+    </v-card>
   </div>
 </template>
 <script>

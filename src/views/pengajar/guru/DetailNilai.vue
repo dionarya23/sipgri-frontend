@@ -2,9 +2,14 @@
   <div class="detail-nilai">
     <v-card>
       <v-card-title>
-        {{ raport.jenis_penilaian }} Mata Pelajaran {{ mata_pelajaran }} untuk
+        Pengisian Nilai Mata Pelajaran {{ mata_pelajaran }} untuk
         Kelas {{ nama_kelas }}
       </v-card-title>
+      <v-card-subtitle>
+        Periode : {{ getPeriode }}<br/>
+        Semester : {{ raport.semester }}<br/>
+        Tahun Ajaran : {{ raport.tahun_ajaran.tahun_awal }}/{{ raport.tahun_ajaran.tahun_akhir }}
+      </v-card-subtitle>
       <v-data-table
         :loading="isLoading"
         :headers="headers"
@@ -288,6 +293,12 @@ export default {
         : this.raport.jenis_penilaian === "Penilaian Akhir Semester"
         ? "Nilai PAS"
         : "Nilai PAT";
+    },
+    getPeriode() {
+      return this.raport.jenis_penilaian === 'Penilaian Tengah Semester 1' ? `Juli - September ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === 'Penilaian Akhir Semester' ? `Oktober - Desember ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === "Penilaian Tengah Semester 2" ? `Januari - Maret ${this.raport.tahun_ajaran.tahun_akhir}` 
+      : `April - Juni ${this.raport.tahun_ajaran.tahun_akhir}`;
     },
     headers() {
       return [

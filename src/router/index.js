@@ -247,7 +247,7 @@ const routes = [
         }
       },
       {
-        path: "detail-absensi/:id_raport",
+        path: "detail-absensi",
         name: "Pengisian Absensi",
         component: DetailAbsensi,
         meta: {

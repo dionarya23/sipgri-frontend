@@ -198,7 +198,7 @@
             </v-list-item>
           </v-list-group>
 
-          <v-list-item to="/absensi" v-if="userData.type_user === 'wali_kelas'">
+          <v-list-item to="/detail-absensi" v-if="userData.type_user === 'wali_kelas'">
             <v-list-item-icon>
               <v-icon>mdi-clipboard-list-outline</v-icon>
             </v-list-item-icon>
@@ -294,7 +294,7 @@
           v-if="$route.name === 'Data Tanggal LHBS Tahun Ajaran'"
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
-          {{ $route.name }} {{ tahunAjaranAktifLHBS.tahun_awal }}/{{
+          Pelaksanaan Pembuatan Raport Tahun Ajaran {{ tahunAjaranAktifLHBS.tahun_awal }}/{{
             tahunAjaranAktifLHBS.tahun_akhir
           }}
         </p>
@@ -317,10 +317,7 @@
           v-else-if="$route.name === 'Penilaian Mata Pelajaran'"
           class="text-h4 text-center text-lg-left text--secondary mb-8"
         >
-          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
-            tahunAjaranAktif.tahun_akhir
-          }}
-          Jenis {{ raportAktif.jenis_penilaian }}
+           {{ $route.name }}
         </p>
 
         <p
@@ -332,9 +329,7 @@
               mdi-arrow-left
             </v-icon>
           </v-btn>
-          {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
-            tahunAjaranAktif.tahun_akhir
-          }}
+          {{ $route.name }}
         </p>
 
         <p
@@ -350,7 +345,7 @@
           {{ $route.name }}
         </p>
 
-        <p
+        <!-- <p
           v-else-if="
             $route.name === 'Pengisian Absensi' ||
               $route.name === 'Pengisian Nilai Eskul'
@@ -365,7 +360,7 @@
           {{ $route.name }} Tahun Ajaran {{ tahunAjaranAktif.tahun_awal }}/{{
             tahunAjaranAktif.tahun_akhir
           }}
-        </p>
+        </p> -->
 
         <p
           v-else-if="$route.name === 'Cetak Raport Peserta Didik'"
@@ -413,7 +408,7 @@ export default {
         // ]
       ],
       raport: [
-        ["Tanggal LHBS", "mdi-calendar-month", "/tanggal-lhbs"],
+        ["Pelaksanaan Raport", "mdi-calendar-month", "/tanggal-lhbs"],
         ["Cetak Raport", "mdi-printer-settings", "/cetak-raport"]
       ]
     },

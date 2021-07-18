@@ -26,6 +26,7 @@
             item-value="index"
             color="white"
             label="Filter Berdasarkan Kelas"
+            @change="changeEditedItemIdKelas"
           ></v-autocomplete>
 
           <v-spacer></v-spacer>
@@ -414,6 +415,11 @@ export default {
         this.pengajar = [];
       });
       this.$refs.form.resetValidation();
+    },
+
+    changeEditedItemIdKelas(){
+      let kelasSelected = this.list_kelas[this.kelasSelected]
+      this.editedItem.id_kelas = kelasSelected.id_kelas;
     },
 
     setPengajar() {

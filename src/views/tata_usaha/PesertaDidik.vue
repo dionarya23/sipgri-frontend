@@ -335,11 +335,11 @@
               <v-card-text>
                 <v-alert
                   border="left"
-                  color="yellow"
+                  color="red"
                   dense
-                  icon="mdi-error"
+                  icon="mdi-alert-circle-outline"
                   outlined
-                  type="warning"
+                  type="error"
                 >
                   {{ messageBerhasil(jumlah_sukses) }}
                   terdapat {{ fail_insert.length }} peserta didik yang gagal di

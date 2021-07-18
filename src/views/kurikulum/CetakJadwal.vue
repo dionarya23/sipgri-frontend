@@ -8,7 +8,24 @@
       >
         {{ alert.message }}
       </v-alert>
+      <v-select
+        label="Jenis Jadwal"
+        :items="['Perkelas', 'Perangkatan']"
+        :rules="[(v) => !!v || 'Wajib dipilih']"
+        v-model="jenis_jadwal"
+      ></v-select>
+
       <v-autocomplete
+        v-if="jenis_jadwal === 'Perangkatan'"
+        label="Pilih Angkatan"
+        item-text="angkatan"
+        item-value="tingkat"
+        :rules="[(v) => !!v || 'Wajib dipilih']"
+        :items="list_angkatan"
+      >
+      </v-autocomplete>
+      <v-autocomplete
+        v-else
         label="Pilih Kelas"
         item-text="nama_kelas"
         item-value="id_kelas"
@@ -34,12 +51,28 @@
 <script>
 import { mapState } from "vuex";
 import printJS from "print-js";
-import endpoint from '../../config/endpoint'
+import endpoint from "../../config/endpoint";
 export default {
   data: () => ({
     isLoading: false,
     valid: true,
     id_kelas: "",
+    tingkat: "",
+    jenis_jadwal: "Perkelas",
+    list_angkatan: [
+      {
+        angkatan: "Angkatan Kelas 10",
+        tingkat: "X",
+      },
+      {
+        angkatan: "Angkatan Kelas 11",
+        tingkat: "XI",
+      },
+      {
+        angkatan: "Angkatan Kelas 12",
+        tingkat: "XII",
+      },
+    ],
   }),
   computed: {
     ...mapState({
