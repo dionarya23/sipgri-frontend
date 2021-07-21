@@ -51,7 +51,6 @@ const catatanWaliKelas = {
           .then((res) => {
             state.isLoading = false;
             commit("SET_TABLE_CATATAN", res.data.data);
-            console.log(res.data.data);
             resolve(res);
           })
           .catch((err) => {

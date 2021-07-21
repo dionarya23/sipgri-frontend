@@ -18,7 +18,7 @@
     </v-card>
     <v-card v-else>
        <v-card-title>
-       Rekap Absensi Kelas {{ nama_kelas }}
+       Pengisian Catatan Wali Kelas untuk kelas {{ nama_kelas }}
       </v-card-title>
       <v-card-subtitle>
         Periode: {{ getPeriode }}  <br/>
@@ -221,7 +221,8 @@ export default {
       alert: (state) => state.alert,
       isLoading: (state) => state.catatanWaliKelas.isLoading,
       tableCatatan: (state) => state.catatanWaliKelas.tableCatatan,
-      raport: (state) => state.absensi.raport
+      raport: (state) => state.absensi.raport,
+      nama_kelas: (state) => state.catatanWaliKelas.tableCatatan.nama_kelas
     }),
     tahunAjaranSemester() {
       return `${this.raport.tahun_ajaran.tahun_awal}/${this.raport.tahun_ajaran.tahun_akhir} - Semester ${this.raport.semester}`;
@@ -243,8 +244,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch(
-      "catatanWaliKelas/getTableCatatan",
-      this.$route.params.id_raport
+      "catatanWaliKelas/getTableCatatan"
     );
     this.$store.dispatch("absensi/getRaport");
   },

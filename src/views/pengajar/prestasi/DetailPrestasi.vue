@@ -1,10 +1,31 @@
 <template>
   <div class="detail-prestasi">
-    <v-card>
+    <v-container>
+      <div class="text-center" v-if="isLoading">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div> 
+    <div v-else>
+    <v-card v-if="getJenisPelaksanaanRaport">
       <v-card-title>
-        Kelas {{ prestasi.nama_kelas }} prestasi untuk
-        {{ raport.jenis_penilaian }}
+        Perhatian!!
       </v-card-title>
+      <v-card-subtitle>
+        Pengisian catatan wali kelas hanya berlaku untuk raport periode <b>Oktober - Desember Tahun {{ raport.tahun_ajaran.tahun_awal }}</b> dan <b>April - Juni Tahun {{ raport.tahun_ajaran.tahun_akhir }}</b>
+      </v-card-subtitle>
+    </v-card>
+    <v-card v-else>
+       <v-card-title>
+       Pengisian Prestasi Siswa untuk Kelas {{ nama_kelas }}
+      </v-card-title>
+      <v-card-subtitle>
+        Periode: {{ getPeriode }}  <br/>
+        Semester : {{ raport.semester }}<br/>
+        Tahun Ajaran : {{ raport.tahun_ajaran.tahun_awal }}/{{ raport.tahun_ajaran.tahun_akhir }}
+        <!-- Pembuatan Raport: {{ raport.jenis_penilaian.toLowerCase() }} -->
+      </v-card-subtitle>
       <v-data-table
         :loading="isLoading"
         :headers="headers"
@@ -189,6 +210,8 @@
         </template>
       </v-data-table>
     </v-card>
+    </div>
+    </v-container>
   </div>
 </template>
 <script>
@@ -249,7 +272,8 @@ export default {
       alert: (state) => state.alert,
       isLoading: (state) => state.prestasi.isLoading,
       prestasi: (state) => state.prestasi.prestasi,
-      raport: (state) => state.absensi.raport
+      raport: (state) => state.absensi.raport,
+      nama_kelas: (state) => state.prestasi.prestasi.nama_kelas
     }),
     tahunAjaranSemester() {
       return `${this.raport.tahun_ajaran.tahun_awal}/${this.raport.tahun_ajaran.tahun_akhir} - Semester ${this.raport.semester}`;
@@ -262,11 +286,20 @@ export default {
     },
     isPrestasiThree() {
       return this.editedItem.prestasi.length < 3;
+    },
+    getPeriode() {
+      return this.raport.jenis_penilaian === 'Penilaian Tengah Semester 1' ? `Juli - September ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === 'Penilaian Akhir Semester' ? `Oktober - Desember ${this.raport.tahun_ajaran.tahun_awal}` 
+      : this.raport.jenis_penilaian === "Penilaian Tengah Semester 2" ? `Januari - Maret ${this.raport.tahun_ajaran.tahun_akhir}` 
+      : `April - Juni ${this.raport.tahun_ajaran.tahun_akhir}`;
+    },
+    getJenisPelaksanaanRaport(){
+      return this.raport.jenis_penilaian !== 'Penilaian Akhir Semester' && this.raport.jenis_penilaian !== 'Penilaian Akhir Tahun';
     }
   },
   mounted() {
-    this.$store.dispatch("prestasi/getPrestasi", this.$route.params.id_raport);
-    this.$store.dispatch("absensi/getRaport", this.$route.params.id_raport);
+    this.$store.dispatch("prestasi/getPrestasi");
+    this.$store.dispatch("absensi/getRaport");
   },
   methods: {
     save() {

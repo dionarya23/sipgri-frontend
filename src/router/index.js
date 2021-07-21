@@ -238,14 +238,14 @@ const routes = [
           roles: ["guru", "wali_kelas"]
         }
       },
-      {
-        path: "absensi",
-        name: "Absensi Peserta Didik",
-        component: Absensi,
-        meta: {
-          roles: ["wali_kelas"]
-        }
-      },
+      // {
+      //   path: "absensi",
+      //   name: "Absensi Peserta Didik",
+      //   component: Absensi,
+      //   meta: {
+      //     roles: ["wali_kelas"]
+      //   }
+      // },
       {
         path: "detail-absensi",
         name: "Pengisian Absensi",
@@ -286,16 +286,16 @@ const routes = [
       //     roles: ["wali_kelas"]
       //   }
       // },
+      // {
+      //   path: "prestasi-siswa",
+      //   name: "Prestasi Siswa",
+      //   component: Prestasi,
+      //   meta: {
+      //     roles: ["wali_kelas"]
+      //   }
+      // },
       {
         path: "prestasi-siswa",
-        name: "Prestasi Siswa",
-        component: Prestasi,
-        meta: {
-          roles: ["wali_kelas"]
-        }
-      },
-      {
-        path: "prestasi-siswa/:id_raport",
         name: "Detail Prestasi Siswa",
         component: DetailPrestasi,
         meta: {

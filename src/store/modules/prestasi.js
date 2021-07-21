@@ -28,16 +28,15 @@ const prestasi = {
     }
   },
   actions: {
-    getPrestasi({ commit, state }, id_raport) {
+    getPrestasi({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          url: `prestasi/peserta-didik/${id_raport}`,
+          url: `prestasi/peserta-didik/get-wali-kelas`,
           method: "GET"
         })
           .then((res) => {
             state.isLoading = false;
-            console.log(res.data.data);
             commit("SET_PRESTASI", res.data.data);
             resolve(res);
           })
