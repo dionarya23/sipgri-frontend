@@ -273,19 +273,19 @@ const routes = [
       {
         path: "catatan-wali-kelas",
         name: "Catatan Wali Kelas",
-        component: CatatanWaliKelas,
-        meta: {
-          roles: ["wali_kelas"]
-        }
-      },
-      {
-        path: "catatan-wali-kelas/:id_raport",
-        name: "Pengisian Catatan Wali Kelas",
         component: DetailCatatan,
         meta: {
           roles: ["wali_kelas"]
         }
       },
+      // {
+      //   path: "catatan-wali-kelas/:id_raport",
+      //   name: "Pengisian Catatan Wali Kelas",
+      //   component: DetailCatatan,
+      //   meta: {
+      //     roles: ["wali_kelas"]
+      //   }
+      // },
       {
         path: "prestasi-siswa",
         name: "Prestasi Siswa",

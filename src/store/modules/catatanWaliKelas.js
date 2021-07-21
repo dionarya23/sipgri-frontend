@@ -41,11 +41,11 @@ const catatanWaliKelas = {
           });
       });
     },
-    getTableCatatan({ commit, state }, id_raport) {
-      state.isLoading = true;
+    getTableCatatan({ commit, state }) {
+      state.isLoading = true; 
       return new Promise((resolve, reject) => {
         axios({
-          url: `catatan-wali-kelas/peserta-didik/${id_raport}`,
+          url: `catatan-wali-kelas/peserta-didik/wali-kelas`,
           method: "GET"
         })
           .then((res) => {
