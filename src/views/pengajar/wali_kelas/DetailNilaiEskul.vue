@@ -8,15 +8,7 @@
         ></v-progress-circular>
       </div> 
     <div v-else>
-    <v-card v-if="getJenisPelaksanaanRaport">
-      <v-card-title>
-        Perhatian!!
-      </v-card-title>
-      <v-card-subtitle>
-        Pengisian catatan wali kelas hanya berlaku untuk raport periode <b>Oktober - Desember Tahun {{ raport.tahun_ajaran.tahun_awal }}</b> dan <b>April - Juni Tahun {{ raport.tahun_ajaran.tahun_akhir }}</b>
-      </v-card-subtitle>
-    </v-card>
-    <v-card v-else>
+    <v-card>
        <v-card-title>
        Pengisian Catatan Wali Kelas untuk kelas {{ nama_kelas }}
       </v-card-title>
@@ -296,9 +288,6 @@ export default {
       : this.raport.jenis_penilaian === 'Penilaian Akhir Semester' ? `Oktober - Desember ${this.raport.tahun_ajaran.tahun_awal}` 
       : this.raport.jenis_penilaian === "Penilaian Tengah Semester 2" ? `Januari - Maret ${this.raport.tahun_ajaran.tahun_akhir}` 
       : `April - Juni ${this.raport.tahun_ajaran.tahun_akhir}`;
-    },
-    getJenisPelaksanaanRaport(){
-      return this.raport.jenis_penilaian !== 'Penilaian Akhir Semester' && this.raport.jenis_penilaian !== 'Penilaian Akhir Tahun';
     }
   },
   mounted() {
