@@ -1,6 +1,13 @@
 <template>
   <div class="detail-nilai">
-    <v-card>
+    <v-container>
+       <div class="text-center" v-if="isLoading">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div> 
+    <v-card v-else>
       <v-card-title>
         Pengisian Nilai Mata Pelajaran {{ mata_pelajaran }} untuk
         Kelas {{ nama_kelas }}
@@ -228,6 +235,7 @@
         </template>
       </v-data-table>
     </v-card>
+    </v-container>
   </div>
 </template>
 <script>

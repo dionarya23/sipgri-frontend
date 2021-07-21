@@ -1,6 +1,13 @@
 <template>
   <div class="penilaian">
-    <v-card>
+    <v-container>
+      <div class="text-center" v-if="isLoading">
+         <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
+    <v-card v-else>
       <v-card-title>
         Daftar Kelas yang Diajar
       </v-card-title>
@@ -28,6 +35,7 @@
       </template>
     </v-data-table>
     </v-card>
+    </v-container>
   </div>
 </template>
 <script>

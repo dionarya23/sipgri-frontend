@@ -6,10 +6,10 @@
           indeterminate
           color="primary"
         ></v-progress-circular>
-      </div>
+      </div> 
       <v-row no-gutters class="mb-6" v-else>
         <v-col cols="sm" v-for="(tgl, index) in tgl_lhbs" :key="index">
-          <v-card
+          <v-card 
             tile
             class="pa-2"
             :disabled="tgl.status_pelaksanaan === 'Tidak Aktif'"
