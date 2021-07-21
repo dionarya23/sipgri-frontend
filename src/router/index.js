@@ -28,15 +28,15 @@ import NilaiKkm from "../views/pengajar/guru/NilaiKkm.vue";
 import PredikatMapel from "../views/pengajar/guru/PredikatMapel.vue";
 import Penilaian from "../views/pengajar/guru/Penilaian.vue";
 import DetailNilai from "../views/pengajar/guru/DetailNilai.vue";
-import CatatanWaliKelas from "../views/pengajar/raport/CatatanWaliKelas.vue";
+// import CatatanWaliKelas from "../views/pengajar/raport/CatatanWaliKelas.vue";
 import DetailCatatan from "../views/pengajar/raport/DetailCatatan.vue";
-import Prestasi from "../views/pengajar/prestasi/Prestasi.vue";
+// import Prestasi from "../views/pengajar/prestasi/Prestasi.vue";
 import DetailPrestasi from "../views/pengajar/prestasi/DetailPrestasi.vue";
 
 // wali kelas can access
-import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
+// import Absensi from "../views/pengajar/wali_kelas/Absensi.vue";
 import DetailAbsensi from "../views/pengajar/wali_kelas/DetailAbsensi.vue";
-import NilaiEskul from "../views/pengajar/wali_kelas/Eskul.vue";
+// import NilaiEskul from "../views/pengajar/wali_kelas/Eskul.vue";
 import DetailNilaiEskul from "../views/pengajar/wali_kelas/DetailNilaiEskul.vue";
 
 // all role user can access
@@ -257,19 +257,19 @@ const routes = [
       {
         path: "nilai-eskul",
         name: "Nilai Eskul",
-        component: NilaiEskul,
-        meta: {
-          roles: ["wali_kelas"]
-        }
-      },
-      {
-        path: "detail-nilai-eskul/:id_raport",
-        name: "Pengisian Nilai Eskul",
         component: DetailNilaiEskul,
         meta: {
           roles: ["wali_kelas"]
         }
       },
+      // {
+      //   path: "detail-nilai-eskul/:id_raport",
+      //   name: "Pengisian Nilai Eskul",
+      //   component: DetailNilaiEskul,
+      //   meta: {
+      //     roles: ["wali_kelas"]
+      //   }
+      // },
       {
         path: "catatan-wali-kelas",
         name: "Catatan Wali Kelas",

@@ -305,7 +305,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         const { id_peserta_didik, prestasi } = this.editedItem;
-        let id_raport = parseInt(this.$route.params.id_raport);
+        let id_raport = this.raport.id_raport;
         let data = {
           id_peserta_didik,
           id_raport,
@@ -361,7 +361,7 @@ export default {
           {
             nama,
             id_peserta_didik,
-            id_raport: this.$route.params.id_raport,
+            id_raport: this.raport.id_raport,
             prestasi: item.peserta_didik.prestasi
           }
         );
@@ -371,12 +371,11 @@ export default {
           {
             nama,
             id_peserta_didik,
-            id_raport: this.$route.params.id_raport,
+            id_raport: this.raport.id_raport,
             prestasi: [{ jenis_kegiatan: "", keterangan_kegiatan: "" }]
           }
         );
       }
-      console.log(this.editedItem);
       this.dialog = true;
     }
   }

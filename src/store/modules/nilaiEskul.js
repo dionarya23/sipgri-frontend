@@ -12,11 +12,11 @@ const nilaiEskul = {
     },
   },
   actions: {
-    getAnakWali({ commit, state }, id_raport) {
+    getAnakWali({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
         axios({
-          url: `nilai-eskul/anak-wali/${id_raport}`,
+          url: `nilai-eskul/anak-wali/get-wali-kelas/`,
           method: "GET",
         })
           .then((res) => {

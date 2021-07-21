@@ -44,7 +44,7 @@ const prestasi = {
             state.isLoading = false;
             reject(err);
           });
-      });
+      }); 
     },
     createPrestasi({ commit, state }, data) {
       state.isLoading = true;

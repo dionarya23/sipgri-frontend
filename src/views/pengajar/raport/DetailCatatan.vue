@@ -252,7 +252,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         const { id_peserta_didik, catatan } = this.editedItem;
-        let id_raport = parseInt(this.$route.params.id_raport);
+        let id_raport = this.raport.id_raport;
         console.log(this.editedIndex);
         if (this.editedIndex === -1) {
           let data = {
@@ -336,7 +336,6 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.tableCatatan.kelas_siswa.indexOf(item);
-      console.log(item);
       const { nama } = item.peserta_didik;
       const id_peserta_didik = item.id_peserta_didik;
       if (item.peserta_didik.catatan_wali_kelas !== null) {

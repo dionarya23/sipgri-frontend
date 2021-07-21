@@ -87,7 +87,7 @@ const catatanWaliKelas = {
             commit("SHOW_ALERT", payload, { root: true });
             reject(err);
           });
-      });
+      }); 
     },
     createCatatan({ commit, state }, data) {
       state.isLoading = true;
