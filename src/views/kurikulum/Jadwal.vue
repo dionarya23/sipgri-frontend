@@ -140,6 +140,7 @@
                             label="Jam Mulai"
                             prepend-icon="mdi-clock-time-four-outline"
                             readonly
+                            :disabled="id_mata_pelajaran <= 0"
                             v-bind="attrs"
                             v-on="on"
                             :rules="[rulesInputForm.requiredRule]"
@@ -149,7 +150,8 @@
                           v-if="menuJamMulai"
                           v-model="editedItem.jam_mulai"
                           full-width
-                          @click:minute="$refs.menu.save(editedItem.jam_mulai)"
+                          format="24hr"
+                          @click:minute="setJamMulaiDanSelesai"
                           :max="editedItem.jam_selesai"
                         ></v-time-picker>
                       </v-menu>
@@ -172,12 +174,12 @@
                             label="Jam Selesai"
                             prepend-icon="mdi-clock-time-four-outline"
                             readonly
+                            disabled
                             v-bind="attrs"
                             v-on="on"
-                            :rules="[rulesInputForm.requiredRule]"
                           ></v-text-field>
                         </template>
-                        <v-time-picker
+                        <!-- <v-time-picker
                           v-if="menuJamSelesai"
                           v-model="editedItem.jam_selesai"
                           full-width
@@ -185,9 +187,10 @@
                             $refs.menu2.save(editedItem.jam_selesai)
                           "
                           :min="editedItem.jam_mulai"
-                        ></v-time-picker>
+                        ></v-time-picker> -->
                       </v-menu>
                     </v-col>
+
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -256,6 +259,7 @@
 
 <script>
 import { mapState } from "vuex";
+import moment from "moment";
 export default {
   data: () => ({
     alertLocal: {
@@ -271,6 +275,7 @@ export default {
     dialog: false,
     id_mata_pelajaran: "",
     pengajar: [],
+    durasi_belajar: 0,
     menuJamMulai: false,
     menuJamSelesai: false,
     idGuruSelected: "",
@@ -428,6 +433,7 @@ export default {
       const pengajar = this.guru_mengajar.filter(
         (e) => e.id_mata_pelajaran == this.id_mata_pelajaran
       );
+      this.durasi_belajar = parseInt(pengajar[0].durasi_belajar)
       this.pengajar = pengajar[0].pengajar;
     },
 
@@ -500,6 +506,14 @@ export default {
           this.closeDelete();
           console.log(err);
         });
+    },
+
+    setJamMulaiDanSelesai(){
+      let jam_selesai = moment(`${this.editedItem.jam_mulai}:10 AM`, 'h:mm:ss A')
+      .add(this.durasi_belajar, "minutes")
+      .format('LTS').split(":");
+      this.editedItem.jam_selesai = `${jam_selesai[0]}:${jam_selesai[1]}`;
+      this.$refs.menu.save(this.editedItem.jam_mulai)
     },
 
     save() {
@@ -602,6 +616,9 @@ export default {
           } else {
             this.$store.dispatch("jadwal/createJadwal", jadwalFromInput);
             this.close();
+            setTimeout(() => {
+              this.$router.go(this.$router.currentRoute);
+            }, 1000);
           }
         } else {
           const {
@@ -679,8 +696,6 @@ export default {
                   : item.no === 0;
               return classScheduleExist;
             }).length > 0;
-
-          console.log("Validation : ", isJadwalGuruExist, isClassScheduleExist);
 
           if (isJadwalGuruExist) {
             this.alertLocal = {

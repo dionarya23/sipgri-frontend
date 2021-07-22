@@ -68,6 +68,14 @@
                       :rules="[rulesInputForm.requiredRule]"
                       label="Kelompok"
                     ></v-autocomplete>
+
+                    <v-select
+                      v-model="editedItem.durasi_belajar"
+                      :items="['45', '90']"
+                      :rules="[rulesInputForm.requiredRule]"
+                      label="Durasi Belajar (dalam menit)"
+                    >
+                    </v-select>
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -118,6 +126,10 @@
         </v-alert>
       </template>
 
+       <template v-slot:[`item.durasi_belajar`]="{ item }">
+      {{ item.durasi_belajar }} Menit
+    </template>
+
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)">
           mdi-pencil
@@ -155,6 +167,7 @@ export default {
       },
       { text: "Nama Mata Pelajaran", value: "mata_pelajaran" },
       { text: "Kelompok", value: "kelompok", sortable: false },
+      { text: "Durasi Belajar", value: "durasi_belajar", sortable: false },
       { text: "Aksi", value: "actions", sortable: false },
     ],
     editedIndex: -1,
@@ -165,6 +178,7 @@ export default {
       kkm_kelas_2: 0,
       kkm_kelas_3: 0,
       kelompok: "",
+      durasi_belajar: 45,
     },
     defaultItem: {
       mata_pelajaran: "",
@@ -172,6 +186,7 @@ export default {
       kkm_kelas_2: 0,
       kkm_kelas_3: 0,
       kelompok: "",
+      durasi_belajar: 45,
     },
     oldMataPelajaran: {},
     kelompokMataPelajaran: [
@@ -230,6 +245,7 @@ export default {
     editItem(item) {
       this.id_mata_pelajaran = item.id_mata_pelajaran;
       this.editedIndex = this.mataPelajaran.indexOf(item);
+      console.log("item : ", item);
       this.editedItem = Object.assign({}, item);
       this.oldMataPelajaran = { ...item };
       this.dialog = true;
