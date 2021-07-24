@@ -22,8 +22,10 @@
         item-value="tingkat"
         :rules="[(v) => !!v || 'Wajib dipilih']"
         :items="list_angkatan"
+        v-model="tingkat"
       >
       </v-autocomplete>
+
       <v-autocomplete
         v-else
         label="Pilih Kelas"
@@ -88,6 +90,23 @@ export default {
   methods: {
     cetak() {
       if (this.$refs.form.validate()) {
+      
+      if (this.jenis_jadwal === 'Perangkatan') {
+        printJS({
+          printable: `${endpoint}jadwal/angkatan/${this.tingkat}/${this.tahunAjaranAktif.id_tahun_ajaran}`,
+          type: "pdf",
+          modalMessage: "Harap tunggu, sedang mendapatkan jadwal...",
+          showModal: true,
+          onError: (_) => {
+            const payload = {
+              isShow: true,
+              type: "error",
+              message: "Jadwal belum tersedia, harap isi terlebih dahulu",
+            };
+            this.$store.dispatch("showError", payload);
+          },
+        });
+      } else {
         printJS({
           printable: `${endpoint}jadwal/kelas/${this.id_kelas}/${this.tahunAjaranAktif.id_tahun_ajaran}/document`,
           type: "pdf",
@@ -102,6 +121,8 @@ export default {
             this.$store.dispatch("showError", payload);
           },
         });
+      }
+
       } else {
         this.valid = false;
       }
