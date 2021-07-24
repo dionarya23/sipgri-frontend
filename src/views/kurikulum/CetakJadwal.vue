@@ -93,7 +93,7 @@ export default {
       
       if (this.jenis_jadwal === 'Perangkatan') {
         printJS({
-          printable: `${endpoint}jadwal/angkatan/${this.tingkat}/${this.tahunAjaranAktif.id_tahun_ajaran}`,
+          printable: `${endpoint}jadwal/angkatan/${this.tahunAjaranAktif.id_tahun_ajaran}/${this.tingkat}`,
           type: "pdf",
           modalMessage: "Harap tunggu, sedang mendapatkan jadwal...",
           showModal: true,
