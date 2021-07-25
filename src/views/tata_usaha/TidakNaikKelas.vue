@@ -30,7 +30,7 @@
               :loading="isLoading"
               :disabled="
                 isLoading ||
-                  tahunAjaran.jenis_penilaian !== 'Penilaian Akhir Tahun'
+                  tahunAjaran.jenis_penilaian !== 'Penilaian Akhir Tahun' || pesertaDidik.length === 0
               "
               @click="cetakLaporan"
             >
@@ -160,7 +160,7 @@ export default {
     this.$store.dispatch("tidakNaikKelas/getPesertaDidikTidakMemenuhiSyarat");
   },
   methods: {
-    cetakLaporan() {
+    cetakLaporan() { 
       printJS({
         printable: `${endpoint}kelas/tidak-naik`,
         type: "pdf",
@@ -170,7 +170,7 @@ export default {
           const payload = {
             isShow: true,
             type: "error",
-            message: "Gagal mengambil dokumen",
+            message: "Data kelas peserta didik yang tidak memenuhi syarat naik kelas kosong",
           };
           this.$store.dispatch("showError", payload);
         },
