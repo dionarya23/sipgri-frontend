@@ -136,7 +136,11 @@ export default {
       );
     },
     isAlreadyPembagianKelas() {
-      return this.pembagianKelas === `true_${this.raportAktif.jenis_penilaian}${this.raportAktif.id_raport}`
+      let jumlah_kelas = 0;
+      this.listKelas.map((kelas) => {
+        jumlah_kelas += kelas.kelas_siswa.length
+      });
+      return jumlah_kelas !== 0;
     }
   },
   mounted() {
