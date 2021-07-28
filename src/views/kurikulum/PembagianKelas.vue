@@ -152,7 +152,11 @@ export default {
       this.dialogPembagianKelas = false;
     },
     confirmPembagianKelas(){
-      this.$store.dispatch("pembagianKelas/doPembagianKelas");
+      
+      Promise.all(this.$store.dispatch("pembagianKelas/pembagianKelasNextTingkat", "XII"), this.$store.dispatch("pembagianKelas/pembagianKelasNextTingkat", "XI"), this.$store.dispatch("pembagianKelas/doPembagianKelas")).then(_ => {
+      }).catch(err => {
+        console.log(err);
+      });
       this.closePembagianKelas();
     },
     cetakDaftarSiswa(id_kelas){

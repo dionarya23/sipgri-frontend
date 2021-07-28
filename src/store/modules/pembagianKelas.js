@@ -44,6 +44,21 @@ const pembagianKelas = {
       });
     },
 
+    pembagianKelasNextTingkat({ commit, state }, tingkat) {
+      return new Promise((resolve, reject) => {
+        axios({
+            url: `/peserta-didik/pembagian/kelas/tingkat/${tingkat}`,
+            method: "GET",
+          })
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+
     doPembagianKelas({ commit, state }) {
       state.isLoading = true;
       return new Promise((resolve, reject) => {
@@ -73,7 +88,10 @@ const pembagianKelas = {
             const payload = {
               isShow: true,
               type: "error",
-              message: "Gagal Melakukan pembagian kelas",
+              message:
+                err.response.status === 404
+                  ? "Peserta Didik tingkat kelas X tidak dapat ditemukan harap, import terlebih dahulu"
+                  : "Gagal Melakukan pembagian kelas",
             };
             commit("SHOW_ALERT", payload, { root: true });
             reject(err);
