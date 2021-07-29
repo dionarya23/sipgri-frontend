@@ -33,7 +33,7 @@
         item-value="id_kelas"
         v-model="id_kelas"
         :rules="[(v) => !!v || 'Wajib dipilih']"
-        :items="kelas"
+        :items="kelasList"
       >
       </v-autocomplete>
     </v-form>
@@ -82,6 +82,11 @@ export default {
       kelas: (state) => state.kelas.kelas,
       tahunAjaranAktif: (state) => state.tahunAjaran.tahunAjaranAktif,
     }),
+    kelasList() {
+      return this.kelas.sort((a, b) =>
+        a.nama_kelas > b.nama_kelas ? 1 : b.nama_kelas > a.nama_kelas ? -1 : 0
+      );
+    }
   },
   mounted() {
     this.$store.dispatch("kelas/getAllKelas");

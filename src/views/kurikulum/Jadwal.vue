@@ -81,7 +81,7 @@
                       item-value="id_kelas"
                       label="Kelas"
                       :items="list_kelas"
-                      readonly
+                      disabled
                     >
                     </v-autocomplete>
 
@@ -90,21 +90,34 @@
                       label="Hari"
                       :items="list_hari"
                       :rules="[rulesInputForm.requiredRule]"
+                      @change="setKeterangan"
                     >
                     </v-autocomplete>
+
+                    <v-select
+                      v-model="editedItem.keterangan"
+                      label="Keterangan Jadwal"
+                      :items="list_keterangan"
+                      :rules="[rulesInputForm.requiredRule]"
+                      :disabled="keteranganAvail"
+                      @change="setWaktu"
+                    >
+                    </v-select>
 
                     <v-autocomplete
                       v-model="id_mata_pelajaran"
                       label="Mata Pelajaran"
                       item-text="mata_pelajaran"
                       item-value="id_mata_pelajaran"
-                      :items="guru_mengajar"
+                      :items="guru_mengajar_filtered"
                       :rules="[rulesInputForm.requiredRule]"
                       @change="setPengajar"
+                      v-if="editedItem.keterangan == 'Mata Pelajaran'"
                     >
                     </v-autocomplete>
 
                     <v-autocomplete
+                      v-if="editedItem.keterangan == 'Mata Pelajaran'"
                       v-model="idGuruSelected"
                       label="Guru Mata Pelajaran"
                       item-text="guru.nama"
@@ -117,6 +130,7 @@
                     </v-autocomplete>
 
                     <v-text-field
+                      v-if="editedItem.keterangan == 'Mata Pelajaran'"
                       :value="editedItem.kode_mengajar"
                       label="Kode Mengajar"
                       readonly
@@ -140,12 +154,13 @@
                             label="Jam Mulai"
                             prepend-icon="mdi-clock-time-four-outline"
                             readonly
-                            :disabled="id_mata_pelajaran <= 0"
+                            disabled
                             v-bind="attrs"
                             v-on="on"
                             :rules="[rulesInputForm.requiredRule]"
                           ></v-text-field>
                         </template>
+
                         <v-time-picker
                           v-if="menuJamMulai"
                           v-model="editedItem.jam_mulai"
@@ -154,6 +169,7 @@
                           @click:minute="setJamMulaiDanSelesai"
                           :max="editedItem.jam_selesai"
                         ></v-time-picker>
+
                       </v-menu>
                     </v-col>
 
@@ -179,18 +195,9 @@
                             v-on="on"
                           ></v-text-field>
                         </template>
-                        <!-- <v-time-picker
-                          v-if="menuJamSelesai"
-                          v-model="editedItem.jam_selesai"
-                          full-width
-                          @click:minute="
-                            $refs.menu2.save(editedItem.jam_selesai)
-                          "
-                          :min="editedItem.jam_mulai"
-                        ></v-time-picker> -->
+                       
                       </v-menu>
                     </v-col>
-
                   </v-form>
                 </v-container>
               </v-card-text>
@@ -242,7 +249,11 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">
+        <v-icon
+          v-if="item.keterangan === 'Mata Pelajaran'" 
+          small
+          class="mr-2" 
+          @click="editItem(item)">
           mdi-pencil
         </v-icon>
         <v-icon small @click="deleteItem(item)">
@@ -286,6 +297,10 @@ export default {
         value: "no",
       },
       { text: "Kelas", value: "kelas.nama_kelas" },
+      {
+        text: "Keterangan",
+        value: "keterangan",
+      },
       { text: "Guru", value: "mengajar.guru.nama" },
       { text: "Kode Mengajar", value: "kode_mengajar" },
       {
@@ -327,6 +342,7 @@ export default {
         },
       },
     },
+    list_keterangan: ["Mata Pelajaran"],
     defaultItem: {
       id_jadwal: "",
       id_tahun_ajaran: "",
@@ -359,6 +375,10 @@ export default {
     rulesInputForm: {
       requiredRule: (v) => !!v || "Wajib diisi",
     },
+    id_kelas_selected: "",
+    keteranganAvail: true,
+    guruMengajarBackup: [],
+    durasiBelajar: ["45", "90"],
   }),
   computed: {
     ...mapState({
@@ -370,17 +390,33 @@ export default {
       jadwal2: (state) => {
         const { jadwal } = state.jadwal;
         jadwal.map((item, index) => {
-          item.no = index + 1;
+          if (item.keterangan === "Mata Pelajaran") {
+            item.no = index + 1;
+          } else {
+            item.no = index + 1;
+            item.kode_mengajar = "-";
+            item.mengajar = {
+              mata_pelajaran: {
+                mata_pelajaran: "-",
+              },
+              guru: {
+                nama: "-",
+              },
+            };
+          }
         });
         return jadwal;
       },
     }),
-    jadwal(){
+    jadwal() {
       let index =
         typeof this.kelasSelected.index === "undefined"
           ? this.kelasSelected
           : this.kelasSelected.index;
-      return this.jadwal2.filter(jadwal => jadwal.id_kelas == this.list_kelas[index].id_kelas)
+      this.id_kelas_selected = this.list_kelas[index].id_kelas;
+      return this.jadwal2.filter(
+        (jadwal) => jadwal.id_kelas == this.list_kelas[index].id_kelas
+      );
     },
 
     formTitle() {
@@ -390,24 +426,44 @@ export default {
     },
 
     lisKelasWithIndex() {
+      this.list_kelas.sort((a, b) =>
+        a.nama_kelas > b.nama_kelas ? 1 : b.nama_kelas > a.nama_kelas ? -1 : 0
+      );
       return this.list_kelas.map((e, index) => ({
         index,
         nama_kelas: e.nama_kelas,
         id_kelas: e.id_kelas,
       }));
     },
+
+    guru_mengajar_filtered() {
+      let mapelFiltered = [];
+      this.guru_mengajar.map(mapel => {
+      
+        if (this.durasiBelajar.includes(mapel.durasi_belajar)) {
+          mapelFiltered.push(mapel);
+        }
+        
+      })
+      return mapelFiltered;
+    }
   },
 
   mounted() {
-  Promise.all([ this.$store.dispatch("jadwal/getJadwalByTahunAjaranAktif"),  this.$store.dispatch("jadwal/getGuruMengajar")])
-  .then(values => {
-    const [res1, _] = values
-    const { kelas } = res1.data.data
-    this.editedItem.id_kelas = typeof kelas[0] !== 'undefined' ? kelas[0].id_kelas : "";
-  }).catch(err => {
-    console.log("Error : ", err)
-  })
- },
+    Promise.all([
+      this.$store.dispatch("jadwal/getJadwalByTahunAjaranAktif"),
+      this.$store.dispatch("jadwal/getGuruMengajar"),
+    ])
+      .then((values) => {
+        const [res1, _] = values;
+        const { kelas } = res1.data.data;
+        this.editedItem.id_kelas =
+          typeof kelas[0] !== "undefined" ? kelas[0].id_kelas : "";
+      })
+      .catch((err) => {
+        console.log("Error : ", err);
+      });
+  },
 
   methods: {
     openDialoag() {
@@ -422,8 +478,77 @@ export default {
       this.$refs.form.resetValidation();
     },
 
-    changeEditedItemIdKelas(){
-      let kelasSelected = this.list_kelas[this.kelasSelected]
+    setKeterangan() {
+      const jadwalFiltered = this.jadwal.filter(
+        (j) => j.hari == this.editedItem.hari
+      );
+
+      let durasiMenit = 0;
+      jadwalFiltered.map(jadwal => {
+        let jam_selesai = moment(jadwal.jam_selesai, "HH:mm:ss");
+        let jam_mulai_array = jadwal.jam_mulai.split(":");
+        let jam_mulai = moment(`${jam_mulai_array[0]}:${jam_mulai_array[1]}:00`, "HH:mm:ss");
+        durasiMenit += jam_selesai.diff(jam_mulai, "minutes");
+      });
+
+      if (this.editedItem.hari === "Senin") {
+        if (jadwalFiltered.length === 0) {
+          this.list_keterangan = ["Upacara", "Baca Al-Quran dan Shalat Dhuha"];
+        } else if (durasiMenit === 90 || durasiMenit === 255) {
+          this.durasiBelajar = ["45"];
+        } else if (durasiMenit === 135) {
+          this.list_keterangan = ["Istirahat Pertama"];
+        } else if (durasiMenit < 300 && durasiMenit > 135) {
+          this.list_keterangan = ["Mata Pelajaran"];
+        } else if (durasiMenit === 300) {
+          this.list_keterangan = ["Istirahat Kedua"];
+        } else if (durasiMenit > 300) {
+          this.list_keterangan = ["Mata Pelajaran"];
+        }
+      }else{
+        if (jadwalFiltered.length === 0) {
+          this.list_keterangan = ["Baca Al-Quran dan Shalat Dhuha"];
+        } else if (durasiMenit === 105 || durasiMenit === 270) {
+          this.durasiBelajar = ["45"];
+        } else if (durasiMenit === 150) {
+          this.list_keterangan = ["Istirahat Pertama"];
+        } else if (durasiMenit < 315 && durasiMenit > 150) {
+          this.list_keterangan = ["Mata Pelajaran"];
+        } else if (durasiMenit === 315) {
+          this.list_keterangan = ["Istirahat Kedua"];
+        } else if (durasiMenit > 315) {
+          this.list_keterangan = ["Mata Pelajaran"];
+        }
+
+      }
+
+      this.keteranganAvail = false;
+    },
+
+    // setwaktu jadwal
+    setWaktu() {
+      if (this.editedItem.keterangan === "Upacara") {
+        this.editedItem.jam_mulai = "07:15";
+        this.editedItem.jam_selesai = "08:00";
+      } else if (this.editedItem.keterangan === "Baca Al-Quran dan Shalat Dhuha") {
+        this.editedItem.jam_mulai = "07:00";
+        this.editedItem.jam_selesai = "07:15";
+      } else if (this.editedItem.keterangan === "Istirahat Pertama" || this.editedItem.keterangan === "Istirahat Kedua") {
+        const jadwalFiltered = this.jadwal.filter(
+          (j) => j.hari == this.editedItem.hari
+        );
+
+          const lastJadwal = jadwalFiltered[0];
+          let arrayJamMulai = lastJadwal.jam_selesai.split(":");
+          this.editedItem.jam_mulai = `${arrayJamMulai[0]}:${arrayJamMulai[1]}`;
+          this.editedItem.jam_selesai = moment(this.editedItem.jam_mulai, "HH:mm")
+          .add(30, "minutes").format("HH:mm");
+      }
+    
+    },
+
+    changeEditedItemIdKelas() {
+      let kelasSelected = this.list_kelas[this.kelasSelected];
       this.editedItem.id_kelas = kelasSelected.id_kelas;
     },
 
@@ -433,8 +558,18 @@ export default {
       const pengajar = this.guru_mengajar.filter(
         (e) => e.id_mata_pelajaran == this.id_mata_pelajaran
       );
-      this.durasi_belajar = parseInt(pengajar[0].durasi_belajar)
-      this.pengajar = pengajar[0].pengajar;
+
+       this.durasi_belajar = parseInt(pengajar[0].durasi_belajar);
+       const jadwalFiltered = this.jadwal.filter(
+        (j) => j.hari == this.editedItem.hari
+      );
+
+       const lastJadwal = jadwalFiltered[0];
+       let arrayJamMulai = lastJadwal.jam_selesai.split(":");
+       this.editedItem.jam_mulai = `${arrayJamMulai[0]}:${arrayJamMulai[1]}`;
+       this.editedItem.jam_selesai = moment(this.editedItem.jam_mulai, "HH:mm")
+       .add(this.durasi_belajar, "minutes").format("HH:mm");
+       this.pengajar = pengajar[0].pengajar;
     },
 
     changeKodeMengajar() {
@@ -452,6 +587,7 @@ export default {
 
     close() {
       this.dialog = false;
+      this.defaultItem.id_kelas = this.id_kelas_selected;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -459,24 +595,27 @@ export default {
         this.idGuruSelected = "";
         this.pengajar = [];
       });
+       this.keteranganAvail = true;
       this.$refs.form.resetValidation();
     },
 
     editItem(item) {
       this.editedIndex = this.jadwal.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.oldEskul = { ...item };
+      this.oldJadwal = { ...item };
       this.editedItem.jam_mulai = this.formatTime(this.editedItem.jam_mulai);
       this.editedItem.jam_selesai = this.formatTime(
         this.editedItem.jam_selesai
       );
-      this.id_mata_pelajaran = this.editedItem.mengajar.id_mata_pelajaran;
-      const pengajar = this.guru_mengajar.filter(
-        (e) => e.id_mata_pelajaran == this.id_mata_pelajaran
-      );
-      this.pengajar = pengajar[0].pengajar;
-      this.idGuruSelected = this.editedItem.mengajar.id_guru;
-      this.oldJadwal = this.editedItem;
+      if (this.editedItem.keterangan === "Mata Pelajaran") {
+        this.id_mata_pelajaran = this.editedItem.mengajar.id_mata_pelajaran;
+        const pengajar = this.guru_mengajar.filter(
+          (e) => e.id_mata_pelajaran == this.id_mata_pelajaran
+        );
+        this.pengajar = pengajar[0].pengajar;
+        this.idGuruSelected = this.editedItem.mengajar.id_guru;
+      }
+
       this.dialog = true;
     },
 
@@ -508,12 +647,16 @@ export default {
         });
     },
 
-    setJamMulaiDanSelesai(){
-      let jam_selesai = moment(`${this.editedItem.jam_mulai}:10 AM`, 'h:mm:ss A')
-      .add(this.durasi_belajar, "minutes")
-      .format('LTS').split(":");
+    setJamMulaiDanSelesai() {
+      let jam_selesai = moment(
+        `${this.editedItem.jam_mulai}:10 AM`,
+        "h:mm:ss A"
+      )
+        .add(this.durasi_belajar, "minutes")
+        .format("LTS")
+        .split(":");
       this.editedItem.jam_selesai = `${jam_selesai[0]}:${jam_selesai[1]}`;
-      this.$refs.menu.save(this.editedItem.jam_mulai)
+      this.$refs.menu.save(this.editedItem.jam_mulai);
     },
 
     save() {
@@ -536,7 +679,7 @@ export default {
             jam_selesai: `${jam_selesai}:00`,
             hari,
             id_guru: this.idGuruSelected,
-            keterangan: keterangan === "" ? "Mata Pelajaran" : keterangan,
+            keterangan,
           };
 
           const isJadwalGuruExist =
@@ -565,6 +708,22 @@ export default {
               return guruScheduleExist;
             }).length > 0;
 
+          // validasi apakah ada guru yang jadwal nya bentrok
+          if (jadwalFromInput.keterangan === "Mata Pelajaran") {
+            if (isJadwalGuruExist) {
+              this.alertLocal = {
+                isShow: true,
+                type: "error",
+                message: `Guru memiliki jadwal yang bentrok pada hari dan jam yang sama`,
+              };
+
+              setTimeout(() => {
+                this.alertLocal.isShow = false;
+              }, 6000);
+              this.valid = true;
+            }
+          }
+
           const isClassScheduleExist =
             this.jadwal.filter((item) => {
               const jamMulaiCurrent = new Date(
@@ -591,18 +750,7 @@ export default {
               return classScheduleExist;
             }).length > 0;
 
-          if (isJadwalGuruExist) {
-            this.alertLocal = {
-              isShow: true,
-              type: "error",
-              message: `Guru memiliki jadwal yang bentrok pada hari dan jam yang sama`,
-            };
-
-            setTimeout(() => {
-              this.alertLocal.isShow = false;
-            }, 6000);
-            this.valid = true;
-          } else if (isClassScheduleExist) {
+          if (isClassScheduleExist) {
             this.alertLocal = {
               isShow: true,
               type: "error",
@@ -616,9 +764,6 @@ export default {
           } else {
             this.$store.dispatch("jadwal/createJadwal", jadwalFromInput);
             this.close();
-            setTimeout(() => {
-              this.$router.go(this.$router.currentRoute);
-            }, 1000);
           }
         } else {
           const {
@@ -727,36 +872,36 @@ export default {
             this.$store
               .dispatch("jadwal/updateJadwal", update)
               .then((res) => {
-                const {
-                  id_kelas,
-                  kode_mengajar,
-                  jam_mulai,
-                  jam_selesai,
-                  hari,
-                  keterangan,
-                  tahun_ajaran,
-                  kelas,
-                  mengajar,
-                } = res.data.data;
-                console.log(
-                  "Data Sebelum diubah : ",
-                  this.jadwal[this.editedIndex],
-                  this.jadwal[this.editedIndex].hari
-                );
-                this.jadwal[this.editedIndex].id_kelas = id_kelas;
-                this.jadwal[this.editedIndex].kode_mengajar = kode_mengajar;
-                this.jadwal[this.editedIndex].jam_mulai = jam_mulai;
-                this.jadwal[this.editedIndex].jam_selesai = jam_selesai;
-                this.jadwal[this.editedIndex].hari = hari;
-                this.jadwal[this.editedIndex].keterangan = keterangan;
-                this.jadwal[this.editedIndex].tahun_ajaran = tahun_ajaran;
-                this.jadwal[this.editedIndex].kelas = kelas;
-                this.jadwal[this.editedIndex].mengajar = mengajar;
-                console.log(
-                  "Data Sesudah diubah : ",
-                  this.jadwal[this.editedIndex],
-                  this.jadwal[this.editedIndex].hari
-                );
+                // const {
+                //   id_kelas,
+                //   kode_mengajar,
+                //   jam_mulai,
+                //   jam_selesai,
+                //   hari,
+                //   keterangan,
+                //   tahun_ajaran,
+                //   kelas,
+                //   mengajar,
+                // } = res.data.data;
+                // console.log(
+                //   "Data Sebelum diubah : ",
+                //   this.jadwal[this.editedIndex],
+                //   this.jadwal[this.editedIndex].hari
+                // );
+                // this.jadwal[this.editedIndex].id_kelas = id_kelas;
+                // this.jadwal[this.editedIndex].kode_mengajar = kode_mengajar;
+                // this.jadwal[this.editedIndex].jam_mulai = jam_mulai;
+                // this.jadwal[this.editedIndex].jam_selesai = jam_selesai;
+                // this.jadwal[this.editedIndex].hari = hari;
+                // this.jadwal[this.editedIndex].keterangan = keterangan;
+                // this.jadwal[this.editedIndex].tahun_ajaran = tahun_ajaran;
+                // this.jadwal[this.editedIndex].kelas = kelas;
+                // this.jadwal[this.editedIndex].mengajar = mengajar;
+                // console.log(
+                //   "Data Sesudah diubah : ",
+                //   this.jadwal[this.editedIndex],
+                //   this.jadwal[this.editedIndex].hari
+                // );
                 this.close();
               })
               .catch((err) => {

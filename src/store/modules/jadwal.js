@@ -57,7 +57,7 @@ const jadwal = {
           .catch((err) => {
             console.err(err);
             reject(err);
-          });
+          }); 
       });
     },
 
@@ -102,6 +102,9 @@ const jadwal = {
               message: "Berhasil meperbarui data jadwal yang",
             };
             commit("SHOW_ALERT", payload, { root: true });
+            const { data } = res.data;
+            commit("SET_JADWAL", data.jadwal);
+            commit("SET_KELAS", data.kelas);
             state.isLoading = false;
             resolve(res);
           })
@@ -128,15 +131,16 @@ const jadwal = {
           data,
         })
           .then((res) => {
+            // commit("ADD_JADWAL", data);
             const { data } = res.data;
-            commit("ADD_JADWAL", data);
+            commit("SET_JADWAL", data.jadwal);
+            commit("SET_KELAS", data.kelas);
             const payload = {
               type: true,
               type: "success",
               message: "Sukses membuat jadwal baru",
             };
             commit("SHOW_ALERT", payload, { root: true });
-            console.log("jadwal store : ", data);
             state.isLoading = false;
             resolve(res);
           })
